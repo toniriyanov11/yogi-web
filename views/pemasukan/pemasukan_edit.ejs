@@ -1,0 +1,121 @@
+<div class="container-fluid" id="app">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-arrow-down"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h4 class="mt-0 mb-4 header-title">Edit data pemasukan</h4>
+                        </div>
+                        <div class="col-sm-6">
+                            <h4 class="mt-0 mb-4 header-title text-right"><%= data.id%></h4>
+                        </div>
+                     </div>
+                    
+                    <div class="form-group row">
+                        <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
+                        <div class="col-sm-10">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="mm/dd/yyyy" value="<%= data.tgl%>" id="datepicker-autoclose">
+                                <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div>
+                            </div><!-- input-group -->
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Nama Item</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" value="<%= data.nama %>" id="example-text-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
+                        <div  class="col-sm-10">
+                            <textarea required class="form-control"  rows="3"><%= data.ket %></textarea>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">banyak</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="search" value="<%= data.jml %>" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Status Bayar</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" v-model="valueStatus">
+                                    <option <% if(data.status === 'lunas') { %> selected <% } %> >Lunas</option>
+                                    <option  <% if(data.status === 'Bayar sebagian') { %> selected <% } %>>Bayar sebagian</option>
+                                    <option  <% if(data.status === 'Piutang') { %> selected <% } %>>Piutang</option>
+                                </select>
+                            </div>
+                    </div>
+                    <hr>
+                    <div v-if="valueStatus=='Bayar sebagian'" class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas (Rp)</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" value="<%= data.nomlunas %>" id="example-number-input">
+                        </div>
+                    </div>
+                    <div  v-if="valueStatus=='Bayar sebagian'" class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Piutang (Rp)</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" value="<%= data.nompiutang %>" id="example-number-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Total Nominal (Rp)</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" value="<%= data.nom%>" id="example-number-input">
+                        </div>
+                    </div>
+                    <div class="form-group text-right">
+                        <div>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light" id="alertify-confirm">
+                                Edit 
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <!-- END ROW -->
+
+</div>
+
+<script>
+    function tambah(){
+        location.href = "/pembelian"
+    }
+    
+</script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
+<script>
+    var app = new Vue({
+     el: '#app',
+     data: {
+         valueJenis:'<%= data.jenis  %>',
+         valueStatus:'<%= data.status  %>',
+     }
+     })
+ </script>
+

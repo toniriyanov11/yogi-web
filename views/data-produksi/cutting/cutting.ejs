@@ -1,0 +1,143 @@
+<div class="container-fluid">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="mdi mdi-content-cut "></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START button-->
+    <div class="row">
+        <div class="col py-3 text-right">
+          <button type="button" class="btn btn-primary waves-effect waves-light"  onclick="tambah()"><i class="mdi mdi-plus align-middle mr-2"></i>Tambah Cutting</button>
+        </div>
+    </div>
+    <!-- end button -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <h4 class="mt-0 header-title">Data Cutting</h4>
+                    
+                    <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>No</th>
+                            <th>Nama Item</th>
+                            <th>Berat(Kg)</th>
+                            <th>Banyak(Pcs)</th>
+                            <th>Total Harga Bahan(Rp)</th>
+                            <th>Total Biaya/pcs(Rp)</th>
+                            <th>Total Biaya(Rp)</th>
+                            <th>Upah/pcs(Rp)</th>
+                            <th>Hasil/pcs(Kg)</th>
+                            <th>Harga/kg(Rp)</th>
+                            <th>Jenis Bahan</th>
+                            <th>Varian Bahan</th>
+                            <th>Warna Bahan</th>
+                            <th>Ket</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+
+                        <tbody>
+                        <tr> 
+                            <td>25/02/2020</td>
+                            <td><a onclick="detil('3A-2020020001')" style="color:#2980b9">3A-2020020001</a></td>
+                            <td>Singlet</td>
+                            <td>50</td>
+                            <td>100</td>
+                            <td>25,000</td>
+                            <td>30,000</td>
+                            <td>300,000</td>
+                            <td>5,000</td>
+                            <td>0.5</td>
+                            <td>50,000</td>
+                            <td>polos</td>
+                            <td>solid</td>
+                            <td>putih</td>
+                            <td>-</td>
+                            <td>
+                                <button type="button" onclick="edit('3A-2020020001')"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
+                                <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
+                            </td>
+                        </tr>
+                        <tr> 
+                            <td>25/02/2020</td>
+                            <td><a onclick="detil('3A-2020020002')" style="color:#2980b9">3A-2020020002</a></td>
+                            <td>Kaos</td>
+                            <td>30</td>
+                            <td>50</td>
+                            <td>30,000</td>
+                            <td>35,000</td>
+                            <td>175,000</td>
+                            <td>5,000</td>
+                            <td>0.6</td>
+                            <td>50,000</td>
+                            <td>full print</td>
+                            <td>two tone</td>
+                            <td>biru</td>
+                            <td>-</td>
+                            <td>
+                                <button type="button" onclick="edit('3A-2020020002')"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
+                                <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div> 
+    <!-- END ROW -->
+
+</div>
+
+<script>
+    function tambah(){
+        location.href = "/dataproduksi/cutting/tambah";
+    }
+
+    function edit(id){
+        if(id=="3A-2020020001"){
+            location.href = "/dataproduksi/cutting/edit/"+id+"?id=3A-2020020001&tgl=25/02/2020&nama=Singlet&berat=50&jumlah=100&tothbahan=2,500,000&totbiaya=3,000,000&upahpcs=5,000&hasilpcs=0.5&hargakg=50,000&jenis=polos&varian=solid&warna=putih&ket=-";
+        }else if(id=="3A-2020020002"){
+            location.href = "/dataproduksi/cutting/edit/"+id+"?id=3A-2020020002&tgl=25/02/2020&nama=Kaos&berat=30&jumlah=50&tothbahan=1,500,000&totbiaya=1,750,000&upahpcs=5,000&hasilpcs=1.6&hargakg=50,000&jenis=full print&varian=two tone&warna=biru&ket=-";
+       }
+    }
+
+    function detil(id){
+        if(id=="3A-2020020001"){
+            location.href = "/dataproduksi/cutting/detil/"+id+"?id=3A-2020020001&tgl=25/02/2020&nama=Singlet&berat=50&jumlah=100&tothbahan=2,500,000&totbiaya=3,000,000&upahpcs=5,000&hasilpcs=0.5&hargakg=50,000&jenis=polos&varian=solid&warna=putih&ket=-";
+        }else if(id=="3A-2020020002"){
+            location.href = "/dataproduksi/cutting/detil/"+id+"?id=3A-2020020002&tgl=25/02/2020&nama=Kaos&berat=30&jumlah=50&tothbahan=1,500,000&totbiaya=1,750,000&upahpcs=5,000&hasilpcs=1.6&hargakg=50,000&jenis=full print&varian=two tone&warna=biru&ket=-";
+       }
+        
+    //     $.ajax({
+    //       crossDomain: true,            
+    //       dataType: 'json',
+    //       url:url,
+    //       type:'GET',
+    //       cache       : false,
+    //       contentType : false,
+    //       processData : false,
+    //       success:function(response){
+    //         location.href = url
+    //       }
+    //   })
+    }
+</script>

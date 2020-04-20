@@ -1,0 +1,117 @@
+<div class="container-fluid">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="mdi mdi-needle"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START button-->
+    <div class="row">
+        <div class="col py-3 text-right">
+          <button type="button" class="btn btn-primary waves-effect waves-light"  onclick="tambah()"><i class="mdi mdi-plus align-middle mr-2"></i>Tambah jahit</button>
+        </div>
+    </div>
+    <!-- end button -->
+ 
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <h4 class="mt-0 header-title">Data jahit</h4>
+                    
+                    <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                        <tr>
+                            <th>Pekan</th>
+                            <th>No</th>  
+                            <th>Nama Item</th>   
+                            <th>Tot. Harga/pcs (Rp)</th>               
+                            <th>Banyak (pcs)</th>
+                            <th>Upah/pcs (Rp)</th>
+                            <th>Tot. Upah (Rp)</th>
+                            <th>Harga Barang/pcs (Rp)</th>
+                            <th>Sub Item</th>
+                            <th>Ket</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+
+                        <tbody>
+                        <tr> 
+                            <td>Minggu 10,2020</td>
+                            <td><a onclick="detil('3C-2020020001')" style="color:#2980b9">3C-2020020001</a></td>
+                            <td>Kaos</td>
+                            <td>32,500</td>
+                            <td>150</td>
+                            <td>5,000</td>
+                            <td>750,000</td>
+                            <td>37,500</td>
+                            <td><a onclick="detilsub('3A-2020020001')" style="color:#2980b9">3A-2020020001</a>, <a onclick="detilsub('3A-2020020002')" style="color:#2980b9">3A-2020020002</a></td>
+                            <td>-</td>
+                            <td>
+                                <button type="button" onclick="edit('3C-2020020001')"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
+                                <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div> 
+    <!-- END ROW -->
+
+</div>
+
+<script>
+    function tambah(){
+        location.href = "/dataproduksi/jahit/tambah";
+    }
+
+    function edit(id){
+        if(id=="3C-2020020001"){
+            location.href = "/dataproduksi/jahit/edit/"+id+"?id=3C-2020020001&tgl=2020-W10&jml=150&totbiaya=4,750,000&upahpcs=5,000&totupah=750,000&hargapcs=36,700&subitem=3A-2020020001,3A-2020020002&ket=- &jenis=cutting&totupahming=2,250,000&&sub=3A-2020020001,3A-2020020002&nama=kaos";
+        }
+    }
+
+    function detil(id){
+        if(id=="3C-2020020001"){
+            location.href = "/dataproduksi/jahit/detil/"+id+"?id=3C-2020020001&tgl=minggu 10,2020&jml=150&totbiaya=4,750,000&upahpcs=5,000&totupah=750,000&hargapcs=36,700&subitem=3A-2020020001,3A-2020020002&ket=-&jenis=cutting&totupahming=2,250,000&&sub=3A-2020020001,3A-2020020002&nama=kaos";
+        }
+    }
+
+    function detilsub(id){
+        if(id=="3A-2020020001"){
+            location.href = "/dataproduksi/cutting/detil/"+id+"?id=3A-2020020001&tgl=25/02/2020&nama=Singlet&berat=50&jumlah=100&tothbahan=2,500,000&totbiaya=3,000,000&upahpcs=5,000&hasilpcs=0.5&hargakg=50,000&jenis=polos&varian=solid&warna=putih&ket=-";
+        }else if(id=="3A-2020020002"){
+            location.href = "/dataproduksi/cutting/detil/"+id+"?id=3A-2020020002&tgl=25/02/2020&nama=Kaos&berat=30&jumlah=50&tothbahan=1,500,000&totbiaya=1,750,000&upahpcs=5,000&hasilpcs=1.6&hargakg=50,000&jenis=full print&varian=two tone&warna=biru&ket=-";
+       }
+    }
+</script>
+
+
+<style>
+    body { background-color: #fafafa; }
+    .bootstrap-datetimepicker-widget table td.cw {
+        color: #007bff;
+    }
+</style>
+
+
+
+
+

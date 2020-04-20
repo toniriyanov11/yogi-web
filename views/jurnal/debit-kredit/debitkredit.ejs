@@ -1,0 +1,104 @@
+<div class="container-fluid" id="app">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-spread"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+
+                    <div class="row mb-3 ">
+                        <div class="col-sm-6">
+                            <h4 class="mt-0 mb- header-title">Debit - Kredit</h4>
+                        </div>
+                      
+                    </div>
+                    <div class="row mb-2 text-right">
+                        <div class="col-sm-6">
+                            <div class="text-right">
+                            <select v-model="filter" class="form-control form-control-sm pull-right">
+                                <option>harian</option>
+                                <option>bulanan</option>
+                            </select></div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div v-if="filter == 'harian'" class="input-group">
+                                <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker-autoclose">
+                                <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div>
+                            </div>
+                            <div v-if="filter =='bulanan'" class="form-group ">
+                                 <input class="form-control" type="month" id="month"/>
+                              
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead class="thead-default">
+                                <tr>
+                                    <th>Tgl</th>
+                                    <th>No.</th>
+                                    <th>Ket.</th>
+                                    <th>Debit</th>
+                                    <th>Kredit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>25/03/2020</td>
+                                    <td>1</td>
+                                    <td>Kas</td>
+                                    <td>100.000</td>
+                                    <td></td>   
+                                </tr>
+                                <tr>
+                                    <td>25/03/2020</td>
+                                    <td>2</td>
+                                    <td>Modal Awal</td>
+                                    <td></td>
+                                    <td>100.000</td>   
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th>Total</th>
+                                    <th></th>
+                                    <th>100.000</th>
+                                    <th>100.000</th>   
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                  
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <!-- END ROW -->
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
+<script>
+var app = new Vue({
+     el: '#app',
+     data: {
+         filter:'harian',
+     }
+     })
+</script>

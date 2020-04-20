@@ -1,0 +1,76 @@
+<div class="container-fluid" id="app">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-agenda"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <h4 class="mt-0 header-title">Data Laba-Rugi</h4>
+                    
+                    <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>No Invoice</th>                  
+                            <th>Selisih Harga</th>
+                        </tr>
+                        </thead>
+
+
+                        <tbody>
+                        <tr> 
+                            <td>19/03/2020</td>
+                            <td><a onclick="detil('in-2020020001')" style="color:#2980b9">in-2020020001</a></td>
+                            <td>Rp.3,000,000</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div> 
+    <!-- END ROW -->
+
+</div>
+
+<script>
+    function tambah(){
+        location.href = "/invoice/buat";
+    }
+
+    function detil(id){
+        if(id=="in-2020020001"){
+            location.href = "invoice/detil/"+id+"?id=in-2020020001&tgl=19/03/2020&nama=Yogi&jml=150&total=6,000,000&sub=3D-2020020001"
+        }
+    }
+</script>
+
+
+<style>
+    body { background-color: #fafafa; }
+    .bootstrap-datetimepicker-widget table td.cw {
+        color: #007bff;
+    }
+</style>
+
+
+
+
+
+    

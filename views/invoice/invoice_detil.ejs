@@ -1,0 +1,143 @@
+<div class="container-fluid">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-paper-sheet"></i>  <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="invoice-title">
+                                <h4 class="float-right font-16"><strong><%= data.id %></strong></h4>
+                                <h3 class="m-t-0">
+                                    <img src="/assets/images/logo-dark.png" alt="logo" height="24"/>
+                                </h3>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <address>
+                                        <strong>Penerima : </strong><br>
+                                        <%= data.nama %>
+                                    </address>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <address>
+                                        <strong>Tanggal:</strong><br>
+                                        <%= data.tgl%><br><br>
+                                    </address>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="panel panel-default">
+                                <div class="p-2">
+                                    <h3 class="panel-title font-20"><strong>
+                                        Ringkasan pesanan</strong></h3>
+                                </div>
+                                <div class="">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <td><strong>Barang</strong></td>
+                                                <td class="text-center"><strong>Banyak</strong>
+                                                <td class="text-center"><strong>Harga</strong></td>
+                                                </td>
+                                                <td class="text-right"><strong>Total</strong></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <!-- foreach ($order->lineItems as $line) or some such thing here -->
+                                            <tr>
+                                                <td>3D-2020020001 (Kaos)</td>
+                                                <td class="text-center">150</td>
+                                                <td class="text-center">Rp.80,000</td>
+                                                <td class="text-right">Rp.12,000,000</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="no-line"></td>
+                                                <td class="no-line"></td>
+                                                <td class="no-line text-center">
+                                                    <strong>Grand Total</strong></td>
+                                                <td class="no-line text-right"><h4 class="m-0">Rp.12,000,000</h4></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="d-print-none mo-mt-2">
+                                        <div class="float-right">
+                                            <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light"><i class="fa fa-print"></i></a>
+                                            <a href="#" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-center">Bayar</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-3 m-t-30">    
+                                        <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title mt-0">Bayar Invoice</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-2">Tagihan = Rp.12,000,000</div>
+                                                        <div class="form-group row">
+                                                            <label for="example-search-input" class="col-sm-10 col-form-label">Masukkan Jumlah Bayar</label>
+                                                            <div class="col-sm-12">
+                                                                <input class="form-control" type="number" value="" id="example-search-input">
+                                                            </div>
+                                                        </div>
+                                                        <div class="float-right">
+                                                            <a href="#" id="alertify-confirm" class="btn btn-success waves-effect waves-light">Bayar</a>
+                                                        </div>
+                                                </div><!-- /.modal-content -->
+                                            </div><!-- /.modal-dialog -->
+                                        </div><!-- /.modal -->
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div> <!-- end row -->
+
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div> <!-- end row -->  
+
+</div>
+
+<script>
+    function edit(id){
+        if(id=="3D-2020020001"){
+            location.href = "/dataproduksi/barangjadi/edit/"+id+"?id=3D-2020020001&tgl=2020-W11&jml=150&hargapokok=6,000,000&hargabrgpcs=40,000&sub=3C-2020020001&nama=kaos";
+        }
+    }
+
+    function detilsub(id){
+        if(id=="3C-2020020001"){
+            location.href = "/dataproduksi/jahit/detil/"+id+"?id=3C-2020020001&tgl=minggu 10,2020&jml=150&totbiaya=4,750,000&upahpcs=5,000&totupah=750,000&hargapcs=36,700&subitem=3A-2020020001,3A-2020020002&ket=-&jenis=cutting&totupahming=2,250,000&&sub=3A-2020020001,3A-2020020002";
+        }
+    }
+</script>

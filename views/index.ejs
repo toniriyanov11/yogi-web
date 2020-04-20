@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+     <%- include("layout/header.ejs")%>
+  </head>
+  <body>
+    <div id="wrapper">
+
+      <!-- Top Bar Start -->
+      <%- include("layout/topbar.ejs")%>
+      <!-- Top Bar End -->
+
+     <!-- ========== Left Sidebar Start ========== -->
+     <%- include("layout/sidebar.ejs")%>
+      <!-- Left Sidebar End -->
+
+      <!-- =============================================================== -->
+      <!-- Start right Content here -->
+      <!-- ============================================================== -->
+      <div class="content-page">
+          <!-- Start content -->
+          <div class="content">
+            <%- include(page)%>
+              <!-- container-fluid -->
+
+          </div>
+          <!-- content -->
+
+          <footer class="footer">
+              © 2019 <span class="d-none d-sm-inline-block"> - Crafted by TRR</span>.
+          </footer>
+
+      </div>
+      <!-- ============================================================== -->
+      <!-- End Right content here -->
+      <!-- ============================================================== -->
+
+  </div>
+
+    <%- include("layout/footer.ejs")%>
+  </body>
+</html>

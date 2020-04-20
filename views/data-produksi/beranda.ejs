@@ -1,0 +1,116 @@
+<div class="container-fluid">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-website-2"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <div class="row">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card faq-box border-primary">
+                <div class="card-heading p-4">
+                    <div class="mini-stat-icon float-right">
+                        <i class="mdi mdi-content-cut bg-primary text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-16">Cutting</h5>
+                    </div>
+                    <h3 class="mt-4">3</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card faq-box border-warning">
+                <div class="card-heading p-4">
+                    <div class="mini-stat-icon float-right">
+                        <i class="mdi mdi-printer-3d-nozzle bg-warning text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-16">Sablon</h5>
+                    </div>
+                    <h3 class="mt-4">2</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card faq-box border-danger">
+                <div class="card-heading p-4">
+                    <div class="mini-stat-icon float-right">
+                        <i class="mdi mdi-needle bg-danger text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-16">Jahit</h5>
+                    </div>
+                    <h3 class="mt-4">1</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card faq-box border-success">
+                <div class="card-heading p-4">
+                    <div class="mini-stat-icon float-right">
+                        <i class="mdi mdi-tshirt-crew bg-success text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-16">Barang Jadi</h5>
+                    </div>
+                    <h3 class="mt-4">1</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function tambah(){
+        location.href = "/dataproduksi/sablon/tambah";
+    }
+
+    function edit(id){
+        if(id=="3B-2020020001"){
+            location.href = "/dataproduksi/sablon/edit/"+id+"?id=3B-2020020001&tgl=2020-W09&totharga=4,750,000&jumlah=150&upahpcs=5,000&totupah=750,000&hargapcs=36,700&hasilpcs=0.5&sub=3A-2020020001,3A-2020020002&ket=-";  
+        }
+    }
+
+    function detil(id){
+        if(id=="3B-2020020001"){
+            location.href = "/dataproduksi/sablon/detil/"+id+"?id=3B-2020020001&tgl=Minggu 9,2020&totharga=4,750,000&jumlah=150&upahpcs=5,000&totupah=750,000&hargapcs=36,700&hasilpcs=0.5&sub=3A-2020020001,3A-2020020002&ket=-"; 
+        }
+    }
+
+    function detilsub(id){
+        if(id=="3A-2020020001"){
+            location.href = "/dataproduksi/cutting/detil/"+id+"?id=3B-2020020001&tgl=25/02/2020&nama=Singlet&berat=50&jumlah=100&tothbahan=2,500,000&totbiaya=3,000,000&upahpcs=5,000&hasilpcs=0.5&hargakg=50,000&jenis=polos&varian=solid&warna=putih&ket=-";
+        }else if(id=="3A-2020020002"){
+            location.href = "/dataproduksi/cutting/detil/"+id+"?id=3B-2020020002&tgl=25/02/2020&nama=Kaos&berat=30&jumlah=50&tothbahan=1,500,000&totbiaya=1,750,000&upahpcs=5,000&hasilpcs=1.6&hargakg=50,000&jenis=full print&varian=two tone&warna=biru&ket=-";
+       }
+    }
+</script>
+
+
+<style>
+    body { background-color: #fafafa; }
+    .bootstrap-datetimepicker-widget table td.cw {
+        color: #007bff;
+    }
+</style>
+
+
+
+
+

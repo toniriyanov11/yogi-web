@@ -1,0 +1,148 @@
+<div class="container-fluid">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-arrow-up"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START button-->
+    <div class="row">
+        <div class="col py-3 text-right">
+          <button type="button" class="btn btn-secondary waves-effect waves-light"  onclick="edit('<%= data.id %>')"><i class="mdi mdi-file-document-edit-outline align-middle mr-2"></i>Edit Pembelian</button>
+        </div>
+    </div>
+    <!-- end button -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <h4 class="mt-0 mb- header-title">Data Pembelian</h4>
+
+
+                    <div class="form-group row">
+                        <h3 class="col-sm-6 pl-4"><%= data.id %></h3>
+                        <%if (data.status=='Lunas') { %>
+                        <h3 class="col-sm-6 pr-4 text-right" style="color: #6ec06e;"><%= data.status %></h3>
+                        <% } %>
+                        <%if (data.status=='Bayar sebagian') { %>
+                            <h3 class="col-sm-6 pr-4 text-right" style="color: #f2ca27;"><%= data.status %></h3>
+                        <% } %>
+                        <%if (data.status=='Hutang') { %>
+                            <h3 class="col-sm-6 pr-4 text-right" style="color: #ea6153;"><%= data.status %></h3>
+                        <% } %>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2">Tanggal</label>
+                        <div class="col-sm-10">
+                            <%= data.tgl %>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2">Jenis</label>
+                        <div class="col-sm-10">
+                            <%= data.jenis %>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2">Nama Item</label>
+                        <div class="col-sm-10">
+                            <%= data.nama %>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2">Keterangan</label>
+                        <div class="col-sm-10">
+                            <%= data.ket %>
+                        </div>
+                    </div>
+                    <hr>
+                    <%if (data.jenis=='inventori') { %>
+                      <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2">Nilai Penyusutan</label>
+                        <div class="col-sm-10">
+                            25%
+                        </div>
+                    </div>
+                    <% } %>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2">banyak</label>
+                        <div class="col-sm-2">
+                            <%= data.jml %>
+                        </div>
+                    </div>
+                    <hr>
+                    
+                    <div class="form-group row">
+                        <%if (data.status=='Bayar sebagian') { %>
+                        <div class="col-sm-5">
+                            <label for="example-text-input" class="col-sm-12 text-right">Lunas(Rp)</label>
+                            <div class="col-sm-12 text-right">
+                                1,000,000
+                            </div>
+                         </div>
+                        <div class="col-sm-3">
+                            <label for="example-text-input" class="col-sm-12">Hutang(Rp)</label>
+                            <div class="col-sm-12">
+                                2,000,000
+                            </div>
+                         </div>
+                        <div class="col-sm-4">
+                            <label for="example-text-input" class="col-sm-12 text-right">Nominal(Rp)</label>
+                            <h5 class="col-sm-12 text-right">
+                                <%= data.nom %>
+                            </h5>
+                         </div>
+                         <% } %>
+                         <%if (data.status!='Bayar sebagian') { %>
+                         <div class="col-sm-12">
+                            <label for="example-text-input" class="col-sm-12 text-right">Nominal(Rp)</label>
+                            <h5 class="col-sm-12 text-right">
+                                <%= data.nom %>
+                            </h5>
+                         </div>
+                         <% } %>
+                    </div>
+                    <%if (data.jenis=='inventori') { %>
+                    <div class="form-group row">
+                        <div class="col-sm-12 text-muted">
+                            <label for="example-text-input" class="col-sm-12 text-right">Nominal Setelah Penyusutan(Rp)</label>
+                            <h5 class="col-sm-12 text-right">
+                                2,750,000
+                            </h5>
+                         </div>
+                    </div>
+                    <%} %>
+                
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <!-- END ROW -->
+
+</div>
+
+<script>
+    function edit(id){
+        if(id=="1A-2020020001"){
+            location.href = "/pengeluaran/pembelian/edit/"+id+"?id=1A-2020020001&tgl=25/02/2020&jenis=bahan baku&nama=bahan satu&ket=keterangan bahan baku&jml=300&nom=6,320,000&status=Lunas";
+        }else if(id=="1A-2020020002"){
+            location.href = "/pengeluaran/pembelian/edit/"+id+"?id=1A-2020020002&tgl=26/02/2020&jenis=inventori&nama=laptop&ket=-&jml=3&nom=3,000,000&status=Bayar sebagian&nomhutang=2,000,000&nomlunas=1,000,000&nilaip=25%";
+        }else if(id=="1A-2020020003"){
+            location.href = "/pengeluaran/pembelian/edit/"+id+"?id=1A-2020020003&tgl=27/02/2020&jenis=upah&nama=upah jahit&ket=upah 3 orang&jml=3&nom=2,050,000&status=Hutang";
+        }   
+    }
+</script>

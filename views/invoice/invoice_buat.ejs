@@ -1,0 +1,142 @@
+<div class="container-fluid"  id="app">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-paper-sheet"></i>  <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <h4 class="mt-0 mb-4 header-title">Input data invoice</h4>
+                    
+                    <div class="form-group row">
+                        <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
+                            <div class="col-sm-10">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker-autoclose">
+                                    <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div>
+                                </div><!-- input-group -->
+                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Nama Penerima</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" value="" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data</label>
+                        <div class="col-sm-10">
+                            <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><i class="icon-todolist"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Grand Total (Rp)</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="number" value="" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
+                        <div  class="col-sm-10">
+                            <textarea required class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group text-right">
+                        <div>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <!-- END ROW -->
+
+ 
+
+     <!--  Modal content for the above example -->
+     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Daftar Data Barang Jadi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="frm-example" action="/" method="POST">
+                        <table id="datatable-check" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Pekan</th>
+                                    <th>No</th>      
+                                    <th>Nama Item</th>               
+                                    <th>Banyak (pcs)</th>
+                                    <th>Harga Barang/pcs (Rp)</th>
+                                </tr>
+                                </thead>
+        
+        
+                                <tbody>
+                                <tr> 
+                                    <td></td>
+                                    <td>Minggu 11,2020</td>
+                                    <td><a onclick="detil('3D-2020020001')" style="color:#2980b9">3D-2020020001</a></td>
+                                    <td>Kaos</td>   
+                                    <td>150</td>
+                                    <td>80,000</td>
+                                </tr>
+                                </tbody>
+                        </table>
+                    <div class="row">
+                        <div class="col py-3 text-center">
+                          <button type="button" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-format-vertical-align-bottom align-middle mr-2"></i>Submit</button>
+                        </div>
+                    </div>
+                 </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div>
+
+<script>
+    function tambah(){
+        location.href = "/invoice"
+    }
+    
+</script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
+<script>
+    var app = new Vue({
+     el: '#app',
+     data: {
+         valueJenis:'',
+         valueStatus:'',
+     }
+     })
+
+  
+     
+
+ </script>

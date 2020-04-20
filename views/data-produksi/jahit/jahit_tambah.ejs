@@ -1,0 +1,181 @@
+<div class="container-fluid"  id="app">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="mdi mdi-needle"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <h4 class="mt-0 mb-4 header-title">Input data jahit</h4>
+                    
+                    <div class="form-group row">
+                        <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
+                        <div class="col-auto">
+                            <div class="col-auto">
+                                <input class="form-control" type="week" id="weekpicker"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Nama Item</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" value="" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data</label>
+                        <div class="col-sm-10">
+                            <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><i class="icon-todolist"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Upah/pcs (Rp)</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" value="" id="example-search-input">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Total Harga (Rp)</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="number" value="" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Banyak (pcs)</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="number" value="" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
+                        <div  class="col-sm-10">
+                            <textarea required class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Total Upah (Rp)</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="number" value="" id="example-number-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Total Upah/minggu (Rp)</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="number" value="" id="example-number-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Harga Barang (Rp)</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="number" value="" id="example-number-input">
+                        </div>
+                    </div>
+                    <div class="form-group text-right">
+                        <div>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <!-- END ROW -->
+
+ 
+
+     <!--  Modal content for the above example -->
+     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Daftar Data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="frm-example" action="/" method="POST">
+                    <table id="datatable-check" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Tanggal</th>
+                            <th>No</th>
+                            <th>Nama Item</th>
+                            <th>Banyak(Pcs)</th>
+                            <th>Total Biaya(Rp)</th>
+                        </tr>
+                        </thead>
+
+
+                        <tbody>
+                        <tr> 
+                            <td></td>
+                            <td>25/02/2020</td>
+                            <td><a onclick="detil('3A-2020020001')" style="color:#2980b9">3A-2020020001</a></td>
+                            <td>Singlet</td>
+                            <td>100</td>
+                            <td>3,000,000</td>
+                        </tr>
+                        <tr>  
+                            <td></td>
+                            <td>25/02/2020</td>
+                            <td><a onclick="detil('3A-2020020002')" style="color:#2980b9">3A-2020020002</a></td>
+                            <td>Kaos</td>
+                            <td>50</td>
+                            <td>1,750,000</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col py-3 text-center">
+                          <button type="button" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-format-vertical-align-bottom align-middle mr-2"></i>Submit</button>
+                        </div>
+                    </div>
+                 </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div>
+
+<script>
+    function tambah(){
+        location.href = "/jahit"
+    }
+    
+</script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
+<script>
+    var app = new Vue({
+     el: '#app',
+     data: {
+         valueJenis:'',
+         valueStatus:'',
+     }
+     })
+
+  
+     
+
+ </script>
