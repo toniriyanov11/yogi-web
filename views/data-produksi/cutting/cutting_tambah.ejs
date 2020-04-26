@@ -39,9 +39,25 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Jenis Produk</label>
+                            <div class="col-sm-10">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="radio" class="custom-control-input" id="customCheck1" data-parsley-multiple="groups"
+                                           data-parsley-mincheck="2" name="produk"  value="kaos" v-model="valueJenisProduk">
+                                    <label class="custom-control-label" for="customCheck1">Kaos</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="radio" class="custom-control-input" id="customCheck2" data-parsley-multiple="groups"
+                                           data-parsley-mincheck="2" name="produk" value="sweater" v-model="valueJenisProduk">
+                                    <label class="custom-control-label" for="customCheck2">Sweater</label>
+                                </div>
+                            </div>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Jenis Bahan</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueStatus">
+                                <select class="form-control" v-model="valueJenisBahan">
                                     <option >pilih jenis bahan</option>
                                     <option>Polos</option>
                                     <option>Salur</option>
@@ -53,7 +69,7 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Varian Bahan</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueStatus">
+                                <select class="form-control" v-model="valueVarianBahan">
                                     <option >pilih varian bahan</option>
                                     <option>Solid</option>
                                     <option>Two Tone</option>
@@ -63,7 +79,7 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Warna Bahan</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueStatus">
+                                <select class="form-control" v-model="valueWarnaBahan">
                                     <option >pilih warna bahan</option>
                                     <option>Hitam</option>
                                     <option>Putih</option>
@@ -71,6 +87,31 @@
                                 </select>
                             </div>
                     </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Tipe Cuttingan</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" v-model="valueTipeCuttingan">
+                                    <option >pilih tipe cuttingan</option>
+                                    <option>Komplit</option>
+                                    <option>Kombinasi</option>
+                                </select>
+                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Tipe Sub Cuttingan</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" v-model="valueSubTipeCuttingan">
+                                    <option >pilih tipe sub cuttingan</option>
+                                    <option>Badan</option>
+                                    <option>Tangan</option>
+                                    <option>Badan & Tangan</option>
+                                    <option>Rib</option>
+                                    <option>Kantong</option>
+                                </select>
+                            </div>
+                    </div>
+                    <hr>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
                         <div  class="col-sm-10">
@@ -148,8 +189,13 @@
     var app = new Vue({
      el: '#app',
      data: {
-         valueJenis:'',
+         valueJenisProduk:'',
          valueStatus:'',
+         valueJenisBahan:'',
+         valueVarianBahan:'',
+         valueWarnaBahan:'',
+         valueTipeCuttingan:'',
+         valueSubTipeCuttingan:''
      }
      })
  </script>

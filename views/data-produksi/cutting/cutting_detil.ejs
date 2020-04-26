@@ -58,6 +58,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2">Jenis Produk</label>
+                        <div class="col-sm-10">
+                            <%= data.jenisprod %>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2">Jenis Bahan</label>
                         <div class="col-sm-10">
                             <%= data.jenis %>
@@ -75,6 +82,20 @@
                             <%= data.warna %>
                         </div>
                     </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2">Tipe Cuttingan</label>
+                        <div class="col-sm-10">
+                            <%= data.tipecut %>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2">Tipe Sub Cuttingan</label>
+                        <div class="col-sm-10">
+                            <%= data.tipesubcut %>
+                        </div>
+                    </div>
+                    <hr>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2">Keterangan</label>
                         <div class="col-sm-10">
@@ -138,11 +159,11 @@
 </div>
 
 <script>
-    function edit(id){
+     function edit(id){
         if(id=="3A-2020020001"){
-            location.href = "/dataproduksi/cutting/edit/"+id+"?id=3A-2020020001&tgl=25/02/2020&nama=Singlet&berat=50&jumlah=100&tothbahan=2,500,000&totbiaya=3,000,000&upahpcs=5,000&hasilpcs=0.5&hargakg=50,000&jenis=polos&varian=solid&warna=putih&ket=-";
+            location.href = "/dataproduksi/cutting/edit/"+id+"?id=3A-2020020001&tgl=25/02/2020&nama=Singlet&berat=50&jumlah=100&tothbahan=2,500,000&totbiaya=3,000,000&upahpcs=5,000&hasilpcs=0.5&hargakg=50,000&jenisprod=kaos&jenis=polos&varian=solid&warna=putih&tipecut=komplit&tipesubcut=-&ket=-";
         }else if(id=="3A-2020020002"){
-            location.href = "/dataproduksi/cutting/edit/"+id+"?id=3A-2020020002&tgl=25/02/2020&nama=Kaos&berat=30&jumlah=50&tothbahan=1,500,000&totbiaya=1,750,000&upahpcs=5,000&hasilpcs=1.6&hargakg=50,000&jenis=full print&varian=two tone&warna=biru&ket=-";
-       }     
+            location.href = "/dataproduksi/cutting/edit/"+id+"?id=3A-2020020002&tgl=25/02/2020&nama=Kaos&berat=30&jumlah=50&tothbahan=1,500,000&totbiaya=1,750,000&upahpcs=5,000&hasilpcs=1.6&hargakg=50,000&jenisprod=kaos&jenis=full print&varian=two tone&warna=biru&tipecut=kombinasi&tipesubcut=badan&ket=-";
+       }
     }
 </script>
