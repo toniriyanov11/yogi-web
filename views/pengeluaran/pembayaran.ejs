@@ -1,0 +1,105 @@
+<div class="container-fluid">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-arrow-up"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START button-->
+    <div class="row">
+        <div class="col py-3 text-right">
+          <button type="button" class="btn btn-primary waves-effect waves-light"  onclick="tambah()"><i class="mdi mdi-plus align-middle mr-2"></i>Tambah pembayaran</button>
+        </div>
+    </div>
+    <!-- end button -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <h4 class="mt-0 header-title">Data pembayaran</h4>
+                    
+                    <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>No</th>
+                            <th>Jenis Pembayaran</th>
+                            <th>Nama Item</th>
+                            <th>Nama Client</th>
+                            <th>Banyak</th>
+                            <th>Nominal (Rp)</th>
+                            <th>Status Bayar</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+
+                        <tbody>
+                        <tr>
+                           
+                            <td>25/02/2020</td>
+                            <td><a onclick="detil('1C-2020020001')" style="color:#2980b9">1C-2020020001</a></td>
+                            <td>Pembayaran Return</td>
+                            <td>invoice atas nama client 1</td>
+                            <td>client satu</td>
+                            <td>300</td>
+                            <td>6,320,000</td>
+                            <td style="color: #6ec06e;">Lunas</td>
+                            <td>
+                                <button type="button" onclick="edit('1C-2020020001')"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
+                                <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div> 
+    <!-- END ROW -->
+
+</div>
+
+<script>
+    function tambah(){
+        location.href = "/pengeluaran/pembayaran/tambah";
+    }
+
+    function edit(id){
+        if(id=="1C-2020020001"){
+            location.href = "/pengeluaran/pembayaran/edit/"+id+"?id=1C-2020020001&tgl=25/02/2020&jenis=pembayaran return&nama=invoice atas nama client 1&client=client satu&ket=keterangan bahan baku&jml=300&nom=6,320,000&status=Lunas";
+        }
+    }
+
+    function detil(id){
+        if(id=="1C-2020020001"){
+            location.href = "/pengeluaran/pembayaran/detil/"+id+"?id=1C-2020020001&tgl=25/02/2020&jenis=pembayaran return&nama=invoice atas nama client 1&client=client satu&ket=keterangan bahan baku&jml=300&nom=6,320,000&status=Lunas";
+        }
+        
+    //     $.ajax({
+    //       crossDomain: true,            
+    //       dataType: 'json',
+    //       url:url,
+    //       type:'GET',
+    //       cache       : false,
+    //       contentType : false,
+    //       processData : false,
+    //       success:function(response){
+    //         location.href = url
+    //       }
+    //   })
+    }
+</script>

@@ -2,7 +2,7 @@
     <div class="page-title-box">
         <div class="row align-items-center">
             <div class="col-sm-6">
-                <h4 class="page-title"><i class="icon-arrow-down"></i> <%= title %></h4>
+                <h4 class="page-title"><i class="icon-arrow-up"></i> <%= title %></h4>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-right">
@@ -18,7 +18,7 @@
     <!-- START button-->
     <div class="row">
         <div class="col py-3 text-right">
-          <button type="button" class="btn btn-secondary waves-effect waves-light"  onclick="edit('<%= data.id %>')"><i class="mdi mdi-file-document-edit-outline align-middle mr-2"></i>Edit pemasukan</button>
+          <button type="button" class="btn btn-secondary waves-effect waves-light"  onclick="edit('<%= data.id %>')"><i class="mdi mdi-file-document-edit-outline align-middle mr-2"></i>Edit pembayaran</button>
         </div>
     </div>
     <!-- end button -->
@@ -29,7 +29,7 @@
             <div class="card m-b-30">
                 <div class="card-body">
 
-                    <h4 class="mt-0 mb- header-title">Data pemasukan</h4>
+                    <h4 class="mt-0 mb- header-title">Data pembayaran</h4>
 
 
                     <div class="form-group row">
@@ -40,8 +40,8 @@
                         <%if (data.status=='Bayar sebagian') { %>
                             <h3 class="col-sm-6 pr-4 text-right" style="color: #f2ca27;"><%= data.status %></h3>
                         <% } %>
-                        <%if (data.status=='Piutang') { %>
-                            <h3 class="col-sm-6 pr-4 text-right" style="color: #2980b9;"><%= data.status %></h3>
+                        <%if (data.status=='Hutang') { %>
+                            <h3 class="col-sm-6 pr-4 text-right" style="color: #ea6153;"><%= data.status %></h3>
                         <% } %>
                     </div>
                     <hr>
@@ -52,7 +52,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2">Jenis Pemasukan</label>
+                        <label for="example-text-input" class="col-sm-2">Jenis</label>
                         <div class="col-sm-10">
                             <%= data.jenis %>
                         </div>
@@ -63,6 +63,14 @@
                             <%= data.nama %>
                         </div>
                     </div>
+                    <%if (data.jenis=='pembayaran return') { %>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2">Nama Client</label>
+                        <div class="col-sm-10">
+                            <%= data.client %>
+                        </div>
+                    </div>
+                    <% } %>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2">Keterangan</label>
                         <div class="col-sm-10">
@@ -95,7 +103,7 @@
                             </div>
                          </div>
                         <div class="col-sm-3">
-                            <label for="example-text-input" class="col-sm-12">Piutang(Rp)</label>
+                            <label for="example-text-input" class="col-sm-12">Hutang(Rp)</label>
                             <div class="col-sm-12">
                                 2,000,000
                             </div>
@@ -136,13 +144,9 @@
 </div>
 
 <script>
-    function edit(id){
-        if(id=="2-2020020001"){
-            location.href = "/pemasukan/edit/"+id+"?id=2-2020020001&tgl=25/02/2020&jenis=dll&nama=pemasukan 1&ket=keterangan pemasukan 1&jml=1&nom=6,320,000&status=Lunas";
-        }else if(id=="2-2020020002"){
-            location.href = "/pemasukan/edit/"+id+"?id=2-2020020002&tgl=26/02/2020&jenis=dll&nama=pemasukan 2&ket=-&jml=3&nom=3,000,000&status=Bayar sebagian&nompiutang=2,000,000&nomlunas=1,000,000";
-        }else if(id=="2-2020020003"){
-            location.href = "/pemasukan/edit/"+id+"?id=2-2020020003&tgl=27/02/2020&jenis=dll&nama=pemasukan 3&ket=uang penjualan baju&jml=3&nom=2,050,000&status=Piutang";
-        }      
+      function edit(id){
+        if(id=="1C-2020020001"){
+            location.href = "/pengeluaran/pembayaran/edit/"+id+"?id=1C-2020020001&tgl=25/02/2020&jenis=pembayaran return&nama=invoice atas nama client 1&client=client satu&ket=keterangan bahan baku&jml=300&nom=6,320,000&status=Lunas";
+        }
     }
 </script>

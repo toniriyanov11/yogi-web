@@ -2,7 +2,7 @@
     <div class="page-title-box">
         <div class="row align-items-center">
             <div class="col-sm-6">
-                <h4 class="page-title"><i class="icon-arrow-down"></i> <%= title %></h4>
+                <h4 class="page-title"><i class="icon-arrow-up"></i> <%= title %></h4>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-right">
@@ -23,7 +23,7 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <h4 class="mt-0 mb-4 header-title">Edit data pemasukan</h4>
+                            <h4 class="mt-0 mb-4 header-title">Edit data pembayaran</h4>
                         </div>
                         <div class="col-sm-6">
                             <h4 class="mt-0 mb-4 header-title text-right"><%= data.id%></h4>
@@ -40,13 +40,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Jenis Pemasukan</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" v-model="valueJenis">
-                                    <option <% if(data.status === 'pemabayaran invoice') { %> selected <% } %> >pemabayaran invoice</option>
-                                    <option  <% if(data.status === 'dll') { %> selected <% } %>>dll</option>
-                                </select>
-                            </div>
+                        <label class="col-sm-2 col-form-label">Jenis pembayaran</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" v-model="valueJenis">
+                                <option >pilih jenis</option>
+                                <option  <% if(data.jenis === 'pembayaran return') { %> selected <% } %>>pembayaran return</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Nama Item</label>
@@ -54,14 +54,15 @@
                             <input class="form-control" type="text" value="<%= data.nama %>" id="example-text-input">
                         </div>
                     </div>
-                    <div v-if="valueJenis == 'pemabayaran invoice'" class="form-group row">
-                        <label class="col-sm-2 col-form-label">Pilih Nama Client</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" v-model="valueClient">
-                                    <option>client satu</option>
-                                    <option>client dua</option>
-                                </select>
-                            </div>
+                    <div v-if="valueJenis == 'pembayaran return' " class="form-group row">
+                        <label class="col-sm-2 col-form-label">Nama Client</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" v-model="valueClient">
+                                <option >pilih nama client</option>
+                                <option <% if(data.client === 'client satu') { %> selected <% } %>>client satu</option>
+                                <option <% if(data.client === 'client dua') { %> selected <% } %>>client dua</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
@@ -82,21 +83,28 @@
                                 <select class="form-control" v-model="valueStatus">
                                     <option <% if(data.status === 'lunas') { %> selected <% } %> >Lunas</option>
                                     <option  <% if(data.status === 'Bayar sebagian') { %> selected <% } %>>Bayar sebagian</option>
-                                    <option  <% if(data.status === 'Piutang') { %> selected <% } %>>Piutang</option>
+                                    <option  <% if(data.status === 'Hutang') { %> selected <% } %>>Hutang</option>
                                 </select>
                             </div>
                     </div>
+
+                    <div v-if="valueJenis=='inventori'" class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Nilai Penyusutan (%)</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="search" value="<%= data.nilaip %>" id="example-search-input">
+                        </div>
+                    </div>
                     <hr>
                     <div v-if="valueStatus=='Bayar sebagian'" class="form-group row">
-                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas (Rp)</label>
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas (Rp) {{valueStatus}}</label>
                         <div class="col-sm-10">
                             <input class="form-control" type="text" value="<%= data.nomlunas %>" id="example-number-input">
                         </div>
                     </div>
                     <div  v-if="valueStatus=='Bayar sebagian'" class="form-group row">
-                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Piutang (Rp)</label>
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Hutang (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.nompiutang %>" id="example-number-input">
+                            <input class="form-control" type="text" value="<%= data.nomhutang %>" id="example-number-input">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -122,7 +130,7 @@
 
 <script>
     function tambah(){
-        location.href = "/pembelian"
+        location.href = "/pembayaran"
     }
     
 </script>
@@ -133,7 +141,7 @@
      data: {
          valueJenis:'<%= data.jenis  %>',
          valueStatus:'<%= data.status  %>',
-         valueClient:'<%= data.client  %>'
+         valueClient:'<%= data.client %>'
      }
      })
  </script>
