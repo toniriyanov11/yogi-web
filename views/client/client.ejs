@@ -1,0 +1,113 @@
+<div class="container-fluid">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-paper-sheet"></i>  <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+     <!-- START button-->
+     <div class="row">
+        <div class="col py-3 text-right">
+          <button type="button" class="btn btn-primary waves-effect waves-light"  onclick="tambah()"><i class="mdi mdi-plus align-middle mr-2"></i>Tambah <%=title%></button>
+        </div>
+    </div>
+    <!-- end button -->
+ 
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <h4 class="mt-0 header-title">Data <%= title%></h4>
+                    
+                    <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                        <tr>
+                            <th>No</th>                  
+                            <th>Nama Client</th>
+                            <th>No Np</th>
+                            <th>Nama Usaha</th>
+                            <th>Alamat</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+
+
+                        <tbody>
+                        <tr> 
+                            <td><a onclick="detil('c-0000001')" style="color:#2980b9">c-0000001</a></td>
+                            <td>client 1</td>
+                            <td>082393348484</td>
+                            <td>Toko Jaya Baru</td>
+                            <td>jakarta</td>
+                            <td>
+                                <button type="button" onclick="edit('c-0000001')"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
+                            </td>
+                        </tr>
+                        <tr> 
+                            <td><a onclick="detil('c-0000002')" style="color:#2980b9">c-0000002</a></td>
+                            <td>client 2</td>
+                            <td>082392176341</td>
+                            <td>Toko Berkah</td>
+                            <td>bandung</td>
+                            <td>
+                                <button type="button" onclick="edit('c-0000002')"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div> 
+    <!-- END ROW -->
+
+</div>
+
+<script>
+   function tambah(){
+        location.href = "/client/tambah";
+    }
+
+    function edit(id){
+        if(id=="c-0000001"){
+            location.href = "/client/edit/"+id+"?id=c-0000001&nama=client 1&nohp=082393348484&email=client1@gmail.com&alamat=jakarta&namausaha=toko jaya baru";
+        }else if(id=="c-0000002"){
+            location.href = "/client/edit/"+id+"?id=c-0000002&nama=client 2&nohp=082392176341&email=client2@gmail.com&alamat=bandung&namausaha=toko berkah";
+        }
+    }
+
+    function detil(id){
+        if(id=="c-0000001"){
+            location.href = "/client/detil/"+id+"?id=c-0000001&nama=client 1&nohp=082393348484&email=client1@gmail.com&alamat=jakarta&namausaha=toko jaya baru";
+        }else if(id=="c-0000002"){
+            location.href = "/client/detil/"+id+"?id=c-0000002&nama=client 2&nohp=082392176341&email=client2@gmail.com&alamat=bandung&namausaha=toko berkah";
+        }
+    }
+</script>
+
+
+<style>
+    body { background-color: #fafafa; }
+    .bootstrap-datetimepicker-widget table td.cw {
+        color: #007bff;
+    }
+</style>
+
+
+
+
+
+    

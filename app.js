@@ -12,6 +12,11 @@ var dataproduksiRouter = require('./routes/dataproduksi');
 var invoiceRouter = require('./routes/invoice');
 var jurnalRouter = require('./routes/jurnal');
 var labarugiRouter = require('./routes/labarugi');
+var barangreturnRouter = require('./routes/barangreturn');
+var bahanbakuRouter = require('./routes/bahanbaku');
+var barangsisaRouter = require('./routes/barangsisa');
+var clientRouter = require('./routes/client');
+var supplierRouter = require('./routes/supplier');
 
 var app = express();
 
@@ -33,6 +38,11 @@ app.use('/dataproduksi', dataproduksiRouter);
 app.use('/invoice', invoiceRouter);
 app.use('/jurnal', jurnalRouter);
 app.use('/labarugi', labarugiRouter);
+app.use('/barangreturn', barangreturnRouter);
+app.use('/bahanbaku', bahanbakuRouter);
+app.use('/barangsisa', barangsisaRouter);
+app.use('/client', clientRouter);
+app.use('/supplier', supplierRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

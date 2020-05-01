@@ -1,0 +1,80 @@
+<div class="container-fluid">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-paper-sheet"></i>  <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+ 
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <h4 class="mt-0 header-title">Data <%= title%></h4>
+                    
+                    <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>No</th>                  
+                            <th>Nama Item</th>
+                            <th>Banyak</th>
+                            <th>Harga/pcs</th>
+                        </tr>
+                        </thead>
+
+
+                        <tbody>
+                        <tr> 
+                            <td>19/03/2020</td>
+                            <td><a onclick="detil('in-2020020001')" style="color:#2980b9">bs-2020020001</a></td>
+                            <td>kaos</td>
+                            <td>5</td>
+                            <td>70.000</td>
+                        </tr>
+                        <tr> 
+                            <td>20/03/2020</td>
+                            <td><a onclick="detil('in-2020020001')" style="color:#2980b9">bs-2020020002</a></td>
+                            <td>sweater</td>
+                            <td>3</td>
+                            <td>50.000</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div> 
+    <!-- END ROW -->
+
+</div>
+
+<script>
+ 
+</script>
+
+
+<style>
+    body { background-color: #fafafa; }
+    .bootstrap-datetimepicker-widget table td.cw {
+        color: #007bff;
+    }
+</style>
+
+
+
+
+
+    
