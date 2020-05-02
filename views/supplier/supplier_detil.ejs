@@ -50,12 +50,6 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2">Nama Usaha</label>
-                        <div class="col-sm-10">
-                            <%= data.namausaha %>
-                        </div>
-                    </div>
-                    <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2"> Alamat  </label>
                         <div class="col-sm-10">
                             <%= data.alamat %>
@@ -73,9 +67,10 @@
    
    function edit(id){
         if(id=="s-0000001"){
-            location.href = "/supplier/edit/"+id+"?id=s-0000001&nama=supplier 1&nohp=082393348484&email=supplier1@gmail.com&alamat=surabaya&namausaha=PT Maju Jaya";
+            location.href = "/supplier/edit/"+id+"?id=s-0000001&nohp=082393348484&email=supplier1@gmail.com&alamat=surabaya&nama=PT Maju Jaya";
         }else if(id=="s-0000002"){
-            location.href = "/supplier/edit/"+id+"?id=s-0000002&nama=supplier 2&nohp=082392176341&email=supplier2@gmail.com&alamat=bandung&namausaha=PT Nusantara Textile";
+            location.href = "/supplier/edit/"+id+"?id=s-0000002&nohp=082392176341&email=supplier2@gmail.com&alamat=bandung&nama=PT Nusantara Textile";
         }
     }
+
 </script>

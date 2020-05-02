@@ -37,9 +37,6 @@
                         <tr>
                             <th>No</th>                  
                             <th>Nama Supplier</th>
-                            <th>No Np</th>
-                            <th>Nama Usaha</th>
-                            <th>Alamat</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -48,20 +45,14 @@
                         <tbody>
                         <tr> 
                             <td><a onclick="detil('s-0000001')" style="color:#2980b9">s-0000001</a></td>
-                            <td>supplier 1</td>
-                            <td>082393348484</td>
                             <td>PT Maju Jaya</td>
-                            <td>Surabaya</td>
                             <td>
                                 <button type="button" onclick="edit('s-0000001')"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
                             </td>
                         </tr>
                         <tr> 
                             <td><a onclick="detil('s-0000002')" style="color:#2980b9">s-0000002</a></td>
-                            <td>supplier 2</td>
-                            <td>082392176341</td>
                             <td>PT Nusantara Textile</td>
-                            <td>bandung</td>
                             <td>
                                 <button type="button" onclick="edit('s-0000002')"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
                             </td>
@@ -83,17 +74,17 @@
 
     function edit(id){
         if(id=="s-0000001"){
-            location.href = "/supplier/edit/"+id+"?id=s-0000001&nama=supplier 1&nohp=082393348484&email=supplier1@gmail.com&alamat=surabaya&namausaha=PT Maju Jaya";
+            location.href = "/supplier/edit/"+id+"?id=s-0000001&nohp=082393348484&email=supplier1@gmail.com&alamat=surabaya&nama=PT Maju Jaya";
         }else if(id=="s-0000002"){
-            location.href = "/supplier/edit/"+id+"?id=s-0000002&nama=supplier 2&nohp=082392176341&email=supplier2@gmail.com&alamat=bandung&namausaha=PT Nusantara Textile";
+            location.href = "/supplier/edit/"+id+"?id=s-0000002&nohp=082392176341&email=supplier2@gmail.com&alamat=bandung&nama=PT Nusantara Textile";
         }
     }
 
     function detil(id){
         if(id=="s-0000001"){
-            location.href = "/supplier/detil/"+id+"?id=s-0000001&nama=supplier 1&nohp=082393348484&email=supplier1@gmail.com&alamat=surabaya&namausaha=PT Maju Jaya";
+            location.href = "/supplier/detil/"+id+"?id=s-0000001&nohp=082393348484&email=supplier1@gmail.com&alamat=surabaya&nama=PT Maju Jaya";
         }else if(id=="s-0000002"){
-            location.href = "/supplier/detil/"+id+"?id=s-0000002&nama=supplier 2&nohp=082392176341&email=supplier2@gmail.com&alamat=bandung&namausaha=PT Nusantara Textile";
+            location.href = "/supplier/detil/"+id+"?id=s-0000002&nohp=082392176341&email=supplier2@gmail.com&alamat=bandung&nama=PT Nusantara Textile";
         }
     }
 </script>
