@@ -45,7 +45,13 @@
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data</label>
                         <div class="col-sm-10">
-                            <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><i class="icon-todolist"></i></button>
+                            <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target="#modalPilihData"><i class="icon-todolist"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-10" >
+                            <div v-for="a in choosedData"><a data-toggle="modal" data-target="#modalKonfirmasi" onclick="detil(a)" style="color:#2980b9">{{a}}</a></div>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -74,13 +80,52 @@
     <!-- END ROW -->
 
  
-
-     <!--  Modal content for the above example -->
-     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <!--  Modal content for the above example -->
+    <div id="modalKonfirmasi" class="modal  fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Daftar Data Barang Jadi</h5>
+                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Konfrimasi Data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2">banyak</label>
+                        <div class="col-sm-2">
+                            150 
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang return</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="number" value="" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang sisa </label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="number" value="" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col py-3 text-center">
+                          <button type="button" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-format-vertical-align-bottom align-middle mr-2"></i>Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
+
+     <!--  Modal content for the above example -->
+     <div id="modalBarangJadi" class="modal  fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Daftar Data {{data}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -102,7 +147,7 @@
         
                                 <tbody>
                                 <tr> 
-                                    <td></td>
+                                    <td @click="choosedData.push('3D-2020020001')"></td>
                                     <td>Minggu 11,2020</td>
                                     <td><a onclick="detil('3D-2020020001')" style="color:#2980b9">3D-2020020001</a></td>
                                     <td>Kaos</td>   
@@ -117,6 +162,28 @@
                         </div>
                     </div>
                  </form>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
+
+    <!--  Modal content for the above example -->
+    <div id="modalPilihData" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Pilih Data </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex flex-row justify-content-around my-5">
+                        <div  @click="data ='barang return'"  class="btn-square" data-toggle="modal" data-target="#modalBarangJadi" data-dismiss="modal" ><i class="icon-cloud-download mr-2"></i>data barang return</div>
+                        <div  @click="data ='barang jadi'" class="btn-square" data-toggle="modal" data-target="#modalBarangJadi" data-dismiss="modal" > <i class="mdi mdi-tshirt-crew mr-2"></i>data barang jadi</div>
+                        <div  @click="data ='barang sisa'" class="btn-square" data-toggle="modal" data-target="#modalBarangJadi" data-dismiss="modal" ><i class="icon-cloud-upload mr-2"></i>data barang sisa</div>
+                    </div>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -137,7 +204,9 @@
      data: {
          valueJenis:'',
          valueStatus:'',
-         valueClient:''
+         valueClient:'',
+         data:'',
+         choosedData: []
      }
      })
 

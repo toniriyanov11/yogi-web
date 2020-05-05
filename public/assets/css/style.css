@@ -3679,3 +3679,22 @@ div.dataTables_wrapper div.dataTables_filter label {
 white-space: pre-wrap !important;
 width: inherit !important;
 }
+
+
+/*custom button square*/
+.btn-square{
+  padding: 20px;
+  box-shadow: rgba(236, 236, 241, 0.44);
+  background: white;
+  border-radius: 10px;
+  margin: 0 10px;
+  border: 1px solid #30419b;
+  color:#30419b;
+  cursor: pointer;
+}
+
+.btn-square:hover{
+  background: #30419b;
+  border: 1px solid #30419b;
+  color: #ffffff;
+}
