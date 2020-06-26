@@ -26,88 +26,85 @@
                             <h4 class="mt-0 mb-4 header-title">Edit data pemasukan</h4>
                         </div>
                         <div class="col-sm-6">
-                            <h4 class="mt-0 mb-4 header-title text-right"><%= data.id%></h4>
+                            <h4 class="mt-0 mb-4 header-title text-right">{{dataResponses.id}}</h4>
                         </div>
                      </div>
                     
                     <div class="form-group row">
-                        <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
+                        <label for="example-date-input" class="col-sm-2 col-form-label">tanggal</label>
                         <div class="col-sm-10">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="mm/dd/yyyy" value="<%= data.tgl%>" id="datepicker-autoclose">
-                                <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div>
-                            </div><!-- input-group -->
+                                <vuejs-datepicker v-model="dataResponses.tanggal" @input="convertDataTanggal"  :value="dataResponses.tanggal" :format="'dd/MM/yyyy'"></vuejs-datepicker>
+                                <!-- <input type="text" v-model="dataResponses.tanggal" class="form-control" id="datepicker-autoclose">
+                                <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div> -->
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Jenis Pemasukan</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueJenis">
-                                    <option <% if(data.status === 'pemabayaran invoice') { %> selected <% } %> >pemabayaran invoice</option>
-                                    <option  <% if(data.status === 'dll') { %> selected <% } %>>dll</option>
+                                <select disabled class="form-control" v-model="dataResponses.ketJenisPemasukan">
+                                    <option v-for="dataInputType in dataInputTypes" :key="dataInputTypes.kode" >{{dataInputType.nama}}</option>
                                 </select>
                             </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Nama Item</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.nama %>" id="example-text-input">
+                            <input class="form-control" type="text" v-model="dataResponses.nama" id="example-text-input">
                         </div>
                     </div>
-                    <div v-if="valueJenis == 'pemabayaran invoice'" class="form-group row">
+                    <div v-if="dataResponses.kodeJenisPemasukan == typeInvoicePayment" class="form-group row">
                         <label class="col-sm-2 col-form-label">Pilih Nama Client</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueClient">
-                                    <option>client satu</option>
-                                    <option>client dua</option>
+                                <select class="form-control" v-model="dataResponses.kodeClient">
+                                    <option v-for="dataClient in dataClients" :value="dataClient.kode" >{{dataClient.nama}}</option>
                                 </select>
                             </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
                         <div  class="col-sm-10">
-                            <textarea required class="form-control"  rows="3"><%= data.ket %></textarea>
+                            <textarea required class="form-control"  rows="3" v-model="dataResponses.ket"></textarea>
                         </div>
                     </div>
                     <hr>
                     <div class="form-group row">
-                        <label for="example-search-input" class="col-sm-2 col-form-label">banyak </label>
+                        <label for="example-search-input" class="col-sm-2 col-form-label">banyak</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="search" value="<%= data.jml %>" id="example-search-input">
+                            <input class="form-control" type="search" v-model="dataResponses.jumlah" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Status Bayar</label>
+                        <label class="col-sm-2 col-form-label">Status Bayar </label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueStatus">
-                                    <option <% if(data.status === 'lunas') { %> selected <% } %> >Lunas</option>
-                                    <option  <% if(data.status === 'Bayar sebagian') { %> selected <% } %>>Bayar sebagian</option>
-                                    <option  <% if(data.status === 'Piutang') { %> selected <% } %>>Piutang</option>
+                                <select disabled class="form-control" v-model="dataResponses.kodeStatusBayar">
+                                    <option  v-for="dataPaymentStatus in dataPaymentsStatus" :value="dataPaymentStatus.kode" >{{dataPaymentStatus.nama}}</option>
                                 </select>
                             </div>
                     </div>
                     <hr>
-                    <div v-if="valueStatus=='Bayar sebagian'" class="form-group row">
+                    <div v-if="dataResponses.kodeStatusBayar == paymentStatusHalfPaid" class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.nomlunas %>" id="example-number-input">
+                            <input disabled class="form-control" type="text"  v-model="dataResponses.nominal-dataResponses.piutang"id="example-number-input">
                         </div>
                     </div>
-                    <div  v-if="valueStatus=='Bayar sebagian'" class="form-group row">
+                    <div v-if="dataResponses.kodeStatusBayar == paymentStatusHalfPaid" class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Piutang (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.nompiutang %>" id="example-number-input">
+                            <input disabled class="form-control" type="text" v-model="piutang"  id="example-number-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Nominal (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.nom%>" id="example-number-input">
+                            <input disabled  class="form-control" type="text" v-model="nominal" id="example-number-input">
                         </div>
                     </div>
                     <div class="form-group text-right">
                         <div>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light" id="alertify-confirm">
+                            <button @click="alertEdit()" class="btn btn-primary waves-effect waves-light">
                                 Edit 
                             </button>
                         </div>
@@ -120,20 +117,140 @@
 
 </div>
 
-<script>
-    function tambah(){
-        location.href = "/pembelian"
-    }
-    
-</script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vuejs-datepicker/1.6.2/vuejs-datepicker.min.js"></script> 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     var app = new Vue({
      el: '#app',
+     components: {
+        vuejsDatepicker 
+     },
      data: {
-         valueJenis:'<%= data.jenis  %>',
-         valueStatus:'<%= data.status  %>',
-         valueClient:'<%= data.client  %>'
+         dataResponses:{
+         },
+         dataClients:{},
+         dataPaymentsStatus:{},
+         dataInputTypes:{},
+         typeInvoicePayment:'1',
+         paymentStatusDebt:'3',
+         paymentStatusHalfPaid: '2',
+         nominal:0,
+         piutang:0,
+         lunas:0,
+         tanggal:'2018-10-04'
+     },
+     async created() {
+        this.dataResponses = JSON.parse('<%-data%>')[0]
+        console.log(this.dataResponses)
+        this.nominal = this.dataResponses.nominal.toString()
+        this.piutang = this.dataResponses.piutang.toString()
+        await this.getMasterClient()
+        await this.getMasterPaymentStatus()
+        await this.getMasterInputType()
+     },
+     watch: {
+        nominal: function (val) {
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            this.nominal = rupiah
+        },
+        piutang: function (val) {
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            this.piutang = rupiah
+        }
+    },
+     async mounted (){
+      
+     },
+     methods : {
+        actEdit: async function() {
+            try{
+                var data = this.dataResponses
+                console.log(data)
+                let res = await axios.post('http://localhost:45000/pemasukan/edit', { data:data })
+                if (res.data.ret == "0" ){
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href = 'http://localhost:45000/pemasukan/'; }, 1000);
+                }
+            }catch(err){
+                alert(err)
+            }
+        },
+        getMasterClient: async function() {
+            try{
+                let res = await axios.get('http://localhost:45000/master/client')
+                this.dataClients = res.data
+            }catch(err){
+                alert(err)
+            }
+        },
+        getMasterPaymentStatus: async function() {
+            try{
+                let res = await axios.get('http://localhost:45000/master/payment-status')
+                for(let i=0 ; i < res.data.length; i++ ){
+                    if (res.data[i].kode == this.paymentStatusDebt){
+                         res.data.splice(i,1)
+                    }
+                }
+                this.dataPaymentsStatus = res.data
+                console.log(res.data)
+            }catch(err){
+                alert(err)
+            }
+        },
+        getMasterInputType: async function() {
+            try{
+                let res = await axios.get('http://localhost:45000/master/input-type')
+                this.dataInputTypes = res.data
+            }catch(err){
+                alert(err)
+            }
+        },
+        customFormatter(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
+        convertDataTanggal: function(val){
+            var convert = moment(val).format("YYYY-MM-DD")
+            this.dataResponses.tanggal = convert
+        },
+        alertEdit:  function (data) {
+             swal({
+                title: "Anda yakin ingin merubah data?",
+                text: "Pastikan data yang anda ubah benar",
+                icon: "warning",
+                buttons: ["batal", "ubah"],
+                dangerMode: false,
+                })
+                .then((willEdit) => {
+                if (willEdit) {
+                     this.actEdit(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        }
      }
      })
  </script>

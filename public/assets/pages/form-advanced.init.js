@@ -67,7 +67,8 @@
     
         $('#datepicker-autoclose').datepicker({
             autoclose: true,
-            todayHighlight: true
+            todayHighlight: true,
+            format: "dd/mm/yyyy",
         });
         $('#datepicker-multiple-date').datepicker({
             format: "mm/dd/yyyy",

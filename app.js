@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var moment = require('moment')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -17,6 +18,7 @@ var bahanbakuRouter = require('./routes/bahanbaku');
 var barangsisaRouter = require('./routes/barangsisa');
 var clientRouter = require('./routes/client');
 var supplierRouter = require('./routes/supplier');
+var masterRouter = require('./routes/master');
 
 var app = express();
 
@@ -43,6 +45,7 @@ app.use('/bahanbaku', bahanbakuRouter);
 app.use('/barangsisa', barangsisaRouter);
 app.use('/client', clientRouter);
 app.use('/supplier', supplierRouter);
+app.use('/master', masterRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

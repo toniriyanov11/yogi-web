@@ -1,0 +1,8 @@
+:root{
+    --color-primary: #30419b;
+}
+
+.clicked{
+    color: var(--color-primary);
+    cursor: pointer;
+}

@@ -27,89 +27,81 @@
                         <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
                         <div class="col-sm-10">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker-autoclose">
-                                <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div>
+                                <!-- <date-picker v-model="data.tanggal"  :format="customFormatter"></date-picker> -->
+                                <vuejs-datepicker  v-model="data.tanggal" @input="convertDataTanggal" :format="customFormatter"></vuejs-datepicker>
+                                <!-- <input v-model="tanggal" type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker-autoclose"> -->
                             </div><!-- input-group -->
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Jenis Pemasukan</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" v-model="valueJenis">
-                                    <option >pilih Pemasukan</option>
-                                    <option>pemabayaran invoice</option>
-                                    <option>dll</option>
+                            <div class="col-md-5">
+                                <select class="form-control" v-model="data.jenisPemasukan">
+                                    <option disabled style="color: gainsboro;">pilih Pemasukan</option>
+                                    <option v-for="dataInputType in dataInputTypes" :key="dataInputType.kode" :value="dataInputType.kode">{{dataInputType.nama}}</option>
+                                </select>
+                            </div>
+                    </div>
+                    <div v-if="data.jenisPemasukan == typeInvoicePayment" class="form-group row">
+                        <label class="col-sm-2 col-form-label">Pilih Nama Client</label>
+                            <div class="col-md-5">
+                                <select class="form-control" v-model="data.client">
+                                    <option disabled style="color: gainsboro" >pilih Nama Client</option>
+                                    <option  v-for="dataClient in dataClients" :key="dataClient.kode" :value="dataClient.kode">{{dataClient.nama}}</option>
                                 </select>
                             </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Nama Item</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-text-input">
+                        <div class="col-md-5">
+                            <input class="form-control" type="text" v-model="data.nama" id="example-text-input">
                         </div>
                     </div>
-                    <div v-if="valueJenis == 'pemabayaran invoice'" class="form-group row">
-                        <label class="col-sm-2 col-form-label">Pilih Nama Client</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" v-model="valueClient">
-                                    <option >pilih Nama Client</option>
-                                    <option>client satu</option>
-                                    <option>client dua</option>
-                                </select>
-                            </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
-                        <div  class="col-sm-10">
-                            <textarea required class="form-control" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <hr>
+                    <div class="col-sm-7"> <hr></div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">banyak</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="search" value="" id="example-search-input">
+                        <div class="col-md-5">
+                            <input class="form-control" type="number" v-model="data.jumlah" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Status Bayar</label>
-                            <div class="col-sm-10">
-                                <select class="form-control" v-model="valueStatus">
-                                    <option >pilih status</option>
-                                    <option>Lunas</option>
-                                    <option>Bayar sebagian</option>
-                                    <option>Hutang</option>
+                            <div class="col-md-5">
+                                <select class="form-control" v-model="data.statusBayar">
+                                    <option disabled style="color: gainsboro" >pilih status</option>
+                                    <option  v-for="dataPaymentStatus in dataPaymentsStatus" :key="dataPaymentStatus.kode" :value="dataPaymentStatus.kode">{{dataPaymentStatus.nama}}</option>
                                 </select>
                             </div>
                     </div>
-                    <div v-if="valueJenis=='inventori'" class="form-group row">
-                        <label for="example-search-input" class="col-sm-2 col-form-label">Nilai Penyusutan (%)</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="search" value="" id="example-search-input">
-                        </div>
-                    </div>
-                    <hr>
-                    <div v-if="valueStatus=='Bayar sebagian'" class="form-group row">
-                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas (Rp)</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-number-input">
-                        </div>
-                    </div>
-                    <div v-if="valueStatus=='Bayar sebagian'" class="form-group row">
-                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Piutang (Rp)</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-number-input">
-                        </div>
-                    </div>
+                    <div class="col-sm-7"> <hr></div>
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Nominal (Rp)</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-number-input">
+                        <div class="col-md-5">
+                            <input class="form-control" type="text" v-model="total" id="example-number-input">
+                        </div>
+                    </div>
+                    <div v-if="data.statusBayar == paymentStatusHalfPaid" class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas (Rp)</label>
+                        <div class="col-md-5">
+                            <input class="form-control" type="text" v-model="lunas" id="example-number-input">
+                        </div>
+                    </div>
+                    <div v-if="data.statusBayar == paymentStatusHalfPaid" class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Piutang (Rp)</label>
+                        <div class="col-md-5">
+                            <input disabled class="form-control" type="text" v-model="piutang"  id="example-number-input">
+                        </div>
+                    </div>
+                    <div class="col-sm-7"> <hr></div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
+                        <div  class="col-md-5">
+                            <textarea required class="form-control" v-model="data.ket" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="form-group text-right">
-                        <div>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light">
+                        <div class="col-sm-7">
+                            <button @click="alertAdd()" class="btn btn-primary waves-effect waves-light">
                                 Submit
                             </button>
                         </div>
@@ -122,20 +114,160 @@
 
 </div>
 
-<script>
-    function tambah(){
-        location.href = "/pemasukan"
-    }
-    
-</script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vuejs-datepicker/1.6.2/vuejs-datepicker.min.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/vue2-datepicker@3.6.0/index.min.js"></script> 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     var app = new Vue({
      el: '#app',
+     components: {
+            vuejsDatepicker,
+            DatePicker 
+    },
      data: {
+         data:{
+            tanggal:'',
+            jenisPemasukan:'2',
+            client:0,
+            nama:'test pem',
+            jumlah:'20',
+            statusBayar:'1',
+            total:'2000000',
+            lunas:0,
+            piutang:0,
+            ket:'tanpa'
+         },
+         total:'',
+         lunas:'',
+         piutang:'',
+         dataClients:'',
+         dataInputTypes:'',
+         dataPaymentsStatus:'',
+         typeInvoicePayment: '1',
+         paymentStatusDebt: '3',
+         paymentStatusHalfPaid: '2',
          valueJenis:'',
          valueStatus:'',
          valueClient:''
+     },
+     async created(){
+        await this.getMasterClient()
+        await this.getMasterPaymentStatus()
+        await this.getMasterInputType()
+     },
+     watch: {
+        total : function (val) {
+            this.total  = this.convertFloatToRupiah(val).toString()
+            this.data.total = this.convertRupiahToFloat(this.total)
+            if(this.lunas != ''){
+                var calculate = this.convertRupiahToFloat(this.total) - this.convertRupiahToFloat(this.lunas) 
+                this.data.piutang = calculate
+                this.piutang = calculate
+            }
+        },
+        lunas : function (val) {
+            this.lunas  = this.convertFloatToRupiah(val).toString()
+            this.data.lunas = this.convertRupiahToFloat(this.lunas)
+            if(this.total != ''){
+                var calculate = this.convertRupiahToFloat(this.total) - this.convertRupiahToFloat(this.lunas) 
+                this.data.piutang = calculate
+                this.piutang = calculate
+            }
+        },
+        piutang : function (val){
+            //convert to rupiah
+        }
+     },
+     methods:{
+        actTambah: async function() {
+            try{
+                var data = this.data
+                let res = await axios.post('http://localhost:45000/pemasukan/tambah', { data:data })
+                if (res.data.ret == "0" ){
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href = 'http://localhost:45000/pemasukan/'; }, 1000);
+                }
+            }catch(err){
+                alert(err)
+            }
+        },
+        customFormatter(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
+        getMasterClient: async function() {
+            try{
+                let res = await axios.get('http://localhost:45000/master/client')
+                this.dataClients = res.data
+            }catch(err){
+                alert(err)
+            }
+        },
+        getMasterPaymentStatus: async function() {
+            try{
+                let res = await axios.get('http://localhost:45000/master/payment-status')
+                for(let i=0 ; i < res.data.length; i++ ){
+                    if (res.data[i].kode == this.paymentStatusDebt){
+                         res.data.splice(i,1)
+                    }
+                }
+                this.dataPaymentsStatus = res.data
+            }catch(err){
+                alert(err)
+            }
+        },
+        getMasterInputType: async function() {
+            try{
+                let res = await axios.get('http://localhost:45000/master/input-type')
+                this.dataInputTypes = res.data
+            }catch(err){
+                alert(err)
+            }
+        },
+        convertFloatToRupiah: function(val) {
+
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            return rupiah
+        },
+        convertRupiahToFloat: function(val){
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            return txtNumber
+        },
+        convertDataTanggal: function(val){
+            var convert = moment(val).format("YYYY-MM-DD")
+            this.data.tanggal = convert
+        },
+        alertAdd:  function (data) {
+             swal({
+                title: "Anda yakin ingin menambah data?",
+                text: "Pastikan data yang anda masukkan benar",
+                icon: "warning",
+                buttons: ["batal", "tambah"],
+                dangerMode: false,
+                })
+                .then((willAdd) => {
+                if (willAdd) {
+                     this.actTambah(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        }
      }
      })
  </script>
