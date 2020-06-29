@@ -117,17 +117,15 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vuejs-datepicker/1.6.2/vuejs-datepicker.min.js"></script> 
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
      components: {
         vuejsDatepicker 
      },
      data: {
+         id:'',
          dataResponses:{
          },
          dataClients:{},
@@ -142,8 +140,8 @@
          tanggal:'2018-10-04'
      },
      async created() {
-        this.dataResponses = JSON.parse('<%-data%>')[0]
-        console.log(this.dataResponses)
+        this.id = JSON.parse('<%-data%>')
+        await this.getData(this.id)
         this.nominal = this.dataResponses.nominal.toString()
         this.piutang = this.dataResponses.piutang.toString()
         await this.getMasterClient()
@@ -180,47 +178,53 @@
       
      },
      methods : {
+        getData: async function(id) {
+            try{
+                const res = await axios.post(apiUrl+'pemasukan/edit/'+id)
+                this.dataResponses = res.data[0]
+            }catch(err){
+                alert("Get data"+' '+err)
+            }
+        },
         actEdit: async function() {
             try{
                 var data = this.dataResponses
-                console.log(data)
-                let res = await axios.post('http://localhost:45000/pemasukan/edit', { data:data })
-                if (res.data.ret == "0" ){
+                const res = await axios.post(apiUrl+'pemasukan/edit', { data:data })
+                if (res.data.success){
                     this.alertSuccess(res.data.msg)
                     setTimeout(function(){ window.location.href = 'http://localhost:45000/pemasukan/'; }, 1000);
                 }
             }catch(err){
-                alert(err)
+                alert("Edit data"+' '+err)
             }
         },
         getMasterClient: async function() {
             try{
-                let res = await axios.get('http://localhost:45000/master/client')
+                const res = await axios.get(apiUrl+'master/client')
                 this.dataClients = res.data
             }catch(err){
-                alert(err)
+                alert("Get Client"+' '+err)
             }
         },
         getMasterPaymentStatus: async function() {
             try{
-                let res = await axios.get('http://localhost:45000/master/payment-status')
+                const res = await axios.get(apiUrl+'master/payment-status')
                 for(let i=0 ; i < res.data.length; i++ ){
                     if (res.data[i].kode == this.paymentStatusDebt){
                          res.data.splice(i,1)
                     }
                 }
                 this.dataPaymentsStatus = res.data
-                console.log(res.data)
             }catch(err){
-                alert(err)
+                alert("Get Payment Status"+' '+err)
             }
         },
         getMasterInputType: async function() {
             try{
-                let res = await axios.get('http://localhost:45000/master/input-type')
+                const res = await axios.get(apiUrl+'master/input-type')
                 this.dataInputTypes = res.data
             }catch(err){
-                alert(err)
+                alert("Get Input Type"+' '+err)
             }
         },
         customFormatter(date) {

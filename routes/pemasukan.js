@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var moment = require('moment')
+var moment = require('moment');
+require('dotenv').config();
 
 const controllerPemasukan = require('../controllers/controllerPemasukan.js')
+const util = require('../configs/utils.js');
 
 /* GET home page. */
 router.get('/',async function(req, res, next) {
@@ -11,99 +13,107 @@ router.get('/',async function(req, res, next) {
 
 
 router.post('/',async function(req, res, next) {
+try{
    let dataResponse = await controllerPemasukan.getPemasukanAll()
-   console.log(dataResponse.ret)
-   if (dataResponse.ret == '0') {
-      for(let i=0; i<=dataResponse.data.length-1; i++){
-          dataResponse.data[i].tanggal = moment(dataResponse.data[i].tanggal).format('DD/MM/YYYY')
-      }
-      var data = dataResponse.data
+   var data =""
+   if (dataResponse.success) {
+      data = await util.convertDate(dataResponse,'DD/MM/YYYY')
       res.status(200).json(data);
    } else {
-      var data = null
-      res.status(500).json(data);
+      res.status(400).json(data);
    }
+ }catch(err){
+   res.status(500).json(err);
+ }
 })
 
 router.get('/edit/:id', async function(req, res, next) {
-  var id = req.params.id;
-
-  let dataResponse = await controllerPemasukan.getPemasukanById(id)
-    console.log(dataResponse)
-    if (dataResponse.ret == '0') {
-       for(let i=0; i<=dataResponse.data.length-1; i++){
-           dataResponse.data[i].tanggal = moment(dataResponse.data[i].tanggal).format('YYYY-MM-DD')
-       }
-       var data = dataResponse.data
-    } else {
-       var data = null
-    }
-    console.log(data)
-
-  res.render('index', { title: 'Edit Pemasukan', page:'pemasukan/pemasukan_edit.ejs', data:JSON.stringify(data)});
+   var id = req.params.id;
+   res.render('index', { title: 'Edit Pemasukan', page:'pemasukan/pemasukan_edit.ejs', data:JSON.stringify(id)});
 });
 
-router.post('/edit', async function(req, res, next) {
-   var data = req.body.data
-   console.log(data)
-   let dataResponse = await controllerPemasukan.updatePemasukan(data)
-   console.log(dataResponse)
-   if (dataResponse.ret == '0') {
-      res.status(200).json(dataResponse);
-   } else {
-      res.status(200).json(dataResponse);
+router.post('/edit/:id', async function(req, res, next) {
+   try{
+      var id = req.params.id;
+      let dataResponse = await controllerPemasukan.getPemasukanById(id)   
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'YYYY-MM-DD')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+   } catch(err){
+      res.status(500).json(err);
    }
 });
 
+router.post('/edit', async function(req, res, next) {
+   try {
+      var data = req.body.data
+      let dataResponse = await controllerPemasukan.updatePemasukan(data)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch (err) {
+      res.status(500).json(err);
+   }
+});
 
 
 router.get('/detil/:id',async function(req, res, next) {
   var id = req.params.id;
-
-  let dataResponse = await controllerPemasukan.getPemasukanById(id)
-    console.log(dataResponse)
-    if (dataResponse.ret == '0') {
-       for(let i=0; i<=dataResponse.data.length-1; i++){
-           dataResponse.data[i].tanggal = moment(dataResponse.data[i].tanggal).format('DD/MM/YYYY')
-       }
-       var data = dataResponse.data
-    } else {
-       var data = null
-    }
-    console.log(data)
-
-  res.render('index', { title: 'Detail Pemasukan', page:'pemasukan/pemasukan_detil.ejs', data:JSON.stringify(data)});
+  res.render('index', { title: 'Detail Pemasukan', page:'pemasukan/pemasukan_detil.ejs', data:JSON.stringify(id)});
 });
 
-
+router.post('/detil/:id',async function(req, res, next) {
+   try{
+      var id = req.params.id;
+      let dataResponse = await controllerPemasukan.getPemasukanById(id)
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+  }catch(err){
+       res.status(500).json(err);
+  }
+ });
 
 router.get('/tambah', function(req, res, next) {
     res.render('index', { title: 'Tambah Pemasukan', page:'pemasukan/pemasukan_tambah.ejs'});
 });
 
-
 router.post('/tambah', async function(req, res, next) {
-   var data = req.body.data
-   console.log(data)
-   let dataResponse = await controllerPemasukan.insertPemasukan(data)
-   console.log(dataResponse)
-   if (dataResponse.ret == '0') {
-      res.status(200).json(dataResponse);
-   } else {
-      res.status(200).json(dataResponse);
+   try{
+      var data = req.body.data
+      let dataResponse = await controllerPemasukan.insertPemasukan(data)
+      if (dataResponse.success ) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   }catch(err){
+      res.status(500).json(err);
    }
 });
 
 router.post('/hapus/:id', async function(req, res, next) {
-   var id = req.params.id
-   console.log(id)
-   let dataResponse = await controllerPemasukan.deletePemasukan(id)
-   console.log(dataResponse)
-   if (dataResponse.ret == '0') {
-      console.log('sini')
-      res.status(200).json(dataResponse);
-   } else {
-      res.status(500).json(dataResponse);
+   try{
+      var id = req.params.id
+      let dataResponse = await controllerPemasukan.deletePemasukan(id)
+      console.log(dataResponse)
+      if (dataResponse.success ) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch(err){
+      res.status(500).json(err);
    }
 });
 

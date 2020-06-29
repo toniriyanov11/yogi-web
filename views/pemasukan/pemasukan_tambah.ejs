@@ -101,7 +101,7 @@
                     </div>
                     <div class="form-group text-right">
                         <div class="col-sm-7">
-                            <button @click="alertAdd()" class="btn btn-primary waves-effect waves-light">
+                            <button :disabled="isButtonDisable" @click="checkValidation()" class="btn btn-primary waves-effect waves-light">
                                 Submit
                             </button>
                         </div>
@@ -114,31 +114,25 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vuejs-datepicker/1.6.2/vuejs-datepicker.min.js"></script> 
-<script src="https://cdn.jsdelivr.net/npm/vue2-datepicker@3.6.0/index.min.js"></script> 
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
      components: {
-            vuejsDatepicker,
-            DatePicker 
+            vuejsDatepicker
     },
      data: {
          data:{
             tanggal:'',
-            jenisPemasukan:'2',
+            jenisPemasukan:'',
             client:0,
-            nama:'test pem',
-            jumlah:'20',
-            statusBayar:'1',
-            total:'2000000',
+            nama:'',
+            jumlah:'',
+            statusBayar:'',
+            total:'',
             lunas:0,
             piutang:0,
-            ket:'tanpa'
+            ket:''
          },
          total:'',
          lunas:'',
@@ -151,7 +145,8 @@
          paymentStatusHalfPaid: '2',
          valueJenis:'',
          valueStatus:'',
-         valueClient:''
+         valueClient:'',
+         isButtonDisable: false
      },
      async created(){
         await this.getMasterClient()
@@ -184,14 +179,16 @@
      methods:{
         actTambah: async function() {
             try{
+                this.setDisableButton()
                 var data = this.data
-                let res = await axios.post('http://localhost:45000/pemasukan/tambah', { data:data })
-                if (res.data.ret == "0" ){
+                let res = await axios.post(apiUrl+'pemasukan/tambah', { data:data })
+                if (res.data.success){
+                    this.setEnableButton()
                     this.alertSuccess(res.data.msg)
-                    setTimeout(function(){ window.location.href = 'http://localhost:45000/pemasukan/'; }, 1000);
+                    setTimeout(function(){ window.location.href = '/pemasukan/'; }, 1000);
                 }
             }catch(err){
-                alert(err)
+                alert("Add data"+' '+err)
             }
         },
         customFormatter(date) {
@@ -199,15 +196,15 @@
         },
         getMasterClient: async function() {
             try{
-                let res = await axios.get('http://localhost:45000/master/client')
+                const res = await axios.get(apiUrl + 'master/client')
                 this.dataClients = res.data
             }catch(err){
-                alert(err)
+                alert("Get Client"+' '+err)
             }
         },
         getMasterPaymentStatus: async function() {
             try{
-                let res = await axios.get('http://localhost:45000/master/payment-status')
+                const res = await axios.get(apiUrl + 'master/payment-status')
                 for(let i=0 ; i < res.data.length; i++ ){
                     if (res.data[i].kode == this.paymentStatusDebt){
                          res.data.splice(i,1)
@@ -215,15 +212,24 @@
                 }
                 this.dataPaymentsStatus = res.data
             }catch(err){
-                alert(err)
+                alert("Get Payment Status"+' '+err)
             }
         },
         getMasterInputType: async function() {
             try{
-                let res = await axios.get('http://localhost:45000/master/input-type')
+                const res = await axios.get(apiUrl + 'master/input-type')
                 this.dataInputTypes = res.data
             }catch(err){
-                alert(err)
+                alert("Get Input Type"+' '+err)
+            }
+        },
+        checkValidation: async function(){
+            if (this.data.tanggal == "" || this.data.jenisPemasukan == "" || 
+             this.data.nama == "" || this.data.jumlah == "" || this.data.statusBayar == "" 
+            || this.data.total == "" || this.data.ket == "" ) {
+                alert("harap isi semua field")
+            } else {
+                this.actTambah()
             }
         },
         convertFloatToRupiah: function(val) {
@@ -267,6 +273,12 @@
                 text:message, 
                 icon:"success",
                 buttons:false});
+        },
+        setEnableButton: function(){
+            this.isButtonDisable = false
+        },
+        setDisableButton: function(){
+            this.isButtonDisable = true
         }
      }
      })

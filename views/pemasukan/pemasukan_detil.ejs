@@ -118,12 +118,12 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
 <script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
      data: {
+         id:'',
          dataResponses:{},
          dataClients:{},
          dataPaymentsStatus:{},
@@ -133,29 +133,37 @@
          paymentStatusCredit:'4',
      },
      async created() {
-        this.dataResponses = JSON.parse('<%-data%>')[0]
+        this.id = JSON.parse('<%-data%>')
+        await this.getData(this.id)
         await this.getMasterClient()
         await this.getMasterPaymentStatus()
-        console.log(this.dataResponses)
      },
      methods : {
         edit: function(id){
             location.href = "/pemasukan/edit/"+id
         },
+        getData: async function(id) {
+            try{
+                const res = await axios.post(apiUrl+'pemasukan/detil/'+id)
+                this.dataResponses = res.data[0]
+            }catch(err){
+                alert("Get data"+' '+err)
+            }
+        },
         getMasterClient: async function() {
             try{
-                const res = await axios.get('http://localhost:45000/master/client')
+                const res = await axios.get(apiUrl+'master/client')
                 this.dataClients = res.data
             }catch(err){
-                alert("Client"+' '+err)
+                alert("Get Client"+' '+err)
             }
         },
         getMasterPaymentStatus: async function() {
             try{
-                const res = await axios.get('http://localhost:45000/master/payment-status')
+                const res = await axios.get(apiUrl+'master/payment-status')
                 this.dataPaymentsStatus = res.data
             }catch(err){
-                alert("Payment Status"+' '+err)
+                alert("Get Payment Status"+' '+err)
             }
         },
         convertToRupiah: function (val) {

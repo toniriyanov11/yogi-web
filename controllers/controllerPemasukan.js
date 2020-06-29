@@ -8,50 +8,34 @@ async function getPemasukanAll() {
         const rows = await modelPemasukan.getPemasukanAll()
 
         if ( rows.length >= 1 ) {
-            var response = { ret: '0', msg: 'success', data:rows };
+            return util.responseSuccess(rows)
         } else if ( rows.length == 0 ) {
-            var response = { ret: '-1', msg: 'data not found' };
+            return util.responseNotFound()
         } else {
-            var response = { ret: '-1', msg: 'paramter is required' };
+            return util.responseFailedGet()
         }
-  
-        return response
-
         
     } catch(err) {
-
         console.log(err)
-        var response = { ret: '-1', msg: 'server error, please try again!', err:err }
-
-        return response
-
+        return util.responseErrorServer(err)
     }
 }
 
 async function getPemasukanById(id) {
     try {
-        console.log(id)
-        let rows = []
-        rows = await modelPemasukan.getPemasukanById(id)
+        const rows = await modelPemasukan.getPemasukanById(id)
 
         if ( rows.length >= 1 ) {
-            var response = { ret: '0', msg: 'success', data:rows };
+            return util.responseSuccess(rows)
         } else if ( rows.length == 0 ) {
-            var response = { ret: '-1', msg: 'data not found' };
+            return util.responseNotFound()
         } else {
-            var response = { ret: '-1', msg: 'paramter is required' };
+            return util.responseFailedGet()
         }
-  
-        return response
-
         
     } catch(err) {
-
         console.log(err)
-        var response = { ret: '-1', msg: 'server error, please try again!', err:err }
-
-        return response
-
+        return util.responseErrorServer(err)
     }
 }
 

@@ -1,5 +1,6 @@
 const modelClient= require('../models/modelClient.js');
 const modelMaster= require('../models/modelMaster.js');
+const util = require('../configs/utils.js');
 
 
 async function getClientAll() {
@@ -7,23 +8,15 @@ async function getClientAll() {
         const rows = await modelClient.getClientAll()
 
         if ( rows.length >= 1 ) {
-            var response = { ret: '0', msg: 'success', data:rows };
+            return util.responseSuccess(rows)
         } else if ( rows.length == 0 ) {
-            var response = { ret: '0', msg: 'data not found' };
+            return util.responseNotFound()
         } else {
-            var response = { ret: '-1', msg: 'paramter is required' };
+            return util.responseFailedGet()
         }
-  
-        return response
-
-        
     } catch(err) {
-
         console.log(err)
-        var response = { ret: '-1', msg: 'server error, please try again!', err:err }
-
-        return response
-
+        return util.responseErrorServer(err)
     }
 }
 
@@ -34,23 +27,16 @@ async function getPaymentStatus() {
         const rows = await modelMaster.getPaymentStatus()
 
         if ( rows.length >= 1 ) {
-            var response = { ret: '0', msg: 'success', data:rows };
+            return util.responseSuccess(rows)
         } else if ( rows.length == 0 ) {
-            var response = { ret: '0', msg: 'data not found' };
+            return util.responseNotFound()
         } else {
-            var response = { ret: '-1', msg: 'paramter is required' };
+            return util.responseFailedGet()
         }
-  
-        return response
-
         
     } catch(err) {
-
         console.log(err)
-        var response = { ret: '-1', msg: 'server error, please try again!', err:err }
-
-        return response
-
+        return util.responseErrorServer(err)
     }
 }
 
@@ -62,23 +48,16 @@ async function getInputType() {
         const rows = await modelMaster.getInputType()
 
         if ( rows.length >= 1 ) {
-            var response = { ret: '0', msg: 'success', data:rows };
+            return util.responseSuccess(rows)
         } else if ( rows.length == 0 ) {
-            var response = { ret: '0', msg: 'data not found' };
+            return util.responseNotFound()
         } else {
-            var response = { ret: '-1', msg: 'paramter is required' };
+            return util.responseFailedGet()
         }
-  
-        return response
-
         
     } catch(err) {
-
         console.log(err)
-        var response = { ret: '-1', msg: 'server error, please try again!', err:err }
-
-        return response
-
+        return util.responseErrorServer(err)
     }
 }
 

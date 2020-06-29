@@ -1,29 +1,21 @@
 const modelClient= require('../models/modelClient.js');
-
+const util = require('../configs/utils.js');
 
 async function getClientAll() {
     try {
-        let rows = []
-        rows = await modelClient.getClientAll()
+        const rows = await modelClient.getClientAll()
 
         if ( rows.length >= 1 ) {
-            var response = { ret: '0', msg: 'success', data:rows };
+            return util.responseSuccess(rows)
         } else if ( rows.length == 0 ) {
-            var response = { ret: '-1', msg: 'data not found' };
+            return util.responseNotFound()
         } else {
-            var response = { ret: '-1', msg: 'paramter is required' };
+            return util.responseFailedGet()
         }
-  
-        return response
 
-        
     } catch(err) {
-
         console.log(err)
-        var response = { ret: '-1', msg: 'server error, please try again!', err:err }
-
-        return response
-
+        return util.responseErrorServer(err)
     }
 }
 
