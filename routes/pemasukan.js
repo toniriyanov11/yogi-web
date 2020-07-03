@@ -92,7 +92,7 @@ router.post('/tambah', async function(req, res, next) {
    try{
       var data = req.body.data
       let dataResponse = await controllerPemasukan.insertPemasukan(data)
-      if (dataResponse.success ) {
+      if (dataResponse.success) {
          res.status(200).json(dataResponse);
       } else {
          res.status(400).json();

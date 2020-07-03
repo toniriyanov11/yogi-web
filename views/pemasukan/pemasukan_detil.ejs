@@ -154,6 +154,7 @@
             try{
                 const res = await axios.get(apiUrl+'master/client')
                 this.dataClients = res.data
+                console.log(this.dataClients)
             }catch(err){
                 alert("Get Client"+' '+err)
             }

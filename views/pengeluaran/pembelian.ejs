@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" id="app">
     <div class="page-title-box">
         <div class="row align-items-center">
             <div class="col-sm-6">
@@ -18,7 +18,7 @@
     <!-- START button-->
     <div class="row">
         <div class="col py-3 text-right">
-          <button type="button" class="btn btn-primary waves-effect waves-light"  onclick="tambah()"><i class="mdi mdi-plus align-middle mr-2"></i>Tambah Pembelian</button>
+          <button type="button" class="btn btn-primary waves-effect waves-light"  @click="tambah()"><i class="mdi mdi-plus align-middle mr-2"></i>Tambah Pembelian</button>
         </div>
     </div>
     <!-- end button -->
@@ -47,46 +47,17 @@
 
 
                         <tbody>
-                        <tr>
-                           
-                            <td>25/02/2020</td>
-                            <td><a onclick="detil('1A-2020020001')" style="color:#2980b9">1A-2020020001</a></td>
-                            <td>Bahan Baku</td>
-                            <td>Bahan satu</td>
-                            <td>300</td>
-                            <td>6,320,000</td>
-                            <td style="color: #6ec06e;">Lunas</td>
+                        <tr v-for="dataResponse in dataResponses" :key="dataResponse.id">
+                            <td>{{dataResponse.tanggal}}</td>
+                            <td class="clicked"><a @click="detil(dataResponse.id)">{{dataResponse.id}}</a></td>
+                            <td>{{dataResponse.ketJenisPembelian}}</td>
+                            <td>{{dataResponse.nama}}</td>
+                            <td>{{dataResponse.jumlah}}</td>
+                            <td>{{dataResponse.nominal}}</td>
+                            <td>{{dataResponse.ketStatusBayar}}</td>
                             <td>
-                                <button type="button" onclick="edit('1A-2020020001')"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
-                                <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            
-                            <td>26/02/2020</td>
-                            <td><a onclick="detil('1A-2020020002')"style="color:#2980b9">1A-2020020002</a></td>
-                            <td>Inventory</td>
-                            <td>Laptop</td>
-                            <td>3</td>
-                            <td>3,000,000</td>
-                            <td style="color: #f2ca27;">Bayar Sebagian</td>
-                            <td>
-                                <button type="button" onclick="edit('1A-2020020002')" class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
-                                <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            
-                            <td>26/02/2020</td>
-                            <td><a onclick="detil('1A-2020020003')" style="color:#2980b9">1A-2020020003</a></td>
-                            <td>Upah</td>
-                            <td>Upah Jahit</td>
-                            <td>3</td>
-                            <td>2,050,000</td>
-                            <td style="color: #ea6153;">Hutang</td>
-                            <td>
-                                <button type="button" onclick="edit('1A-2020020003')" class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
-                                <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
+                                <button type="button" @click="edit(dataResponse.id)"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
+                                <button type="button" @click="alertDelete(dataResponse.id)" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
                             </td>
                         </tr>
                         </tbody>
@@ -100,40 +71,79 @@
 </div>
 
 <script>
-    function tambah(){
-        location.href = "/pengeluaran/pembelian/tambah";
-    }
-
-    function edit(id){
-        if(id=="1A-2020020001"){
-            location.href = "/pengeluaran/pembelian/edit/"+id+"?id=1A-2020020001&tgl=25/02/2020&jenis=bahan baku&nama=bahan satu&ket=keterangan bahan baku&jml=300&nom=6,320,000&status=Lunas&jenisbb=kaos&supl=suplier 1";
-        }else if(id=="1A-2020020002"){
-            location.href = "/pengeluaran/pembelian/edit/"+id+"?id=1A-2020020002&tgl=26/02/2020&jenis=inventori&nama=laptop&ket=-&jml=3&nom=3,000,000&status=Bayar sebagian&nomhutang=2,000,000&nomlunas=1,000,000&nilaip=25%";
-        }else if(id=="1A-2020020003"){
-            location.href = "/pengeluaran/pembelian/edit/"+id+"?id=1A-2020020003&tgl=27/02/2020&jenis=upah&nama=upah jahit&ket=upah 3 orang&jml=3&nom=2,050,000&status=Hutang";
-        }   
-    }
-
-    function detil(id){
-        if(id=="1A-2020020001"){
-            location.href = "/pengeluaran/pembelian/detil/"+id+"?id=1A-2020020001&tgl=25/02/2020&jenis=bahan baku&nama=bahan satu&ket=keterangan bahan baku&jml=300&nom=6,320,000&status=Lunas&jenisbb=kaos&supl=suplier 1";
-        }else if(id=="1A-2020020002"){
-            location.href = "/pengeluaran/pembelian/detil/"+id+"?id=1A-2020020002&tgl=26/02/2020&jenis=inventori&nama=laptop&ket=-&jml=3&nom=3,000,000&status=Bayar sebagian";
-        }else if(id=="1A-2020020003"){
-            location.href = "/pengeluaran/pembelian/detil/"+id+"?id=1A-2020020003&tgl=27/02/2020&jenis=upah&nama=upah jahit&ket=upah 3 orang&jml=3&nom=2,050,000&status=Hutang";
+   const apiUrl = '<%= process.env.URL %>'
+    var app = new Vue({
+     el: '#app',
+     data: {
+         dataResponses : {}
+     },
+     created() {
+        this.getData()
+     },
+     methods:{
+        edit: function(id){
+            location.href = "/pengeluaran/pembelian/edit/"+id
+        },
+        detil: function(id){
+            location.href = "/pengeluaran/pembelian/detil/"+id
+        },
+        tambah: function(){
+            location.href = "/pengeluaran/pembelian/tambah"
+        },
+        getData: async function() {
+            try{
+                const res = await axios.post(apiUrl+'pengeluaran/pembelian')
+                this.dataResponses = res.data
+            }catch(err){
+                alert("Get data"+' '+err)
+            }
+        },
+        deleteData: async function(id){
+            try{
+                const res = await axios.post(apiUrl+'pengeluaran/pembelian/hapus/'+id)
+                if (res.data.success){
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ location.reload(); }, 1000);
+                } else {
+                    alert(res.data.msg)
+                }
+            }catch(err){
+                alert("Delete data"+' '+err)
+            }
+        },
+        convertToRupiah: function (val) {
+            var txtNumber = parseFloat(val)
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            return rupiah
+        },
+        alertDelete:  function (data) {
+             swal({
+                title: "Anda yakin ingin menghapus data?",
+                text: "Ketika data terhapus, data tidak dapat dikembalikan!",
+                icon: "warning",
+                buttons: ["batal", "ya,hapus!"],
+                dangerMode: true,
+                })
+                .then((willDelete) => {
+                if (willDelete) {
+                     this.deleteData(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
         }
-        
-    //     $.ajax({
-    //       crossDomain: true,            
-    //       dataType: 'json',
-    //       url:url,
-    //       type:'GET',
-    //       cache       : false,
-    //       contentType : false,
-    //       processData : false,
-    //       success:function(response){
-    //         location.href = url
-    //       }
-    //   })
-    }
+     }
+})    
 </script>

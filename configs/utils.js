@@ -108,6 +108,22 @@ function convertDate(dataResponse, format){
     }
 }
 
+
+function convertRecordDate(dataResponse, format){
+    try{
+      var data = ""
+      if(dataResponse.data != null) {
+         for(let i=0; i<=dataResponse.data.length-1; i++){
+            dataResponse.data[i].tgl_rekam = moment(dataResponse.data[i].tgl_rekam).format(format)
+         }
+         data = dataResponse.data
+      } 
+      return data
+    }catch(err){
+      return err
+    }
+}
+
 module.exports = {
     responseSuccess,
     responseSuccessUpdate,
@@ -120,5 +136,6 @@ module.exports = {
     responseErrorServer,
     responseErrorNullParam,
     responseErrorQuery,
-    convertDate
+    convertDate,
+    convertRecordDate
 }

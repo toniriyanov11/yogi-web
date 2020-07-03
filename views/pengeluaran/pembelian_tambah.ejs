@@ -27,100 +27,94 @@
                         <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
                         <div class="col-sm-10">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker-autoclose">
-                                <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div>
+                                <vuejs-datepicker  v-model="data.tanggal" @input="convertDataTanggal" :format="customFormatter"></vuejs-datepicker>
                             </div><!-- input-group -->
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Jenis Pembelian</label>
                         <div class="col-sm-10">
-                            <select class="form-control" v-model="valueJenis">
-                                <option >pilih jenis</option>
-                                <option>bahan baku</option>
-                                <option>inventori</option>
-                                <option>upah</option>
+                            <select class="form-control" v-model="data.jenisPembelian">
+                                <option disabled style="color: gainsboro;">pilih Pembelian</option>
+                                <option v-for="dataBuyingType in dataBuyingTypes" :key="dataBuyingType.kode" :value="dataBuyingType.kode">{{dataBuyingType.nama}}</option>
                             </select>
                         </div>
                     </div>
-                    <div v-if="valueJenis== 'bahan baku' " class="form-group row">
+                    <div v-if="data.jenisPembelian == typeMaterial" class="form-group row">
                         <label class="col-sm-2 col-form-label">Jenis Bahan Baku</label>
                         <div class="col-sm-10">
-                            <select class="form-control" v-model="valueJenisBB">
-                                <option >pilih jenis Bahan Baku</option>
-                                <option>kaos</option>
-                                <option>sweater</option>
+                            <select class="form-control" v-model="data.jenisBahanBaku">
+                                <option disabled style="color: gainsboro;">pilih Bahan Baku</option>
+                                <option v-for="dataMasterMaterial in dataMasterMaterials" :key="dataMasterMaterial.kode" :value="dataMasterMaterial.kode">{{dataMasterMaterial.nama}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div v-if="data.jenisPembelian == typeMaterial" class="form-group row">
+                        <label class="col-sm-2 col-form-label">Nama Suplier</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" v-model="data.supplier">
+                                <option disabled style="color: gainsboro;">pilih Supplier</option>
+                                <option v-for="dataSupplier in dataSuppliers" :key="dataSupplier.kode" :value="dataSupplier.kode">{{dataSupplier.nama}}</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Nama Item</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-text-input">
-                        </div>
-                    </div>
-                    <div v-if="valueJenis== 'bahan baku' " class="form-group row">
-                        <label class="col-sm-2 col-form-label">Nama Suplier</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" v-model="valueSuplier">
-                                <option >pilih suplier</option>
-                                <option>suplier 1</option>
-                                <option>suplier 2</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
-                        <div  class="col-sm-10">
-                            <textarea required class="form-control" rows="3"></textarea>
+                            <input class="form-control" type="text" v-model="data.nama"  id="example-text-input">
                         </div>
                     </div>
                     <hr>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">banyak</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="search" value="" id="example-search-input">
+                            <input class="form-control" type="number" v-model="data.jumlah" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Status Bayar</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueStatus">
-                                    <option >pilih status</option>
-                                    <option>Lunas</option>
-                                    <option>Bayar sebagian</option>
-                                    <option>Hutang</option>
+                                <select class="form-control" v-model="data.statusBayar">
+                                    <option disabled style="color: gainsboro" >pilih status</option>
+                                    <option  v-for="dataPaymentStatus in dataPaymentsStatus" :key="dataPaymentStatus.kode" :value="dataPaymentStatus.kode">{{dataPaymentStatus.nama}}</option>
                                 </select>
                             </div>
                     </div>
-                    <div v-if="valueJenis=='inventori'" class="form-group row">
+                    <div v-if="data.jenisPembelian == typeInventory" class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Nilai Penyusutan (%)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="search" value="" id="example-search-input">
+                            <input class="form-control" type="number" v-model="data.nilaiPenyusutan" id="example-search-input">
                         </div>
                     </div>
                     <hr>
-                    <div v-if="valueStatus=='Bayar sebagian'" class="form-group row">
-                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas (Rp)</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-number-input">
-                        </div>
-                    </div>
-                    <div v-if="valueStatus=='Bayar sebagian'" class="form-group row">
-                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Hutang (Rp)</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-number-input">
-                        </div>
-                    </div>
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Nominal (Rp)</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-number-input">
+                        <div class="col-md-5">
+                            <input class="form-control" type="text" v-model="total" id="example-number-input">
+                        </div>
+                    </div>
+                    <div v-if="data.statusBayar == paymentStatusHalfPaid" class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas (Rp)</label>
+                        <div class="col-md-5">
+                            <input class="form-control" type="text" v-model="lunas" id="example-number-input">
+                        </div>
+                    </div>
+                    <div v-if="data.statusBayar == paymentStatusHalfPaid" class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal hutang (Rp)</label>
+                        <div class="col-md-5">
+                            <input disabled class="form-control" type="text" v-model="hutang"  id="example-number-input">
+                        </div>
+                    </div>
+                    </hr>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
+                        <div  class="col-sm-10">
+                            <textarea required class="form-control" v-model="data.ket" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="form-group text-right">
                         <div>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light">
+                            <button :disabled="isButtonDisable" @click="checkValidation()" class="btn btn-primary waves-effect waves-light">
                                 Submit
                             </button>
                         </div>
@@ -133,21 +127,242 @@
 
 </div>
 
+
 <script>
-    function tambah(){
-        location.href = "/pembelian"
-    }
-    
-</script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
+     components: {
+            vuejsDatepicker
+    },
      data: {
-         valueJenis:'',
-         valueStatus:'',
-         valueJenisBB:'',
-         valueSuplier:''
+         data:{
+            tanggal:'',
+            jenisPembelian:'1',
+            jenisBahanBaku:'1',
+            supplier:0,
+            nama:'tes pembelian',
+            jumlah:'10',
+            statusBayar:'1',
+            nilaiPenyusutan:'',
+            total:'',
+            lunas:0,
+            hutang:0,
+            ket:'-',
+            tglSekarang:moment().format('YYYY-MM-DD'),
+            userAkun:''
+         },
+         total:'',
+         lunas:'',
+         hutang:'',
+         dataSuppliers:'',
+         dataBuyingTypes:'',
+         dataPaymentsStatus:'',
+         dataMasterMaterials:'',
+         typeMaterial: '1',
+         typeInventory: '2',
+         paymentStatusCredit: '4',
+         paymentStatusHalfPaid: '2',
+         isButtonDisable: false
+     },
+     async created(){
+        await this.getMasterBuyingType()
+        await this.getMasterSupplier()
+        await this.getMasterPaymentStatus()
+        await this.getMasterMaterial()
+      
+     },
+     watch: {
+        total : function (val) {
+            if(this.total != ""){
+                this.total  = this.convertFloatToRupiah(val).toString()
+                this.data.total = this.convertRupiahToFloat(this.total)
+                if(this.lunas != ''){
+                    var calculate = this.convertRupiahToFloat(this.total) - this.convertRupiahToFloat(this.lunas) 
+                    this.data.hutang = calculate
+                    this.hutang = calculate
+                }
+            }else{
+                this.handleEmptyTotal()
+            }
+        },
+        lunas : function (val) {
+            if(this.lunas != ""){
+                this.lunas  = this.convertFloatToRupiah(val).toString()
+                this.data.lunas = this.convertRupiahToFloat(this.lunas)
+                if(this.total != ''){
+                    var calculate = this.convertRupiahToFloat(this.total) - this.convertRupiahToFloat(this.lunas) 
+                    this.data.hutang = calculate
+                    this.hutang = calculate
+                }
+            }else {
+                this.handleEmptyLunas()
+            }
+        },
+        hutang : function (val){
+            //convert to rupiah
+        }
+     },
+     methods:{
+        actTambah: async function() {
+            try{
+                this.setDisableButton()
+                var data = this.data
+                let res = await axios.post(apiUrl+'pengeluaran/pembelian/tambah', { data:data })
+                if (res.data.success){
+                    this.setEnableButton()
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href = '/pengeluaran/pembelian/'; }, 1000);
+                }
+            }catch(err){
+                alert("Add data"+' '+err)
+            }
+        },
+        customFormatter(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
+        getMasterSupplier: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/supplier')
+                this.dataSuppliers= res.data
+            }catch(err){
+                alert("Get Client"+' '+err)
+            }
+        },
+        getMasterPaymentStatus: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/payment-status')
+                for(let i=0 ; i < res.data.length; i++ ){
+                    if (res.data[i].kode == this.paymentStatusCredit){
+                         res.data.splice(i,1)
+                    }
+                }
+                this.dataPaymentsStatus = res.data
+            }catch(err){
+                alert("Get Payment Status"+' '+err)
+            }
+        },
+        getMasterBuyingType: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/buying-type')
+                this.dataBuyingTypes = res.data
+                console.log(this.dataBuyingTypes)
+            }catch(err){
+                alert("Get Buying Type"+' '+err)
+            }
+        },
+        getMasterMaterial: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/master-material')
+                this.dataMasterMaterials = res.data
+            }catch(err){
+                alert("Get Master Material Type"+' '+err)
+            }
+        },
+        checkValidation: async function(){
+            var validate = false
+
+            if (this.data.tanggal == "" || this.data.jenispembelian == "" || 
+             this.data.nama == "" || this.data.jumlah == "" || this.data.statusBayar == "" 
+            || this.data.total == "" || this.data.ket == "" ) {
+                validate = false
+            } else if (this.data.statusBayar == this.paymentStatusHalfPaid){
+                validate = this.checkValidationHalfPaid()
+            } else  if (this.data.jenisPembelian == this.typeMaterial){
+                validate = this.checkValidationMaterial()
+            } else if (this.data.jenisPembelian == this.typeInventory){
+                validate = this.checkValidationInventory()
+            }else {
+                validate = true
+            }
+
+            if(validate){
+                console.log(this.data)
+                this.alertAdd()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        checkValidationMaterial(){
+            if (this.data.jenisBahanBaku == "" || this.data.supplier == 0 ) {
+                return false
+            } else {
+                return true
+            }
+        },
+        checkValidationInventory(){
+            if (this.data.nilaiPenyusutan == ""  ) {
+                return false
+            } else {
+                return true
+            }
+        },
+        checkValidationHalfPaid(){
+            if (this.data.hutang === 0 || this.data.lunas === 0 ) {
+                return false
+            } else {
+                return true
+            }
+        },
+        convertFloatToRupiah: function(val) {
+
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            return rupiah
+        },
+        convertRupiahToFloat: function(val){
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            return txtNumber
+        },
+        convertDataTanggal: function(val){
+            var convert = moment(val).format("YYYY-MM-DD")
+            this.data.tanggal = convert
+        },
+        alertAdd:  function (data) {
+             swal({
+                title: "Anda yakin ingin menambah data?",
+                text: "Pastikan data yang anda masukkan benar",
+                icon: "warning",
+                buttons: ["batal", "tambah"],
+                dangerMode: false,
+                })
+                .then((willAdd) => {
+                if (willAdd) {
+                     this.actTambah(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        },
+        setEnableButton: function(){
+            this.isButtonDisable = false
+        },
+        setDisableButton: function(){
+            this.isButtonDisable = true
+        },
+        handleEmptyTotal: function(){
+            this.data.total = ""
+            this.hutang = ""
+            this.lunas = ""
+        },
+        handleEmptyLunas: function(){
+            this.hutang = ""
+            this.lunas =""
+            this.data.hutang = 0
+            this.data.lunas = 0
+        }
      }
      })
  </script>

@@ -43,8 +43,9 @@ router.getPemasukanById = function(id) {
 
 router.insertPemasukanOtherType = function(data) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`CALL P_PEMASUKAN_LAINNYA(?,?,?,?,?,?,?,?)`,[data.jenisPemasukan,data.tanggal,data.nama,data.jumlah,data.total,data.statusBayar,data.ket,data.piutang],(err,results) => {
+        database.getConnection().query(`CALL P_PEMASUKAN_LAINNYA(?,?,?,?,?,?,?,?,?)`,[data.jenisPemasukan,data.tanggal,data.nama,data.jumlah,data.total,data.statusBayar,data.ket,data.piutang,data.tglSekarang],(err,results) => {
             if (err) {
+                console.log(err)
                 database.getConnection().query(`ROLLBACK;`)
                 return reject(err)
             }else{
@@ -58,7 +59,7 @@ router.insertPemasukanOtherType = function(data) {
 router.insertPemasukanTypeInvoicePayment = function(data) {
     console.log(data)
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`CALL P_PEMASUKAN_PEMBAYARAN_INVOICE(?,?,?,?,?,?,?,?,?)`,[data.jenisPemasukan,data.tanggal,data.nama,data.jumlah,data.total,data.statusBayar,data.ket,data.client,data.piutang],(err,results) => {
+        database.getConnection().query(`CALL P_PEMASUKAN_PEMBAYARAN_INVOICE(?,?,?,?,?,?,?,?,?,?)`,[data.jenisPemasukan,data.tanggal,data.nama,data.jumlah,data.total,data.statusBayar,data.ket,data.client,data.piutang,data.tglSekarang],(err,results) => {
             console.log(err)
             if (err) {
                 database.getConnection().query(`ROLLBACK;`)

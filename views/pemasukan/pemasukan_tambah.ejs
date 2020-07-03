@@ -132,7 +132,9 @@
             total:'',
             lunas:0,
             piutang:0,
-            ket:''
+            ket:'',
+            tglSekarang:moment().format('YYYY-MM-DD'),
+            userAkun:''
          },
          total:'',
          lunas:'',
@@ -143,9 +145,6 @@
          typeInvoicePayment: '1',
          paymentStatusDebt: '3',
          paymentStatusHalfPaid: '2',
-         valueJenis:'',
-         valueStatus:'',
-         valueClient:'',
          isButtonDisable: false
      },
      async created(){
@@ -155,21 +154,30 @@
      },
      watch: {
         total : function (val) {
-            this.total  = this.convertFloatToRupiah(val).toString()
-            this.data.total = this.convertRupiahToFloat(this.total)
-            if(this.lunas != ''){
-                var calculate = this.convertRupiahToFloat(this.total) - this.convertRupiahToFloat(this.lunas) 
-                this.data.piutang = calculate
-                this.piutang = calculate
+            if(this.total != "") {
+                this.total  = this.convertFloatToRupiah(val).toString()
+                this.data.total = this.convertRupiahToFloat(this.total)
+                console.log(this.data.total)
+                if(this.lunas != ''){
+                    var calculate = this.convertRupiahToFloat(this.total) - this.convertRupiahToFloat(this.lunas) 
+                    this.data.piutang = calculate
+                    this.piutang = calculate
+                }
+            }else{
+                this.handleEmptyTotal()
             }
         },
         lunas : function (val) {
-            this.lunas  = this.convertFloatToRupiah(val).toString()
-            this.data.lunas = this.convertRupiahToFloat(this.lunas)
-            if(this.total != ''){
-                var calculate = this.convertRupiahToFloat(this.total) - this.convertRupiahToFloat(this.lunas) 
-                this.data.piutang = calculate
-                this.piutang = calculate
+            if (this.lunas != ""){
+                this.lunas  = this.convertFloatToRupiah(val).toString()
+                this.data.lunas = this.convertRupiahToFloat(this.lunas)
+                if(this.total != ''){
+                    var calculate = this.convertRupiahToFloat(this.total) - this.convertRupiahToFloat(this.lunas) 
+                    this.data.piutang = calculate
+                    this.piutang = calculate
+                }
+            }else{
+                this.handleEmptyLunas()
             }
         },
         piutang : function (val){
@@ -224,12 +232,37 @@
             }
         },
         checkValidation: async function(){
+            var validate = false
             if (this.data.tanggal == "" || this.data.jenisPemasukan == "" || 
              this.data.nama == "" || this.data.jumlah == "" || this.data.statusBayar == "" 
             || this.data.total == "" || this.data.ket == "" ) {
-                alert("harap isi semua field")
+                validate = false
+            } else if(this.data.statusBayar == this.paymentStatusHalfPaid){
+                validate = this.checkValidationHalfPaid()
+            } else if(this.data.jenisPemasukan == this.typeInvoicePayment){
+                validate = this.checkValidationInvoicePayment()
             } else {
-                this.actTambah()
+                validate = true
+            }
+
+            if(validate){
+                this.alertAdd()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        checkValidationInvoicePayment(){
+            if (this.data.client == 0  ) {
+                return false
+            } else {
+                return true
+            }
+        },
+        checkValidationHalfPaid(){
+            if (this.data.piutang === 0 || this.data.lunas === 0 ) {
+                return false
+            } else {
+                return true
             }
         },
         convertFloatToRupiah: function(val) {
@@ -279,6 +312,17 @@
         },
         setDisableButton: function(){
             this.isButtonDisable = true
+        },
+        handleEmptyTotal: function(){
+            this.data.total = ""
+            this.piutang = ""
+            this.lunas = ""
+        },
+        handleEmptyLunas: function(){
+            this.piutang = ""
+            this.lunas =""
+            this.data.piutang = 0
+            this.data.lunas = 0
         }
      }
      })

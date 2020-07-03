@@ -20,7 +20,23 @@ async function getClientAll() {
     }
 }
 
-module.exports.getClientAll = getClientAll;
+async function getSupplier() {
+    try {
+        const rows = await modelMaster.getSupplier()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
 
 async function getPaymentStatus() {
     try {
@@ -39,8 +55,6 @@ async function getPaymentStatus() {
         return util.responseErrorServer(err)
     }
 }
-
-module.exports.getPaymentStatus = getPaymentStatus;
 
 
 async function getInputType() {
@@ -61,4 +75,48 @@ async function getInputType() {
     }
 }
 
-module.exports.getInputType = getInputType;
+
+async function getBuyingType() {
+    try {
+        const rows = await modelMaster.getBuyingType()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function getMasterMaterial() {
+    try {
+        const rows = await modelMaster.getMasterMaterial()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+module.exports ={
+    getClientAll,
+    getSupplier,
+    getPaymentStatus,
+    getInputType,
+    getBuyingType,
+    getMasterMaterial,
+} 

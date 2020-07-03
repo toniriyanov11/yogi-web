@@ -26,7 +26,7 @@
                             <h4 class="mt-0 mb-4 header-title">Edit data pembelian</h4>
                         </div>
                         <div class="col-sm-6">
-                            <h4 class="mt-0 mb-4 header-title text-right"><%= data.id%></h4>
+                            <h4 class="mt-0 mb-4 header-title text-right">{{dataResponses.id}}</h4>
                         </div>
                      </div>
                     
@@ -34,99 +34,90 @@
                         <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
                         <div class="col-sm-10">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="mm/dd/yyyy" value="<%= data.tgl%>" id="datepicker-autoclose">
-                                <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div>
+                                <vuejs-datepicker v-model="dataResponses.tanggal" @input="convertDataTanggal"  :value="dataResponses.tanggal" :format="'dd/MM/yyyy'"></vuejs-datepicker>
                             </div><!-- input-group -->
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Jenis Pembelian</label>
                         <div class="col-sm-10">
-                            <select class="form-control" v-model="valueJenis">
-                                <option  <% if(data.jenis === 'bahan Baku') { %> selected  <% } %>>bahan baku</option>
-                                <option  <% if(data.jenis === 'inventori') { %> selected <% } %>>inventori</option>
-                                <option  <% if(data.jenis === 'upah') { %> selected <% } %>>upah</option>
+                            <select disabled class="form-control" v-model="dataResponses.ketJenisPembelian">
+                                <option v-for="dataBuyingType in dataBuyingTypes" :key="dataBuyingTypes.kode" >{{dataBuyingType.nama}}</option>
                             </select>
                         </div>
                     </div>
-                    <div v-if="valueJenis == 'bahan baku' " class="form-group row">
+                    <div v-if="dataResponses.kodeJenisBahanBaku == typeMaterial" class="form-group row">
                         <label class="col-sm-2 col-form-label">Jenis Bahan Baku</label>
                         <div class="col-sm-10">
-                            <select class="form-control" v-model="valueJenisBB">
-                                <option >pilih jenis Bahan Baku</option>
-                                <option  <% if(data.jenis === 'kaos') { %> selected  <% } %>>kaos</option>
-                                <option  <% if(data.jenis === 'sweater') { %> selected  <% } %>>sweater</option>
+                            <select disabled class="form-control" v-model="dataResponses.ketJenisBahanBaku">
+                                <option v-for="dataMasterMaterial in dataMasterMaterials" :key="dataMasterMaterial.kode" >{{dataMasterMaterial.nama}}</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Nama Item</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.nama %>" id="example-text-input">
+                            <input class="form-control" type="text" v-model="dataResponses.nama" id="example-text-input">
                         </div>
                     </div>
-                    <div v-if="valueJenis == 'bahan baku' " class="form-group row">
+                    <div  v-if="dataResponses.kodeJenisBahanBaku == typeMaterial" class="form-group row">
                         <label class="col-sm-2 col-form-label">Nama Suplier</label>
                         <div class="col-sm-10">
-                            <select class="form-control" v-model="valueSuplier">
-                                <option >pilih suplier</option>
-                                <option  <% if(data.supl === 'suplier 1') { %> selected  <% } %>>suplier 1</option>
-                                <option  <% if(data.supl === 'suplier 2') { %> selected  <% } %>>suplier 2</option>
+                            <select disabled class="form-control" v-model="dataResponses.kodeSupplier">
+                                <option v-for="dataSupplier in dataSuppliers" :value="dataSupplier.kode" >{{dataSupplier.nama}}</option>
                             </select>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
                         <div  class="col-sm-10">
-                            <textarea required class="form-control"  rows="3"><%= data.ket %></textarea>
+                            <textarea required class="form-control"  rows="3" v-model="dataResponses.ket"></textarea>
                         </div>
                     </div>
                     <hr>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">banyak</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="search" value="<%= data.jml %>" id="example-search-input">
+                            <input class="form-control" type="search" v-model="dataResponses.jumlah" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Status Bayar</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueStatus">
-                                    <option <% if(data.status === 'lunas') { %> selected <% } %> >Lunas</option>
-                                    <option  <% if(data.status === 'Bayar sebagian') { %> selected <% } %>>Bayar sebagian</option>
-                                    <option  <% if(data.status === 'Hutang') { %> selected <% } %>>Hutang</option>
+                                <select disabled class="form-control" v-model="dataResponses.kodeStatusBayar">
+                                    <option  v-for="dataPaymentStatus in dataPaymentsStatus" :value="dataPaymentStatus.kode" >{{dataPaymentStatus.nama}}</option>
                                 </select>
                             </div>
                     </div>
 
-                    <div v-if="valueJenis=='inventori'" class="form-group row">
+                    <div v-if="dataResponses.kodeJenisBahanBaku == typeInventory" class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Nilai Penyusutan (%)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="search" value="<%= data.nilaip %>" id="example-search-input">
+                            <input class="form-control" type="search" v-model="dataResponses.nilaiPenyusutan" id="example-search-input">
                         </div>
                     </div>
                     <hr>
-                    <div v-if="valueStatus=='Bayar sebagian'" class="form-group row">
-                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas (Rp) {{valueStatus}}</label>
+                    <div v-if="dataResponses.kodeStatusBayar == paymentStatusHalfPaid" class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.nomlunas %>" id="example-number-input">
+                            <input disabled class="form-control" type="text"  v-model="dataResponses.nominal-dataResponses.hutang"id="example-number-input">
                         </div>
                     </div>
-                    <div  v-if="valueStatus=='Bayar sebagian'" class="form-group row">
+                    <div  v-if="dataResponses.kodeStatusBayar == paymentStatusHalfPaid" class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Hutang (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.nomhutang %>" id="example-number-input">
+                            <input disabled class="form-control" type="text" v-model="hutang"  id="example-number-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Nominal (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.nom%>" id="example-number-input">
+                            <input disabled  class="form-control" type="text" v-model="nominal" id="example-number-input">
                         </div>
                     </div>
                     <div class="form-group text-right">
                         <div>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light" id="alertify-confirm">
+                            <button @click="checkValidation()" class="btn btn-primary waves-effect waves-light">
                                 Edit 
                             </button>
                         </div>
@@ -140,20 +131,199 @@
 </div>
 
 <script>
-    function tambah(){
-        location.href = "/pembelian"
-    }
-    
-</script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
+     components: {
+        vuejsDatepicker 
+     },
      data: {
-         valueJenis:'<%= data.jenis  %>',
-         valueStatus:'<%= data.status  %>',
-         valueJenisBB:'<%= data.jenisbb  %>',
-         valueSuplier:'<%= data.supl %>'
+         id:'',
+         dataResponses:{
+         },
+         dataSuppliers:{},
+         dataPaymentsStatus:{},
+         dataBuyingTypes:{},
+         dataMasterMaterials:{},
+         typeMaterial: '1',
+         typeInventory: '2',
+         paymentStatusCredit:'4',
+         paymentStatusHalfPaid: '2',
+         nominal:0,
+         hutang:0,
+         lunas:0,
+         tanggal:'2018-10-04'
+     },
+     async created() {
+        this.id = JSON.parse('<%-data%>')
+        await this.getData(this.id)
+        this.nominal = this.dataResponses.nominal.toString()
+        this.hutang = this.dataResponses.hutang.toString()
+        await this.getMasterBuyingType()
+        await this.getMasterMaterial()
+        await this.getMasterSupplier()
+        await this.getMasterPaymentStatus()
+     },
+     watch: {
+        nominal: function (val) {
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            this.nominal = rupiah
+        },
+        hutang: function (val) {
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            this.hutang = rupiah
+        }
+    },
+     async mounted (){
+      
+     },
+     methods : {
+        getData: async function(id) {
+            try{
+                const res = await axios.post(apiUrl+'pengeluaran/pembelian/edit/'+id)
+                this.dataResponses = res.data[0]
+                console.log(this.dataResponses)
+            }catch(err){
+                alert("Get data"+' '+err)
+            }
+        },
+        actEdit: async function() {
+            try{
+                var data = this.dataResponses
+                const res = await axios.post(apiUrl+'pengeluaran/pembelian/edit', { data:data })
+                if (res.data.success){
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href = 'http://localhost:45000/pengeluaran/pembelian/'; }, 1000);
+                }
+            }catch(err){
+                alert("Edit data"+' '+err)
+            }
+        },
+        getMasterSupplier: async function() {
+            try{
+                const res = await axios.get(apiUrl+'master/supplier')
+                this.dataSuppliers = res.data
+            }catch(err){
+                alert("Get Supplier"+' '+err)
+            }
+        },
+        getMasterPaymentStatus: async function() {
+            try{
+                const res = await axios.get(apiUrl+'master/payment-status')
+                for(let i=0 ; i < res.data.length; i++ ){
+                    if (res.data[i].kode == this.paymentStatusCredit){
+                         res.data.splice(i,1)
+                    }
+                }
+                this.dataPaymentsStatus = res.data
+            }catch(err){
+                alert("Get Payment Status"+' '+err)
+            }
+        },
+        getMasterBuyingType: async function() {
+            try{
+                const res = await axios.get(apiUrl+'master/buying-type')
+                this.dataBuyingTypes = res.data
+            }catch(err){
+                alert("Get Buying Type"+' '+err)
+            }
+        },
+        getMasterMaterial: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/master-material')
+                this.dataMasterMaterials = res.data
+            }catch(err){
+                alert("Get Master Material Type"+' '+err)
+            }
+        },
+        checkValidation: async function(){
+            var validate = false
+
+            if (this.dataResponses.tanggal == "" || this.dataResponses.jenispembelian == "" || 
+             this.dataResponses.nama == "" || this.dataResponses.jumlah == "" || this.dataResponses.statusBayar == "" 
+            || this.dataResponses.total == "" || this.dataResponses.ket == "" ) {
+                validate = false
+            } else if (this.dataResponses.statusBayar == this.paymentStatusHalfPaid){
+                validate = this.checkValidationHalfPaid()
+            } else  if (this.dataResponses.jenisPembelian == this.typeMaterial){
+                validate = this.checkValidationMaterial()
+            } else if (this.dataResponses.jenisPembelian == this.typeInventory){
+                validate = this.checkValidationInventory()
+            }else {
+                validate = true
+            }
+
+            if(validate){
+                this.alertEdit()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        checkValidationMaterial(){
+            if (this.data.jenisBahanBaku == "" || this.data.supplier == "" ) {
+                return false
+            } else {
+                return true
+            }
+        },
+        checkValidationInventory(){
+            if (this.data.nilaiPenyusutan == ""  ) {
+                return false
+            } else {
+                return true
+            }
+        },
+        checkValidationHalfPaid(){
+            if (this.data.hutang === 0 || this.data.lunas === 0 ) {
+                return false
+            } else {
+                return true
+            }
+        },
+        customFormatter(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
+        convertDataTanggal: function(val){
+            var convert = moment(val).format("YYYY-MM-DD")
+            this.dataResponses.tanggal = convert
+        },
+        alertEdit:  function (data) {
+             swal({
+                title: "Anda yakin ingin merubah data?",
+                text: "Pastikan data yang anda ubah benar",
+                icon: "warning",
+                buttons: ["batal", "ubah"],
+                dangerMode: false,
+                })
+                .then((willEdit) => {
+                if (willEdit) {
+                     this.actEdit(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        }
      }
      })
  </script>
