@@ -77,19 +77,19 @@
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Nominal (Rp)</label>
                         <div class="col-md-5">
-                            <input class="form-control" type="text" v-model="total" id="example-number-input">
+                            <input class="form-control" type="text" v-model="total">
                         </div>
                     </div>
                     <div v-if="data.statusBayar == paymentStatusHalfPaid" class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas (Rp)</label>
                         <div class="col-md-5">
-                            <input class="form-control" type="text" v-model="lunas" id="example-number-input">
+                            <input class="form-control" type="text" v-model="lunas">
                         </div>
                     </div>
                     <div v-if="data.statusBayar == paymentStatusHalfPaid" class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Piutang (Rp)</label>
                         <div class="col-md-5">
-                            <input disabled class="form-control" type="text" v-model="piutang"  id="example-number-input">
+                            <input disabled class="form-control" type="text" v-model="piutang" >
                         </div>
                     </div>
                     <div class="col-sm-7"> <hr></div>

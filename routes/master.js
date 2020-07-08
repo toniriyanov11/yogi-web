@@ -102,4 +102,34 @@ router.get('/master-material',async function(req, res, next) {
       }
 })
 
+router.get('/load-type',async function(req, res, next) {
+   try{    
+       let dataResponse = await controllerMaster.getLoadType()
+       var data =""
+       if (dataResponse.success) {
+          data = await util.convertRecordDate(dataResponse,'DD/MM/YYYY')
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+     }catch(err){
+       res.status(500).json(err);
+     }
+})
+
+router.get('/payment-type',async function(req, res, next) {
+   try{    
+       let dataResponse = await controllerMaster.getPaymentType()
+       var data =""
+       if (dataResponse.success) {
+          data = await util.convertRecordDate(dataResponse,'DD/MM/YYYY')
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+     }catch(err){
+       res.status(500).json(err);
+     }
+})
+
 module.exports = router;

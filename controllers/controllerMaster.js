@@ -112,6 +112,41 @@ async function getMasterMaterial() {
     }
 }
 
+async function getLoadType() {
+    try {
+        const rows = await modelMaster.getLoadType()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function getPaymentType() {
+    try {
+        const rows = await modelMaster.getPaymentType()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
 module.exports ={
     getClientAll,
     getSupplier,
@@ -119,4 +154,6 @@ module.exports ={
     getInputType,
     getBuyingType,
     getMasterMaterial,
+    getLoadType,
+    getPaymentType
 } 

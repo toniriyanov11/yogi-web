@@ -133,46 +133,242 @@ router.post('/pembelian/hapus/:id', async function(req, res, next) {
 
 
 
+
+/* Beban */
 router.get('/beban', function(req, res, next) {
   res.render('index', { title: 'Pengeluaran - Beban', page:'pengeluaran/beban.ejs'});
 });
 
-router.get('/beban/detil/:id', function(req, res, next) {
-  var id = req.params.id;
-  console.log(req.query)
-  res.render('index', { title: 'Detail Beban', page:'pengeluaran/beban_detil.ejs', data:req.query});
-});
 
-router.get('/beban/edit/:id', function(req, res, next) {
-  var id = req.params.id;
-  console.log(req.query)
-  res.render('index', { title: 'Edit Beban', page:'pengeluaran/beban_edit.ejs', data:req.query});
-});
+router.post('/beban',async function(req, res, next) {
+   try{
+      let dataResponse = await controllerPengeluaran.getBebanAll()
+      console.log(dataResponse)
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+    }catch(err){
+       console.log(err)
+      res.status(500).json(err);
+    }
+})
+
+   router.get('/beban/detil/:id', function(req, res, next) {
+      var id = req.params.id;
+      res.render('index', { title: 'Detail beban', page:'pengeluaran/beban_detil.ejs', data:JSON.stringify(id)});
+    });
+    
+    
+    router.post('/beban/detil/:id',async function(req, res, next) {
+      try{
+         var id = req.params.id;
+         let dataResponse = await controllerPengeluaran.getBebanById(id)
+         var data =""
+         if (dataResponse.success) {
+            data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+            res.status(200).json(data);
+         } else {
+            res.status(400).json(data);
+         }
+     }catch(err){
+       console.log(err)
+          res.status(500).json(err);
+     }
+    });
+    
+
+    router.get('/beban/edit/:id', async function(req, res, next) {
+      var id = req.params.id;
+      res.render('index', { title: 'Edit Beban', page:'pengeluaran/beban_edit.ejs', data:JSON.stringify(id)});
+    });
+    
+    router.post('/beban/edit/:id', async function(req, res, next) {
+      try{
+         var id = req.params.id;
+         let dataResponse = await controllerPengeluaran.getBebanById(id)   
+         var data =""
+         if (dataResponse.success) {
+            data = await util.convertDate(dataResponse,'YYYY-MM-DD')
+            res.status(200).json(data);
+         } else {
+            res.status(400).json(data);
+         }
+      } catch(err){
+         res.status(500).json(err);
+      }
+    });
+    
+    router.post('/beban/edit', async function(req, res, next) {
+      try {
+         var data = req.body.data
+         let dataResponse = await controllerPengeluaran.updateBeban(data)
+         if (dataResponse.success) {
+            res.status(200).json(dataResponse);
+         } else {
+            res.status(400).json();
+         }
+      } catch (err) {
+         res.status(500).json(err);
+      }
+    });
+
 
 router.get('/beban/tambah', function(req, res, next) {
     res.render('index', { title: 'Tambah Beban', page:'pengeluaran/beban_tambah.ejs'});
 });
 
+router.post('/beban/tambah', async function(req, res, next) {
+   try{
+      var data = req.body.data
+      let dataResponse = await controllerPengeluaran.insertBeban(data)
+      console.log(dataResponse)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   }catch(err){
+     console.log(err)
+      res.status(500).json(err);
+   }
+ });
+
+ router.post('/beban/hapus/:id', async function(req, res, next) {
+   try{
+      var id = req.params.id
+      let dataResponse = await controllerPengeluaran.deleteBeban(id)
+      console.log(dataResponse)
+      if (dataResponse.success ) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch(err){
+      res.status(500).json(err);
+   }
+ });
+
+//End of Beban
 
 
+
+//Pembayaran
 router.get('/pembayaran', function(req, res, next) {
   res.render('index', { title: 'Pengeluaran - pembayaran', page:'pengeluaran/pembayaran.ejs'});
 });
 
-router.get('/pembayaran/detil/:id', function(req, res, next) {
-  var id = req.params.id;
-  console.log(req.query)
-  res.render('index', { title: 'Detail pembayaran', page:'pengeluaran/pembayaran_detil.ejs', data:req.query});
-});
+router.post('/pembayaran',async function(req, res, next) {
+   try{
+      let dataResponse = await controllerPengeluaran.getPembayaranAll()
+      console.log(dataResponse)
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+    }catch(err){
+       console.log(err)
+      res.status(500).json(err);
+    }
+})
 
-router.get('/pembayaran/edit/:id', function(req, res, next) {
-  var id = req.params.id;
-  console.log(req.query)
-  res.render('index', { title: 'Edit pembayaran', page:'pengeluaran/pembayaran_edit.ejs', data:req.query});
-});
+router.get('/pembayaran/detil/:id', function(req, res, next) {
+   var id = req.params.id;
+   res.render('index', { title: 'Detail pembayaran', page:'pengeluaran/pembayaran_detil.ejs', data:JSON.stringify(id)});
+ });
+ 
+ 
+ router.post('/pembayaran/detil/:id',async function(req, res, next) {
+   try{
+      var id = req.params.id;
+      let dataResponse = await controllerPengeluaran.getPembayaranById(id)
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+  }catch(err){
+    console.log(err)
+       res.status(500).json(err);
+  }
+ });
+
+ router.get('/pembayaran/edit/:id', async function(req, res, next) {
+   var id = req.params.id;
+   res.render('index', { title: 'Edit pembayaran', page:'pengeluaran/pembayaran_edit.ejs', data:JSON.stringify(id)});
+ });
+ 
+ router.post('/pembayaran/edit/:id', async function(req, res, next) {
+   try{
+      var id = req.params.id;
+      let dataResponse = await controllerPengeluaran.getPembayaranById(id)   
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'YYYY-MM-DD')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+   } catch(err){
+      res.status(500).json(err);
+   }
+ });
+ 
+ router.post('/pembayaran/edit', async function(req, res, next) {
+   try {
+      var data = req.body.data
+      let dataResponse = await controllerPengeluaran.updatePembayaran(data)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch (err) {
+      res.status(500).json(err);
+   }
+ });
 
 router.get('/pembayaran/tambah', function(req, res, next) {
-    res.render('index', { title: 'Tambah pembayaran', page:'pengeluaran/pembayaran_tambah.ejs'});
+   res.render('index', { title: 'Tambah Pembayaran', page:'pengeluaran/pembayaran_tambah.ejs'});
 });
 
+router.post('/pembayaran/tambah', async function(req, res, next) {
+  try{
+     var data = req.body.data
+     let dataResponse = await controllerPengeluaran.insertPembayaran(data)
+     console.log(dataResponse)
+     if (dataResponse.success) {
+        res.status(200).json(dataResponse);
+     } else {
+        res.status(400).json();
+     }
+  }catch(err){
+    console.log(err)
+     res.status(500).json(err);
+  }
+});
+
+router.post('/pembayaran/hapus/:id', async function(req, res, next) {
+   try{
+      var id = req.params.id
+      let dataResponse = await controllerPengeluaran.deletePembayaran(id)
+      console.log(dataResponse)
+      if (dataResponse.success ) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch(err){
+      res.status(500).json(err);
+   }
+ });
+//End of Pembayaran
 module.exports = router;
