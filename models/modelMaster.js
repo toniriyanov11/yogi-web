@@ -51,6 +51,18 @@ router.getMasterMaterial = function() {
     })
 }
 
+router.getClient = function() {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`SELECT * FROM client`,(err,results) => {
+            if (err) {
+                return reject(err)
+            } else {
+                return resolve(results)
+            }
+        })
+    })
+}
+
 router.getSupplier = function() {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`SELECT * FROM supplier`,(err,results) => {

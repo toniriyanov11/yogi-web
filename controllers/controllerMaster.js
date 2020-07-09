@@ -3,9 +3,9 @@ const modelMaster= require('../models/modelMaster.js');
 const util = require('../configs/utils.js');
 
 
-async function getClientAll() {
+async function getClient() {
     try {
-        const rows = await modelClient.getClientAll()
+        const rows = await modelMaster.getClient()
 
         if ( rows.length >= 1 ) {
             return util.responseSuccess(rows)
@@ -148,7 +148,7 @@ async function getPaymentType() {
     }
 }
 module.exports ={
-    getClientAll,
+    getClient,
     getSupplier,
     getPaymentStatus,
     getInputType,

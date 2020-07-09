@@ -13,7 +13,7 @@ router.get('/',async function(req, res, next) {
 /* GET home page. */
 router.get('/client',async function(req, res, next) {
     try{
-        let dataResponse = await controllerMaster.getClientAll()
+        let dataResponse = await controllerMaster.getClient()
         var data =""
         if (dataResponse.success) {
            data = await util.convertRecordDate(dataResponse,'DD/MM/YYYY')

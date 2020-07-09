@@ -104,7 +104,7 @@
                     </div>
                     <div class="form-group text-right">
                         <div>
-                            <button @click="alertEdit()" class="btn btn-primary waves-effect waves-light">
+                            <button @click="checkValidation()" class="btn btn-primary waves-effect waves-light">
                                 Edit 
                             </button>
                         </div>
@@ -192,7 +192,7 @@
                 const res = await axios.post(apiUrl+'pemasukan/edit', { data:data })
                 if (res.data.success){
                     this.alertSuccess(res.data.msg)
-                    setTimeout(function(){ window.location.href = 'http://localhost:45000/pemasukan/'; }, 1000);
+                    setTimeout(function(){ window.location.href = apiUrl + 'pemasukan'; }, 1000);
                 }
             }catch(err){
                 alert("Edit data"+' '+err)
@@ -225,6 +225,40 @@
                 this.dataInputTypes = res.data
             }catch(err){
                 alert("Get Input Type"+' '+err)
+            }
+        },
+        checkValidation: async function(){
+            var validate = false
+            if (this.dataResponses.tanggal == "" || this.dataResponses.jenisPemasukan == "" || 
+             this.dataResponses.nama == "" || this.dataResponses.jumlah == "" || this.dataResponses.statusBayar == "" 
+            || this.dataResponses.total == "" || this.dataResponses.ket == "" ) {
+                validate = false
+            } else if(this.dataResponses.statusBayar == this.paymentStatusHalfPaid){
+                validate = this.checkValidationHalfPaid()
+            } else if(this.dataResponses.jenisPemasukan == this.typeInvoicePayment){
+                validate = this.checkValidationInvoicePayment()
+            } else {
+                validate = true
+            }
+
+            if(validate){
+                this.alertEdit()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        checkValidationInvoicePayment(){
+            if (this.dataResponses.client == 0  ) {
+                return false
+            } else {
+                return true
+            }
+        },
+        checkValidationHalfPaid(){
+            if (this.dataResponses.piutang === 0 || this.dataResponses.lunas === 0 ) {
+                return false
+            } else {
+                return true
             }
         },
         customFormatter(date) {

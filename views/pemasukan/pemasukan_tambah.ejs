@@ -193,10 +193,11 @@
                 if (res.data.success){
                     this.setEnableButton()
                     this.alertSuccess(res.data.msg)
-                    setTimeout(function(){ window.location.href = '/pemasukan/'; }, 1000);
+                    setTimeout(function(){ window.location.href =apiUrl + 'pemasukan/'; }, 1000);
                 }
             }catch(err){
                 alert("Add data"+' '+err)
+                this.setEnableButton()
             }
         },
         customFormatter(date) {

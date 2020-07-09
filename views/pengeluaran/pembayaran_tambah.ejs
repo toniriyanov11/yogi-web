@@ -201,6 +201,7 @@
                 }
             }catch(err){
                 alert("Add data"+' '+err)
+                this.setEnableButton()
             }
         },
         customFormatter(date) {
@@ -247,7 +248,7 @@
                 validate = this.checkValidationHalfPaid()
             } else  if (this.data.jenisPembayaran == this.typeReturnPayment){
                 validate = this.checkValidationTypeReturnPayment()
-            }else {
+            } else {
                 validate = true
             }
 

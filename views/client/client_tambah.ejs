@@ -26,30 +26,30 @@
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Nama Client</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-text-input">
+                            <input class="form-control" type="text" v-model="data.nama"  id="example-text-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">No Hp</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-text-input">
+                            <input class="form-control" type="number" v-model="data.noHp"  id="example-text-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Email</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-text-input">
+                            <input class="form-control" type="text" v-model="data.email"  id="example-text-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Alamat</label>
                         <div  class="col-sm-10">
-                            <textarea required class="form-control" rows="3"></textarea>
+                            <textarea required class="form-control" v-model="data.alamat"  rows="3"></textarea>
                         </div>
                     </div>
                     <div class="form-group text-right">
-                        <div>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light">
+                        <div class="col-sm-7">
+                            <button :disabled="isButtonDisable" @click="checkValidation()" class="btn btn-primary waves-effect waves-light">
                                 Submit
                             </button>
                         </div>
@@ -62,20 +62,87 @@
 
 </div>
 
+
 <script>
-    function tambah(){
-        location.href = "/pemasukan"
-    }
-    
-</script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
+     components: {
+            vuejsDatepicker
+    },
      data: {
-         valueJenis:'',
-         valueStatus:'',
-         valueClient:''
+         data:{
+            nama:'Mike',
+            noHp:'08',
+            email:'mike@gmail.com',
+            alamat:'jakarta',
+            tglSekarang:moment().format('YYYY-MM-DD'),
+            userAkun:''
+         },
+         isButtonDisable: false
+     },
+     async created(){
+
+     },
+     methods:{
+        actTambah: async function() {
+            try{
+                this.setDisableButton()
+                var data = this.data
+                console.log(data)
+                let res = await axios.post(apiUrl+'client/tambah', { data:data })
+                if (res.data.success){
+                    this.setEnableButton()
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href = '/client/'; }, 1000);
+                }
+            }catch(err){
+                alert("Add data"+' '+err)
+                this.setEnableButton()
+            }
+        },
+        checkValidation: async function(){
+            var validate = false
+            if (this.data.nama == "" || this.data.noHp == "" || 
+             this.data.alamat == "" || this.data.email == "" ){
+                validate = false
+            } else {
+                validate = true
+            }
+
+            if(validate){
+                this.alertAdd()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        alertAdd:  function (data) {
+             swal({
+                title: "Anda yakin ingin menambah data?",
+                text: "Pastikan data yang anda masukkan benar",
+                icon: "warning",
+                buttons: ["batal", "tambah"],
+                dangerMode: false,
+                })
+                .then((willAdd) => {
+                if (willAdd) {
+                     this.actTambah(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        },
+        setEnableButton: function(){
+            this.isButtonDisable = false
+        },
+        setDisableButton: function(){
+            this.isButtonDisable = true
+        }
      }
      })
  </script>
