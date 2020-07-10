@@ -1,10 +1,10 @@
-const modelClient= require('../models/modelClient.js');
+const modelSupplier= require('../models/modelSupplier.js');
 const util = require('../configs/utils.js');
 
 
-async function getClientById(id) {
+async function getSupplierById(id) {
     try {
-        const rows = await modelClient.getClientById(id)
+        const rows = await modelSupplier.getSupplierById(id)
 
         if ( rows.length >= 1 ) {
             return util.responseSuccess(rows)
@@ -20,7 +20,7 @@ async function getClientById(id) {
     }
 }
 
-async function insertClient(data) {
+async function insertSupplier(data) {
     try {
        return processData(data)
     } catch(err) {
@@ -28,9 +28,9 @@ async function insertClient(data) {
     }
 }
 
-async function updateClient(data) {
+async function updateSupplier(data) {
     try {
-        const rows = await modelClient.updateClient(data)
+        const rows = await modelSupplier.updateSupplier(data)
         if (rows.affectedRows >= 1) {
             return util.responseSuccessUpdate()
         } else {
@@ -41,7 +41,6 @@ async function updateClient(data) {
     }
 }
 
-
 //function
 async function processData(data){
     try{
@@ -50,7 +49,7 @@ async function processData(data){
             data.noHp !== "" && 
             data.email !== "") {         
 
-            const rows = await modelClient.insertClient(data)
+            const rows = await modelSupplier.insertSupplier(data)
             if (rows.affectedRows >= 1) {
             return util.responseSuccess(rows)
             } else {
@@ -64,7 +63,7 @@ async function processData(data){
     }
 }
 module.exports = {
-    getClientById,
-    insertClient,
-    updateClient
+    getSupplierById,
+    insertSupplier,
+    updateSupplier
 }

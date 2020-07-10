@@ -26,36 +26,36 @@
                             <h4 class="mt-0 mb-4 header-title">Edit data supplier</h4>
                         </div>
                         <div class="col-sm-6">
-                            <h4 class="mt-0 mb-4 header-title text-right"><%= data.id%></h4>
+                            <h4 class="mt-0 mb-4 header-title text-right">{{dataResponses.kode}}</h4>
                         </div>
                      </div>
-                    <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2 col-form-label">Nama Supplier</label>
+                     <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Nama Client</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.nama %>" id="example-text-input">
+                            <input class="form-control" type="text"  v-model="dataResponses.nama" id="example-text-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">No Hp</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="<%= data.nohp %>" id="example-text-input">
+                            <input class="form-control" type="number"  v-model="dataResponses.noHp" id="example-text-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Email</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.email %>" id="example-text-input">
+                            <input class="form-control" type="text"  v-model="dataResponses.email" id="example-text-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Alamat</label>
                         <div  class="col-sm-10">
-                            <textarea required class="form-control"  rows="3"><%= data.alamat %></textarea>
+                            <textarea required class="form-control"  rows="3"  v-model="dataResponses.alamat"></textarea>
                         </div>
                     </div>
                     <div class="form-group text-right">
                         <div>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light" id="alertify-confirm">
+                            <button :disabled="isButtonDisable" @click="checkValidation()" class="btn btn-primary waves-effect waves-light">
                                 Edit 
                             </button>
                         </div>
@@ -68,21 +68,90 @@
 
 </div>
 
+
 <script>
-    function tambah(){
-        location.href = "/pembelian"
-    }
-    
-</script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
+     components: {
+        vuejsDatepicker 
+     },
      data: {
-         valueJenis:'<%= data.jenis  %>',
-         valueStatus:'<%= data.status  %>',
-         valueClient:'<%= data.client  %>'
-     }
-     })
- </script>
+         id:'',
+         dataResponses:{
+         },
+         isButtonDisable: false
+     },
+     async created() {
+        this.id = JSON.parse('<%-data%>')
+        await this.getData(this.id)
+     },
+     methods : {
+        getData: async function(id) {
+            try{
+                const res = await axios.post(apiUrl+'supplier/edit/'+id)
+                this.dataResponses = res.data[0]
+            }catch(err){
+                alert("Get data"+' '+err)
+            }
+        },
+        actEdit: async function() {
+            try{
+                this.setDisableButton()
+                var data = this.dataResponses
+                const res = await axios.post(apiUrl+'supplier/edit', { data:data })
+                if (res.data.success){
+                    this.setEnableButton()
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href = apiUrl + 'supplier/'; }, 1000);
+                }
+            }catch(err){
+                alert("Edit data"+' '+err)
+                this.setEnableButton()
+            }
+        },
+        checkValidation: async function(){
+            var validate = false
+            if (this.dataResponses.nama == "" || this.dataResponses.noHp == "" || 
+             this.dataResponses.alamat == "" || this.dataResponses.email == "" ){
+                validate = false
+            } else {
+                validate = true
+            }
 
+            if(validate){
+                this.alertEdit()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        alertEdit:  function (data) {
+             swal({
+                title: "Anda yakin ingin merubah data?",
+                text: "Pastikan data yang anda ubah benar",
+                icon: "warning",
+                buttons: ["batal", "ubah"],
+                dangerMode: false,
+                })
+                .then((willEdit) => {
+                if (willEdit) {
+                     this.actEdit(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        },
+        setEnableButton: function(){
+            this.isButtonDisable = false
+        },
+        setDisableButton: function(){
+            this.isButtonDisable = true
+        }
+     }
+})
+ </script>
