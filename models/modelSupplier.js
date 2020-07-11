@@ -17,7 +17,7 @@ router.getSupplierById = function(id) {
 router.insertSupplier= function(data) {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`
-        INSERT INTO supplier (nama, email, no_hp, alamat, tgl_rekam) VALUES (?,?,?,?,?);`,[data.nama,data.email,data.noHp,data.alamat,data.tglSekarang],(err,results) => {
+        INSERT INTO supplier (kode, nama, email, no_hp, alamat, tgl_rekam) VALUES (F_GEN_CODE("S"),?,?,?,?,?);`,[data.nama,data.email,data.noHp,data.alamat,data.tglSekarang],(err,results) => {
             if (err) {
                 return reject(err)
             }else{

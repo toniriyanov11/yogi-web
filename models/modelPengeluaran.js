@@ -79,7 +79,7 @@ router.insertPembelianTypeInventory = function(data) {
 
 router.updatePembelian = function(data) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`UPDATE pengeluaran SET tanggal = ?, nama = ?, jumlah = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.jumlah,data.ket,data.id],(err,results) => {
+        database.getConnection().query(`UPDATE pengeluaran SET tanggal = ?, nama = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.ket,data.id],(err,results) => {
             if (err) {
                 return reject(err)
             }else{
@@ -157,7 +157,7 @@ router.insertBebanTypeOthers= function(data) {
 
 router.updateBeban= function(data) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`UPDATE pengeluaran SET tanggal = ?, nama = ?, jumlah = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.jumlah,data.ket,data.id],(err,results) => {
+        database.getConnection().query(`UPDATE pengeluaran SET tanggal = ?, nama = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.ket,data.id],(err,results) => {
             if (err) {
                 return reject(err)
             }else{
@@ -236,7 +236,7 @@ router.insertPembayaranTypeReturnPayment= function(data) {
 
 router.updatePembayaran= function(data) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`UPDATE pengeluaran SET tanggal = ?, nama = ?, jumlah = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.jumlah,data.ket,data.id],(err,results) => {
+        database.getConnection().query(`UPDATE pengeluaran SET tanggal = ?, nama = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.ket,data.id],(err,results) => {
             if (err) {
                 return reject(err)
             }else{

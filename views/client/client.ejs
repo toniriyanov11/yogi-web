@@ -44,12 +44,12 @@
 
                         <tbody>
                             <tr v-for="dataResponse in dataResponses" :key="dataResponse.kode">
-                            <td class="clicked"><a @click="detil(dataResponse.kode)">{{dataResponse.kode}}</a></td>
-                            <td>{{dataResponse.nama}}</td>
-                            <td>
-                                <button type="button" @click="edit(dataResponse.kode)"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
-                            </td>
-                        </tr>
+                                <td class="clicked"><a @click="detil(dataResponse.kode)">{{dataResponse.kode}}</a></td>
+                                <td>{{dataResponse.nama}}</td>
+                                <td>
+                                    <button type="button" @click="edit(dataResponse.kode)"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
