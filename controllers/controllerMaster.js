@@ -147,6 +147,117 @@ async function getPaymentType() {
         return util.responseErrorServer(err)
     }
 }
+
+async function getStuffType() {
+    try {
+        const rows = await modelMaster.getStuffType()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function getStuffVariant() {
+    try {
+        const rows = await modelMaster.getStuffVariant()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function getStuffColor() {
+    try {
+        const rows = await modelMaster.getStuffColor()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+
+async function getCuttingType() {
+    try {
+        const rows = await modelMaster.getCuttingType()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function getSubCuttingType() {
+    try {
+        const rows = await modelMaster.getSubCuttingType()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function getStuffStock() {
+    try {
+        const rows = await modelMaster.getStuffStock()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+
 module.exports ={
     getClient,
     getSupplier,
@@ -155,5 +266,11 @@ module.exports ={
     getBuyingType,
     getMasterMaterial,
     getLoadType,
-    getPaymentType
+    getPaymentType,
+    getStuffType,
+    getStuffVariant,
+    getStuffColor,
+    getCuttingType,
+    getSubCuttingType,
+    getStuffStock
 } 

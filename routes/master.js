@@ -117,10 +117,102 @@ router.get('/load-type',async function(req, res, next) {
      }
 })
 
+
 router.get('/payment-type',async function(req, res, next) {
    try{    
        let dataResponse = await controllerMaster.getPaymentType()
        var data =""
+       if (dataResponse.success) {
+          data = await util.convertRecordDate(dataResponse,'DD/MM/YYYY')
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+     }catch(err){
+       res.status(500).json(err);
+     }
+})
+
+router.get('/stuff-type',async function(req, res, next) {
+   try{    
+       let dataResponse = await controllerMaster.getStuffType()
+       var data =""
+       if (dataResponse.success) {
+          data = await util.convertRecordDate(dataResponse,'DD/MM/YYYY')
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+     }catch(err){
+       res.status(500).json(err);
+     }
+})
+
+router.get('/stuff-variant',async function(req, res, next) {
+   try{    
+       let dataResponse = await controllerMaster.getStuffVariant()
+       var data =""
+       if (dataResponse.success) {
+          data = await util.convertRecordDate(dataResponse,'DD/MM/YYYY')
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+     }catch(err){
+       res.status(500).json(err);
+     }
+})
+
+router.get('/stuff-color',async function(req, res, next) {
+   try{    
+       let dataResponse = await controllerMaster.getStuffColor()
+       var data =""
+       if (dataResponse.success) {
+          data = await util.convertRecordDate(dataResponse,'DD/MM/YYYY')
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+     }catch(err){
+       res.status(500).json(err);
+     }
+})
+
+router.get('/cutting-type',async function(req, res, next) {
+   try{    
+       let dataResponse = await controllerMaster.getCuttingType()
+       var data =""
+       if (dataResponse.success) {
+          data = await util.convertRecordDate(dataResponse,'DD/MM/YYYY')
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+     }catch(err){
+       res.status(500).json(err);
+     }
+})
+
+router.get('/sub-cutting-type',async function(req, res, next) {
+   try{    
+       let dataResponse = await controllerMaster.getSubCuttingType()
+       var data =""
+       if (dataResponse.success) {
+          data = await util.convertRecordDate(dataResponse,'DD/MM/YYYY')
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+     }catch(err){
+       res.status(500).json(err);
+     }
+})
+
+router.get('/stuff-stock',async function(req, res, next) {
+   try{    
+       let dataResponse = await controllerMaster.getStuffStock()
+       var data =""
+       console.log(dataResponse)
        if (dataResponse.success) {
           data = await util.convertRecordDate(dataResponse,'DD/MM/YYYY')
           res.status(200).json(data);

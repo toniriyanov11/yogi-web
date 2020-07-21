@@ -15,6 +15,19 @@
     </div>
     <!-- end page-title -->
 
+      <!-- Start row-->
+      <div class="row">
+        <div class="col-4">
+            <div class="card m-b-30">
+                <div class="card-body">
+                    <h3 class="mb-4 header-title">Stok Bahan</h4>
+                        <div v-for="dataStuffStock in dataStuffStocks" :key="dataStuffStock.id" class="mb-2">{{dataStuffStock.nama}} : {{dataStuffStock.stock}} Kg</div>
+                </div>
+            </div>
+        </div>
+    </div>        
+    <!-- end row -->
+
     <!-- START ROW -->
     <div class="row">
         <div class="col-12">
@@ -27,63 +40,50 @@
                         <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
                         <div class="col-sm-10">
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker-autoclose">
-                                <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div>
+                                <vuejs-datepicker  v-model="data.tanggal" @input="convertDataTanggal" :format="customFormatter"></vuejs-datepicker>
                             </div><!-- input-group -->
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Nama Item</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-text-input">
+                            <input class="form-control" type="text" v-model="data.nama" id="example-text-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Jenis Produk</label>
                             <div class="col-sm-10">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="radio" class="custom-control-input" id="customCheck1" data-parsley-multiple="groups"
-                                           data-parsley-mincheck="2" name="produk"  value="kaos" v-model="valueJenisProduk">
-                                    <label class="custom-control-label" for="customCheck1">Kaos</label>
-                                </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="radio" class="custom-control-input" id="customCheck2" data-parsley-multiple="groups"
-                                           data-parsley-mincheck="2" name="produk" value="sweater" v-model="valueJenisProduk">
-                                    <label class="custom-control-label" for="customCheck2">Sweater</label>
-                                </div>
+                                <select class="form-control" v-model="data.jenisProduk">
+                                    <option disabled style="color: gainsboro;">pilih produk</option>
+                                    <option v-for="dataProductType in dataProductTypes" :key="dataProductType.kode" :value="dataProductType.kode">{{dataProductType.nama}}</option>
+                                </select>
                             </div>
                     </div>
                     <hr>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Jenis Bahan</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueJenisBahan">
-                                    <option >pilih jenis bahan</option>
-                                    <option>Polos</option>
-                                    <option>Salur</option>
-                                    <option>Full Print</option>
-                                    <option>Rip</option>
+                                <select class="form-control" v-model="data.jenisBahan">
+                                    <option disabled style="color: gainsboro;">pilih bahan</option>
+                                    <option v-for="dataStuffType in dataStuffTypes" :key="dataStuffType.kode" :value="dataStuffType.kode">{{dataStuffType.nama}}</option>
                                 </select>
                             </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Varian Bahan</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueVarianBahan">
-                                    <option >pilih varian bahan</option>
-                                    <option>Solid</option>
-                                    <option>Two Tone</option>
+                                <select class="form-control" v-model="data.varianBahan">
+                                    <option disabled style="color: gainsboro;">pilih varian bahan</option>
+                                    <option v-for="dataStuffVariant in dataStuffVariants" :key="dataStuffVariant.kode" :value="dataStuffVariant.kode">{{dataStuffVariant.nama}}</option>
                                 </select>
                             </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Warna Bahan</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueWarnaBahan">
-                                    <option >pilih warna bahan</option>
-                                    <option>Hitam</option>
-                                    <option>Putih</option>
-                                    <option>Biru</option>
+                                <select class="form-control" v-model="data.warnaBahan">
+                                    <option disabled style="color: gainsboro;">pilih warna bahan</option>
+                                    <option v-for="dataStuffColor in dataStuffColors" :key="dataStuffColor.kode" :value="dataStuffColor.kode">{{dataStuffColor.nama}}</option>
                                 </select>
                             </div>
                     </div>
@@ -91,23 +91,18 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Tipe Cuttingan</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueTipeCuttingan">
-                                    <option >pilih tipe cuttingan</option>
-                                    <option>Komplit</option>
-                                    <option>Kombinasi</option>
+                                <select class="form-control" v-model="data.tipeCutting">
+                                    <option disabled style="color: gainsboro;">pilih tipe cutting</option>
+                                    <option v-for="dataCuttingType in dataCuttingTypes" :key="dataCuttingType.kode" :value="dataCuttingType.kode">{{dataCuttingType.nama}}</option>
                                 </select>
                             </div>
                     </div>
-                    <div class="form-group row">
+                    <div v-if="data.tipeCutting == typeCuttingCombination" class="form-group row">
                         <label class="col-sm-2 col-form-label">Tipe Sub Cuttingan</label>
                             <div class="col-sm-10">
-                                <select class="form-control" v-model="valueSubTipeCuttingan">
-                                    <option >pilih tipe sub cuttingan</option>
-                                    <option>Badan</option>
-                                    <option>Tangan</option>
-                                    <option>Badan & Tangan</option>
-                                    <option>Rib</option>
-                                    <option>Kantong</option>
+                                <select class="form-control" v-model="data.tipeSubCutting">
+                                    <option disabled style="color: gainsboro;">pilih sub cutting</option>
+                                    <option v-for="dataSubCuttingType in dataSubCuttingTypes" :key="dataSubCuttingType.kode" :value="dataSubCuttingType.kode">{{dataSubCuttingType.nama}}</option>
                                 </select>
                             </div>
                     </div>
@@ -115,57 +110,64 @@
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
                         <div  class="col-sm-10">
-                            <textarea required class="form-control" rows="3"></textarea>
+                            <textarea required class="form-control" v-model="data.ket" rows="3"></textarea>
                         </div>
                     </div>
                     <hr>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Berat (kg)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-search-input">
+                            <input class="form-control" type="number" v-model="berat" id="example-search-input" @change="checkStockCompability(berat,data.jenisProduk)">
+                            <small v-for="dataStuffStock in dataStuffStocks" :key="dataStuffStock.id" class="form-text text-muted">{{dataStuffStock.nama}} : {{dataStuffStock.stock}} Kg</small>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Banyak (pcs)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-search-input">
+                            <input class="form-control" type="number" v-model="jumlah" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Upah/pcs (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-search-input">
+                            <input class="form-control" type="text" v-model="upah" id="example-search-input">
                         </div>
                     </div>
                     <hr>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Hasil/pcs (Kg)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-search-input">
+                            <input disabled class="form-control" type="text" v-model="hasilPerPcs" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Harga/kg (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-search-input">
+                            <input class="form-control" type="text" v-model="hargaPerKg" id="example-search-input">
                         </div>
                     </div>
                     <hr>
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Harga Bahan (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-number-input">
+                            <input disabled class="form-control" type="text" v-model="totalHargaBahan" id="example-number-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Total Biaya/pcs (Rp)</label>
+                        <div class="col-sm-10">
+                            <input disabled class="form-control" type="text" v-model="totalBiayaPerPcs" id="example-number-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Biaya (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-number-input">
+                            <input disabled class="form-control" type="text"v-model="totalBiaya" id="example-number-input">
                         </div>
                     </div>
                     <div class="form-group text-right">
                         <div>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light">
+                            <button :disabled="isButtonDisable" @click="checkValidation()" class="btn btn-primary waves-effect waves-light">
                                 Submit
                             </button>
                         </div>
@@ -179,23 +181,340 @@
 </div>
 
 <script>
-    function tambah(){
-        location.href = "/cutting"
-    }
-    
-</script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
+     components: {
+            vuejsDatepicker
+    },
      data: {
-         valueJenisProduk:'',
-         valueStatus:'',
-         valueJenisBahan:'',
-         valueVarianBahan:'',
-         valueWarnaBahan:'',
-         valueTipeCuttingan:'',
-         valueSubTipeCuttingan:''
+         data:{
+            tanggal:'',
+            nama:'testes',
+            jenisProduk:1,
+            jenisBahan:1,
+            varianBahan:1,
+            warnaBahan:1,
+            tipeCutting:1,
+            tipeSubCutting:null,
+            ket:'-',
+            berat:'',
+            jumlah:'',
+            upah:'',
+            hargaPerKg:'',
+            tglSekarang:moment().format('YYYY-MM-DD'),
+            userAkun:''
+         },
+         berat:'',
+         jumlah:'',
+         upah:'',
+         hasilPerPcs:'',
+         hargaPerKg:'',
+         totalHargaBahan:'',
+         totalBiayaPerPcs:'',
+         totalBiaya:'',
+         dataProductTypes:{},
+         dataStuffTypes:{},
+         dataStuffVariants:{},
+         dataStuffColors:{},
+         dataCuttingTypes:{},
+         dataSubCuttingTypes:{},
+         dataStuffStocks:{},
+         typeCuttingComplete: 1,
+         typeCuttingCombination: 2,
+         typeProductTees: 1,
+         typeProductSweater: 2,
+         isButtonDisable: false
+     },
+     async created(){
+        await this.getProductType()
+        await this.getStuffType()
+        await this.getStuffVariant()
+        await this.getStuffColor()
+        await this.getCuttingType()
+        await this.getSubCuttingType()
+        await this.getStuffStock()
+     },
+     watch: {
+        berat : function (val) {
+            if(this.berat != "") {
+                this.data.berat = this.berat
+                if(this.jumlah != ""){
+                    var calculate = this.berat / this.jumlah
+                    this.hasilPerPcs = calculate.toFixed(2)
+                }
+            }else{
+                this.data.berat = ""
+                this.hasilPerPcs = ""
+            }
+        },
+        jumlah : function (val) {
+            if(this.jumlah != "") {
+                this.data.jumlah = this.jumlah
+
+                if(this.berat != ""){
+                    var calculate = this.berat / this.jumlah
+                    this.hasilPerPcs = calculate.toFixed(2)
+                }
+
+                if(this.totalBiayaPerPcs != ''){
+                    var calculate = this.convertRupiahToFloat(this.totalBiayaPerPcs) * this.convertRupiahToFloat(this.jumlah) 
+                    this.totalBiaya = calculate
+                }
+
+            }else{
+                this.jumlah = ""
+                this.totalBiaya = ""
+                this.hasilPerPcs = ""
+            }
+        },
+        hasilPerPcs : function (val) {
+            if(this.hasilPerPcs != "") {
+                this.data.hasilPerPcs = this.hasilPerPcs
+                if(this.hargaPerKg != ''){
+                    var calculate = this.convertRupiahToFloat(this.hargaPerKg) * this.convertRupiahToFloat(this.hasilPerPcs) 
+                    this.totalHargaBahan = calculate
+                }
+            }else{
+                this.totalHargaBahan = ''
+            }
+        },
+        upah : function (val) {
+            if (this.upah != ""){
+                this.upah  = this.convertFloatToRupiah(val).toString() 
+                this.data.upah = this.convertRupiahToFloat(this.upah)
+                if(this.totalHargaBahan != ''){
+                    var calculate = this.convertRupiahToFloat(this.totalHargaBahan) + this.convertRupiahToFloat(this.upah) 
+                    this.totalBiayaPerPcs = calculate
+                }
+            }else{
+                this.data.upah = ""
+                this.totalBiayaPerPcs = ""
+            }
+        },
+        hargaPerKg : function (val) {
+            if (this.hargaPerKg != ""){
+                this.hargaPerKg  = this.convertFloatToRupiah(val).toString()
+                this.data.hargaPerKg = this.convertRupiahToFloat(this.hargaPerKg)
+                if(this.hasilPerPcs != ''){
+                    var calculate = this.convertRupiahToFloat(this.hargaPerKg) * this.convertRupiahToFloat(this.hasilPerPcs) 
+                    this.totalHargaBahan = calculate
+                }
+            }else{
+                this.data.hargaPerKg = ""
+                this.totalHargaBahan = ""
+            }
+        },
+        totalHargaBahan : function (val) {
+            if (this.totalHargaBahan != ""){
+                this.totalHargaBahan  = this.convertFloatToRupiah(val.toString()).toString()
+                this.data.totalHargaBahan = this.convertRupiahToFloat(this.totalHargaBahan)
+                if(this.upah != ''){
+                    var calculate = this.convertRupiahToFloat(this.totalHargaBahan) + this.convertRupiahToFloat(this.upah) 
+                    this.totalBiayaPerPcs = calculate
+                }
+            }else{
+                this.totalBiayaPerPcs = ""
+            }
+        },
+        totalBiayaPerPcs : function (val) {
+            if (this.totalBiayaPerPcs != ""){
+                this.totalBiayaPerPcs  = this.convertFloatToRupiah(val.toString()).toString()
+                this.data.totalBiayaPerPcs = this.convertRupiahToFloat(this.totalBiayaPerPcs)
+                if(this.jumlah != ''){
+                    var calculate = this.convertRupiahToFloat(this.totalBiayaPerPcs) * this.convertRupiahToFloat(this.jumlah) 
+                    this.totalBiaya = calculate
+                }
+            }else{
+                this.totalBiaya = ""
+            }
+        },
+        totalBiaya : function (val) {
+            if (this.totalBiaya != ""){
+                this.totalBiaya  = this.convertFloatToRupiah(val.toString()).toString()
+                this.data.totalBiaya = this.convertRupiahToFloat(this.totalBiaya)
+            }else{
+
+            }
+        },
+        'data.jenisProduk' : function (val){
+            this.berat = ""
+        }
+     },
+     methods:{
+        actTambah: async function() {
+            try{
+                this.setDisableButton()
+                var data = this.data
+                console.log(data)
+                let res = await axios.post(apiUrl+'dataproduksi/cutting/tambah', { data:data })
+                if (res.data.success){
+                    this.setEnableButton()
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href =apiUrl + 'dataproduksi/cutting/'; }, 1000);
+                }
+            }catch(err){
+                alert("Add data"+' '+err)
+                this.setEnableButton()
+            }
+        },
+        customFormatter(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
+        getProductType: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/master-material')
+                this.dataProductTypes = res.data
+            }catch(err){
+                alert("Get Product Type"+' '+err)
+            }
+        },
+        getStuffType: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/stuff-type')
+                this.dataStuffTypes = res.data
+            }catch(err){
+                alert("Get Stuff Type"+' '+err)
+            }
+        },
+        getStuffVariant: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/stuff-variant')
+                this.dataStuffVariants = res.data
+            }catch(err){
+                alert("Get Stuff Variant "+' '+err)
+            }
+        },
+        getStuffColor: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/stuff-color')
+                this.dataStuffColors = res.data
+            }catch(err){
+                alert("Get Stuff Color "+' '+err)
+            }
+        },
+        getCuttingType: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/cutting-type')
+                this.dataCuttingTypes = res.data
+            }catch(err){
+                alert("Get Cutting Type "+' '+err)
+            }
+        },
+        getSubCuttingType: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/sub-cutting-type')
+                this.dataSubCuttingTypes = res.data
+            }catch(err){
+                alert("Get Sub Cutting Type "+' '+err)
+            }
+        },
+        getStuffStock: async function() {
+             try{
+                 const res = await axios.get(apiUrl+'master/stuff-stock')
+                 this.dataStuffStocks = res.data
+                 console.log(this.dataStuffStocks)
+             }catch(err){
+                 alert("Get data"+' '+err)
+             }
+         },
+        checkValidation: async function(){
+            var validate = false
+            if (this.data.tanggal == "" || this.data.nama == "" || this.data.jenisProduk == null 
+            || this.data.jenisBahan == null || this.data.varianBahan == null || this.data.warnaBahan == null
+            || this.data.tipeCutting == null || this.data.ket == "" 
+            || this.data.berat == "" || this.data.jumlah == "" || this.data.upah == "" 
+            || this.data.hasilPerPcs == "" || this.data.hargaPerKg == "" || this.data.totalHargaBahan == "" 
+            || this.data.totalBiayaPerPcs == ""|| this.data.totalBiaya == "" ) {
+                validate = false
+            } else if(this.data.tipeCutting == this.typeCuttingCombination){
+                validate = this.checkValidationTypeCombination()
+            } else {
+                validate = true
+            }
+
+            if(validate){
+                this.alertAdd()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        checkValidationTypeCombination(){
+            if (this.data.tipeSubCutting == null  ) {
+                return false
+            } else {
+                return true
+            }
+        },
+        convertFloatToRupiah: function(val) {
+
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            return rupiah
+        },
+        convertRupiahToFloat: function(val){
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            return txtNumber
+        },
+        convertDataTanggal: function(val){
+            var convert = moment(val).format("YYYY-MM-DD")
+            this.data.tanggal = convert
+        },
+        alertAdd:  function (data) {
+             swal({
+                title: "Anda yakin ingin menambah data?",
+                text: "Pastikan data yang anda masukkan benar",
+                icon: "warning",
+                buttons: ["batal", "tambah"],
+                dangerMode: false,
+                })
+                .then((willAdd) => {
+                if (willAdd) {
+                     this.actTambah(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        },
+        setEnableButton: function(){
+            this.isButtonDisable = false
+        },
+        setDisableButton: function(){
+            this.isButtonDisable = true
+        },
+        handleEmptyTotal: function(){
+            this.data.total = ""
+            this.piutang = ""
+            this.lunas = ""
+        },
+        handleEmptyLunas: function(){
+            this.piutang = ""
+            this.lunas =""
+            this.data.piutang = 0
+            this.data.lunas = 0
+        },
+        checkStockCompability: function(val,stuff){
+            var stock = this.dataStuffStocks.find(x => x.kode === stuff).stock
+            var nama = this.dataStuffStocks.find(x => x.kode === stuff).nama
+
+            if( val > stock ){
+                alert("Stock Bahan"+" "+nama+" "+"Tidak Mencukupi")
+                this.berat = ""
+            }
+
+        }
      }
      })
  </script>

@@ -53,7 +53,7 @@
                             <td>{{dataResponse.ketJenisPembelian}}</td>
                             <td>{{dataResponse.nama}}</td>
                             <td>{{dataResponse.jumlah}}</td>
-                            <td>{{dataResponse.nominal}}</td>
+                            <td>{{convertToRupiah(dataResponse.nominal)}}</td> 
                             <td>{{dataResponse.ketStatusBayar}}</td>
                             <td>
                                 <button type="button" @click="edit(dataResponse.id)"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>

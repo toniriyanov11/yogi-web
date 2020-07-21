@@ -33,6 +33,7 @@ router.getPembelianById = function(id) {
          (select nama from supplier where kode = kodeSupplier) namaSupplier, 
          (select nama from ms_status_bayar where kode = pengeluaran.kode_status_bayar) ketStatusBayar,
          (select nilai_penyusutan from inventori where id_pengeluaran = pengeluaran.id) nilaiPenyusutan,
+         (select datediff(NOW(),tanggal)) as lamaKepemilikan,
         CASE kode_status_bayar WHEN '2' THEN (select nominal from hutang where id_pengeluaran = pengeluaran.id) 
         WHEN '3' THEN (select nominal from hutang where id_pengeluaran = pengeluaran.id) 
         ELSE ''

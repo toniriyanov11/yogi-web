@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+const controllerDataProduksi= require('../controllers/controllerDataProduksi.js')
+const util = require('../configs/utils.js');
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Data Produksi', page:'data-produksi/beranda.ejs'});
@@ -9,19 +12,117 @@ router.get('/', function(req, res, next) {
 //---------------cutting-----------------
 router.get('/cutting', function(req, res, next) {
     res.render('index', { title: 'Data Produksi - Cutting', page:'data-produksi/cutting/cutting.ejs'});
-  });
-  
+});
+
+router.post('/cutting',async function(req, res, next) {
+  try{
+     let dataResponse = await controllerDataProduksi.getCuttingAll()
+     console.log(dataResponse)
+     var data =""
+     if (dataResponse.success) {
+        data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+        res.status(200).json(data);
+     } else {
+        res.status(400).json(data);
+     }
+   }catch(err){
+     res.status(500).json(err);
+   }
+})
+
+router.get('/cutting/detil/:id', function(req, res, next) {
+  var id = req.params.id;
+  res.render('index', { title: 'Detail Cutting', page:'data-produksi/cutting/cutting_detil.ejs', data:JSON.stringify(id)});
+});
+
+router.post('/cutting/detil/:id',async function(req, res, next) {
+   try{
+      var id = req.params.id;
+      let dataResponse = await controllerDataProduksi.getCuttingById(id)
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+  }catch(err){
+       res.status(500).json(err);
+  }
+});
+
+
 router.get('/cutting/tambah', function(req, res, next) {
     res.render('index', { title: 'Tambah Cutting', page:'data-produksi/cutting/cutting_tambah.ejs'});
 });
 
-router.get('/cutting/edit/:id', function(req, res, next) {
-    res.render('index', { title: 'Edit Cutting', page:'data-produksi/cutting/cutting_edit.ejs', data:req.query});
+router.post('/cutting/tambah', async function(req, res, next) {
+  try{
+     var data = req.body.data
+     let dataResponse = await controllerDataProduksi.insertCutting(data)
+     console.log(dataResponse)
+     if (dataResponse.success) {
+        res.status(200).json(dataResponse);
+     } else {
+        res.status(400).json();
+     }
+  }catch(err){
+     res.status(500).json(err);
+  }
 });
 
-router.get('/cutting/detil/:id', function(req, res, next) {
-    res.render('index', { title: 'Detail Cutting', page:'data-produksi/cutting/cutting_detil.ejs', data:req.query});
+router.get('/cutting/edit/:id', function(req, res, next) {
+    var id = req.params.id;
+    res.render('index', { title: 'Edit Cutting', page:'data-produksi/cutting/cutting_edit.ejs', data:JSON.stringify(id)});
 });
+
+router.post('/cutting/edit/:id', async function(req, res, next) {
+  try{
+     var id = req.params.id;
+     let dataResponse = await controllerDataProduksi.getCuttingById(id)   
+     var data =""
+     if (dataResponse.success) {
+        data = await util.convertDate(dataResponse,'YYYY-MM-DD')
+        res.status(200).json(data);
+     } else {
+        res.status(400).json(data);
+     }
+  } catch(err){
+     res.status(500).json(err);
+  }
+});
+
+router.post('/cutting/edit', async function(req, res, next) {
+  try {
+     var data = req.body.data
+     let dataResponse = await controllerDataProduksi.updateCutting(data)
+     if (dataResponse.success) {
+        res.status(200).json(dataResponse);
+     } else {
+        res.status(400).json();
+     }
+  } catch (err) {
+     res.status(500).json(err);
+  }
+});
+
+router.post('/cutting/hapus/:id', async function(req, res, next) {
+  try{
+     var id = req.params.id
+     let dataResponse = await controllerPemasukan.deletePemasukan(id)
+     console.log(dataResponse)
+     if (dataResponse.success ) {
+        res.status(200).json(dataResponse);
+     } else {
+        res.status(400).json();
+     }
+  } catch(err){
+     res.status(500).json(err);
+  }
+});
+
+//end of Cutting
+
 
 
 //---------------sablon-----------------

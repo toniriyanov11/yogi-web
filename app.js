@@ -3,7 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var moment = require('moment')
+var moment = require('moment');
+var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -19,8 +20,13 @@ var barangsisaRouter = require('./routes/barangsisa');
 var clientRouter = require('./routes/client');
 var supplierRouter = require('./routes/supplier');
 var masterRouter = require('./routes/master');
+var inventoriRouter = require('./routes/inventori');
 
 var app = express();
+var corsOptions = {
+  origin:"*",
+  methods: 'POST'
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,20 +38,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/login', usersRouter);
-app.use('/pengeluaran', pengeluaranRouter);
-app.use('/pemasukan', pemasukanRouter);
-app.use('/dataproduksi', dataproduksiRouter);
-app.use('/invoice', invoiceRouter);
-app.use('/jurnal', jurnalRouter);
-app.use('/labarugi', labarugiRouter);
-app.use('/barangreturn', barangreturnRouter);
-app.use('/bahanbaku', bahanbakuRouter);
-app.use('/barangsisa', barangsisaRouter);
-app.use('/client', clientRouter);
-app.use('/supplier', supplierRouter);
-app.use('/master', masterRouter);
+app.use('/',cors(corsOptions), indexRouter);
+app.use('/login',cors(corsOptions), usersRouter);
+app.use('/pengeluaran',cors(corsOptions), pengeluaranRouter);
+app.use('/pemasukan',cors(corsOptions), pemasukanRouter);
+app.use('/dataproduksi',cors(corsOptions), dataproduksiRouter);
+app.use('/invoice',cors(corsOptions), invoiceRouter);
+app.use('/jurnal',cors(corsOptions), jurnalRouter);
+app.use('/labarugi',cors(corsOptions), labarugiRouter);
+app.use('/barangreturn',cors(corsOptions), barangreturnRouter);
+app.use('/bahanbaku',cors(corsOptions), bahanbakuRouter);
+app.use('/barangsisa',cors(corsOptions), barangsisaRouter);
+app.use('/client',cors(corsOptions), clientRouter);
+app.use('/supplier',cors(corsOptions), supplierRouter);
+app.use('/master',cors(corsOptions), masterRouter);
+app.use('/inventori',cors(corsOptions), inventoriRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

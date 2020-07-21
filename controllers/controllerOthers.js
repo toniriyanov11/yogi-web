@@ -2,9 +2,27 @@ const modelOthers = require('../models/modelOthers.js');
 const util = require('../configs/utils.js');
 
 
-async function getMaterials(id) {
+async function getMaterials() {
     try {
-        const rows = await modelOthers.getMaterials(id)
+        const rows = await modelOthers.getMaterials()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function getInventorys() {
+    try {
+        const rows = await modelOthers.getInventorys()
 
         if ( rows.length >= 1 ) {
             return util.responseSuccess(rows)
@@ -22,4 +40,5 @@ async function getMaterials(id) {
 
 module.exports = {
     getMaterials,
+    getInventorys
 }
