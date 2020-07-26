@@ -14,6 +14,20 @@
         <!-- end row -->
     </div>
     <!-- end page-title -->
+
+
+      <!-- Start row-->
+      <div class="row">
+        <div class="col-4">
+            <div class="card m-b-30">
+                <div class="card-body">
+                    <h3 class="mb-4 header-title">Stok Bahan</h4>
+                        <div v-for="dataStuffStock in dataStuffStocks" :key="dataStuffStock.id" class="mb-2">{{dataStuffStock.nama}} : {{dataStuffStock.stock}} Kg</div>
+                </div>
+            </div>
+        </div>
+    </div>        
+    <!-- end row -->
  
 
     <!-- START ROW -->
@@ -61,10 +75,12 @@
     var app = new Vue({
      el: '#app',
      data: {
-         dataResponses : {}
+         dataResponses : {},
+         dataStuffStocks: {}
      },
-     created() {
-        this.getData()
+     async created() {
+        await  this.getData()
+        await  this.getStuffStock()
      },
      methods:{
         detil: function(id){
@@ -79,6 +95,15 @@
                 alert("Get data"+' '+err)
             }
         },
+        getStuffStock: async function() {
+             try{
+                 const res = await axios.get(apiUrl+'master/stuff-stock')
+                 this.dataStuffStocks = res.data
+                 console.log(this.dataStuffStocks)
+             }catch(err){
+                 alert("Get Stuff Stock"+' '+err)
+             }
+         },
         convertToRupiah: function (val) {
             var txtNumber = parseFloat(val)
             var txtString = txtNumber.toString()
