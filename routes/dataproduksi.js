@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
+
 const controllerDataProduksi= require('../controllers/controllerDataProduksi.js')
 const util = require('../configs/utils.js');
+const { clone } = require('lodash');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -17,7 +19,6 @@ router.get('/cutting', function(req, res, next) {
 router.post('/cutting',async function(req, res, next) {
   try{
      let dataResponse = await controllerDataProduksi.getCuttingAll()
-     console.log(dataResponse)
      var data =""
      if (dataResponse.success) {
         data = await util.convertDate(dataResponse,'DD/MM/YYYY')
@@ -109,7 +110,7 @@ router.post('/cutting/edit', async function(req, res, next) {
 router.post('/cutting/hapus/:id', async function(req, res, next) {
   try{
      var id = req.params.id
-     let dataResponse = await controllerPemasukan.deletePemasukan(id)
+     let dataResponse = await controllerDataProduksi.deleteCutting(id)
      console.log(dataResponse)
      if (dataResponse.success ) {
         res.status(200).json(dataResponse);
@@ -130,17 +131,112 @@ router.get('/sablon', function(req, res, next) {
   res.render('index', { title: 'Data Produksi - sablon', page:'data-produksi/sablon/sablon.ejs'});
 });
 
+router.post('/sablon',async function(req, res, next) {
+  try{
+     let dataResponse = await controllerDataProduksi.getSablonAll()
+     var data =""
+     if (dataResponse.success) {
+        data = await util.convertObjectStructure(dataResponse,'DD/MM/YYYY')
+        res.status(200).json(data);
+     } else {
+        res.status(400).json(data);
+     }
+   }catch(err){
+     res.status(500).json(err);
+   }
+})
+
+router.get('/sablon/detil/:id', function(req, res, next) {
+  var id = req.params.id;
+  res.render('index', { title: 'Detail Sablon', page:'data-produksi/sablon/sablon_detil.ejs', data:JSON.stringify(id)});
+});
+
+router.post('/sablon/detil/:id',async function(req, res, next) {
+   try{
+      var id = req.params.id;
+      let dataResponse = await controllerDataProduksi.getSablonById(id)
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertObjectStructure(dataResponse, 'DD/MM/YYYY')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+  }catch(err){
+       res.status(500).json(err);
+  }
+});
+
+
 router.get('/sablon/tambah', function(req, res, next) {
-  res.render('index', { title: 'Tambah sablon', page:'data-produksi/sablon/sablon_tambah.ejs'});
+    res.render('index', { title: 'Tambah Sablon', page:'data-produksi/sablon/sablon_tambah.ejs'});
+});
+
+router.post('/sablon/tambah', async function(req, res, next) {
+  try{
+     var data = req.body.data
+     let dataManipulation = await util.manipulateData(data)
+     let dataResponse = await controllerDataProduksi.insertSablon(dataManipulation)
+     if (dataResponse.success) {
+        res.status(200).json(dataResponse);
+     } else {
+        res.status(400).json();
+     }
+  }catch(err){
+     res.status(500).json(err);
+  }
 });
 
 router.get('/sablon/edit/:id', function(req, res, next) {
-  res.render('index', { title: 'Edit sablon', page:'data-produksi/sablon/sablon_edit.ejs', data:req.query});
+    var id = req.params.id;
+    res.render('index', { title: 'Edit Sablon', page:'data-produksi/sablon/sablon_edit.ejs', data:JSON.stringify(id)});
 });
 
-router.get('/sablon/detil/:id', function(req, res, next) {
-  res.render('index', { title: 'Detail sablon', page:'data-produksi/sablon/sablon_detil.ejs', data:req.query});
+router.post('/sablon/edit/:id', async function(req, res, next) {
+  try{
+     var id = req.params.id;
+     let dataResponse = await controllerDataProduksi.getSablonById(id)   
+     var data =""
+     if (dataResponse.success) {
+        data = await util.convertObjectStructure(dataResponse, 'YYYY-MM-DD')
+        res.status(200).json(data);
+     } else {
+        res.status(400).json(data);
+     }
+  } catch(err){
+     res.status(500).json(err);
+  }
 });
+
+router.post('/sablon/edit', async function(req, res, next) {
+  try {
+     var data = req.body.data
+     let dataResponse = await controllerDataProduksi.updateSablon(data)
+     if (dataResponse.success) {
+        res.status(200).json(dataResponse);
+     } else {
+        res.status(400).json();
+     }
+  } catch (err) {
+     res.status(500).json(err);
+  }
+});
+
+router.post('/sablon/hapus/:id', async function(req, res, next) {
+  try{
+     var id = req.params.id
+     let dataResponse = await controllerDataProduksi.deleteSablon(id)
+     if (dataResponse.success ) {
+        res.status(200).json(dataResponse);
+     } else {
+        res.status(400).json();
+     }
+  } catch(err){
+     res.status(500).json(err);
+  }
+});
+//end of Sablon
+
 
 
 

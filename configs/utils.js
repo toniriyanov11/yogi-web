@@ -1,6 +1,8 @@
 
 
 var moment = require('moment')
+var _ = require('lodash');
+// const { delete } = require('./database');
 
 function responseSuccess(rows){
     var response = {
@@ -124,6 +126,82 @@ function convertRecordDate(dataResponse, format){
     }
 }
 
+
+async function convertObjectStructure(dataResponse,dateFormat){
+    try{
+        var data = await this.convertDate(dataResponse, dateFormat)
+        const value = data
+
+        var dataDetail = _.cloneDeep(value);
+        dataDetail.forEach(function(v){ delete v.tanggal, delete v.upah, delete v.nama, delete v.ket });
+        
+       
+        var data = []
+        //filter id
+        var tampung = ''
+        for(i=0; i < value.length; i++){
+                if(value[i].id === tampung){
+                    tampung  = value[i].id
+                }else{
+                    tampung  = value[i].id
+                    data.push({
+                        id : value[i].id,
+                        tanggal : value[i].tanggal,
+                        nama: value[i].nama,
+                        upah : value[i].upah,
+                        ket : value[i].ket,
+                        detil : []
+                    })
+                }
+        }
+
+        //filter item by id
+        var tampungId = ''
+        var jumlah = 0
+        var biaya = 0
+        for(i=0; i < data.length; i++){
+            jumlah = 0
+            biaya = 0
+            tampungId = data[i].id
+            for(j=0; j < dataDetail.length; j++){
+                if(dataDetail[j].id === tampungId){
+                    data[i].detil.push(dataDetail[j])
+                    jumlah += parseInt(dataDetail[j].jumlahItem)
+                    biaya += parseInt(dataDetail[j].totalBiayaItemPerPcs)
+                    data[i].totalJumlah = jumlah
+                    data[i].totalBiaya = biaya / data[i].detil.length
+                }else{
+                    tampungId = data[i].id
+                }
+          
+            }
+        }
+
+      return data
+    }catch(err){
+      return err
+    }
+}
+
+
+
+async function manipulateData(data){
+try{
+
+    var arr = []
+    for(i=0; i < data.item.length; i++){
+        arr.push(data.item[i].id)
+    }
+    delete data.item
+    data.item = arr
+
+    return data
+}catch(err){
+  return err
+}
+ 
+}
+
 module.exports = {
     responseSuccess,
     responseSuccessUpdate,
@@ -137,5 +215,8 @@ module.exports = {
     responseErrorNullParam,
     responseErrorQuery,
     convertDate,
-    convertRecordDate
+    convertRecordDate,
+    convertObjectStructure,
+    manipulateData
+
 }

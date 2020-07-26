@@ -193,16 +193,6 @@
                 rupiah += separator + ribuan.join(',')
             }
             return rupiah
-        },
-        setRecentPrice: function(hargaAwal, lamaKepemilikan, penyusutan){
-            var oneYear = 365
-            var result =  Math.round(hargaAwal - hargaAwal  * ((penyusutan/100) / oneYear) * lamaKepemilikan) 
-            if (result >= 0){
-                return this.convertToRupiah(result)
-            } else {
-                return 0
-            }
-            
         }
      }
 })

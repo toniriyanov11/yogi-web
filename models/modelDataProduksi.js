@@ -91,4 +91,95 @@ router.deleteCutting = function(id) {
 //End of Cutting
 
 
+
+//Sablom
+router.getSablonAll = function() {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`select x.id, x.tanggal, x.upah, x.nama, x.ket
+        , c.nama as namaItem, c.jumlah as jumlahItem, c.upah as upahItem,
+        (c.harga_per_kg*(c.berat/c.jumlah)) + c.upah as totalBiayaItemPerPcs
+        from (SELECT s.id, s.tanggal, s.upah, s.nama,  s.ket,
+                ds.id_item as idItem
+                FROM sablon as s 
+                INNER JOIN detil_sablon as ds 
+                ON s.id = ds.id_sablon  AND s.status_aktif = 'Y'
+              ) as x
+               INNER join cutting as c on c.id in (x.idItem)`,(err,results) => {
+            if (err) {
+                return reject(err)
+            } 
+
+            return resolve(results)  
+        })
+    })
+}
+
+
+router.getSablonById = function(id) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`select x.id, x.idItem, x.tanggal, x.upah, x.nama, x.ket
+        , c.nama as namaItem, c.jumlah as jumlahItem, c.upah as upahItem,
+        (c.harga_per_kg*(c.berat/c.jumlah)) + c.upah as totalBiayaItemPerPcs
+        from (SELECT s.id, s.tanggal, s.upah, s.nama,  s.ket,
+                ds.id_item as idItem
+                FROM sablon as s 
+                INNER JOIN detil_sablon as ds 
+                ON s.id = ds.id_sablon  AND s.status_aktif = 'Y'
+              ) as x
+               INNER join cutting as c on c.id in (x.idItem) AND x.id = ?`,[id],(err,results) => {
+            if (err) {
+                return reject(err)
+            } 
+            return resolve(results)
+        })
+    })
+}
+
+router.insertSablon = function(data) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`START TRANSACTION;`)
+        database.getConnection().query(`
+        INSERT INTO sablon (id,tanggal,nama,upah,ket,status_aktif,tgl_rekam)
+        VALUES (f_gen_id("D"),?,?,?,?,'Y',?);`,[data.tanggal, data.nama, data.upah, data.ket, data.tglSekarang,])
+        database.getConnection().query(`INSERT INTO detil_sablon (id_item,id_sablon,id)
+        select id,(select max(id) from sablon),f_gen_id("DS") from cutting where id in (?)
+        `,[data.item],(err,results) => {
+            if (err) {
+                console.log(err)
+                database.getConnection().query(`ROLLBACK;`)
+                return reject(err)
+            }else{
+                database.getConnection().query(`COMMIT;`)
+                return resolve(results)
+            }
+        })
+    })
+}
+
+router.updateSablon = function(data) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`UPDATE sablon SET tanggal = ?, nama = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.ket,data.id],(err,results) => {
+            if (err) {
+                return reject(err)
+            }else{
+                return resolve(results)
+            }
+        })
+    })
+}
+
+router.deleteSablon = function(id) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`UPDATE sablon SET status_aktif = 'T' WHERE id = ?`,[id],(err,results) => {
+            if (err) {
+                return reject(err)
+            }else{
+                return resolve(results) 
+            } 
+        })
+    })
+}
+//End of Cutting
+
+
 module.exports = router

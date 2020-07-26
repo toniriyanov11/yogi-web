@@ -29,8 +29,8 @@
     <!-- end row -->
 
 
-      <!-- START button-->
-      <div class="row">
+    <!-- START button-->
+    <div class="row">
         <div class="col py-3 text-right">
           <button type="button" class="btn btn-primary waves-effect waves-light"  @click="tambah()"><i class="mdi mdi-plus align-middle mr-2"></i>Tambah Cutting</button>
         </div>
@@ -59,12 +59,11 @@
                             <th>Upah/pcs(Rp)</th>
                             <th>Hasil/pcs(Kg)</th>
                             <th>Harga/kg(Rp)</th>
-                            <th>Jenis produk</th>
+                            <!-- <th>Jenis produk</th>
                             <th>Jenis Bahan</th>
                             <th>Varian Bahan</th>
                             <th>Warna Bahan</th>
-                            <th>Tipe Cuttingan</th>
-                            <th>Tipe Sub Cuttingan</th>
+                            <th>Tipe Cuttingan</th> -->
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -83,12 +82,11 @@
                             <td>{{convertToRupiah(dataResponse.upah)}}</td>
                             <td>{{dataResponse.hasilPerPcs}}</td>
                             <td>{{convertToRupiah(dataResponse.hargaPerKg)}}</td>
-                            <td>{{dataResponse.ketJenisProduk}}</td>
+                            <!-- <td>{{dataResponse.ketJenisProduk}}</td>
                             <td>{{dataResponse.ketJenisBahan}}</td>
                             <td>{{dataResponse.ketVarianBahan}}</td>
                             <td>{{dataResponse.ketWarnaBahan}}</td>
-                            <td>{{dataResponse.ketTipeCutting}}</td>
-                            <td>{{dataResponse.ketTipeSubCutting}}</td>
+                            <td>{{dataResponse.ketTipeCutting}}</td>     -->
                             <td>
                                 <button type="button" @click="edit(dataResponse.id)"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
                                 <button type="button" @click="alertDelete(dataResponse.id)" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
