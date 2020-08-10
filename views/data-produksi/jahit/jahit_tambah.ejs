@@ -26,65 +26,85 @@
                     <div class="form-group row">
                         <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
                         <div class="col-auto">
-                            <div class="col-auto">
-                                <input class="form-control" type="week" id="weekpicker"/>
+                            <div class="input-group">
+                                <vuejs-datepicker  v-model="data.tanggal" @input="convertDataTanggal" :format="customFormatter"></vuejs-datepicker>
                             </div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Nama Item</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-search-input">
+                            <input class="form-control" type="text" v-model="data.nama" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data</label>
+                        <label class="col-sm-2 col-form-label">Pilih Data Jahit</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" v-model="data.jenisItem">
+                                    <option disabled style="color: gainsboro;">pilih produk</option>
+                                    <option :value="typeItemCutting">Cutting</option>
+                                    <option :value="typeItemSablon">Sablon</option>
+                                </select>
+                            </div>
+                    </div>
+                    <div v-if="data.jenisItem == typeItemCutting " class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data Cutting</label>
                         <div class="col-sm-10">
-                            <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><i class="icon-todolist"></i></button>
+                            <multiselect  v-model="data.itemCutting" :options="optionsCutting" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="" :custom-label="customItemNameCutting" label="id" track-by="id">
+                                <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
+                            </multiselect>
+                        </div>
+                    </div>
+                    <div  v-if="data.jenisItem == typeItemSablon " class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data Sablon</label>
+                        <div class="col-sm-10">
+                            <multiselect  v-model="data.itemSablon" :options="optionsSablon" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="" :custom-label="customItemNameSablon" label="id" track-by="id">
+                                <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
+                            </multiselect>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Upah/pcs (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-search-input">
+                            <input class="form-control" type="text" v-model="upah" id="example-search-input">
                         </div>
                     </div>
                     <hr>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Total Harga (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-search-input">
+                            <input disabled class="form-control" type="text" v-model="totalHarga" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Banyak (pcs)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-search-input">
+                            <input disabled class="form-control" type="number" v-model="data.jumlah" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
                         <div  class="col-sm-10">
-                            <textarea required class="form-control" rows="3"></textarea>
+                            <textarea  required class="form-control" v-model="data.ket" rows="3"></textarea>
                         </div>
                     </div>
                     <hr>
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Upah (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-number-input">
+                            <input disabled class="form-control" type="text" v-model="totalUpah" id="example-number-input">
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <!-- <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Upah/minggu (Rp)</label>
                         <div class="col-sm-10">
                             <input class="form-control" type="number" value="" id="example-number-input">
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-group row">
-                        <label for="example-number-input" class="col-sm-2 col-form-label">Harga Barang (Rp)</label>
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Harga Barang Setelah jahit/Pcs (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-number-input">
+                            <input disabled  class="form-control" type="text" v-model="hargaBarang" id="example-number-input">
                         </div>
                     </div>
                     <div class="form-group text-right">
@@ -160,22 +180,246 @@
 </div>
 
 <script>
-    function tambah(){
-        location.href = "/jahit"
-    }
-    
-</script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
+     components: {
+            vuejsDatepicker, Multiselect: window.VueMultiselect.default
+    },
      data: {
-         valueJenis:'',
-         valueStatus:'',
-     }
-     })
+         data:{
+            tanggal:'',
+            nama:'testes',
+            itemCutting: [],
+            itemSablon: [],
+            upah:'',
+            totalHarga:'',
+            jumlah:'',
+            ket:'',
+            totalUpah:'',
+            hargaBarang:'',
+            jenisItem:'',
+            tglSekarang:moment().format('YYYY-MM-DD'),
+            userAkun:''
+         },
+         optionsCutting: [],
+         optionsSablon: [],
+         upah: '',
+         totalHarga: '',
+         totalUpah: '',
+         hargaBarang: '',
+         typeItemCutting: '1',
+         typeItemSablon: '2',
+         dataProductTypes:{},
+         isButtonDisable: false
+     },
+     async created(){
+        await this.getDataItemCutting()
+        await this.getDataItemSablon()
+     },
+     watch: {
+        'data.jenisItem' : function (val){
+            this.data.itemCutting = [] 
+            this.data.itemSablon = []
+        },
+        'data.itemCutting' : function (val){
+            this.getTotalItemCutting()
+        },
+        'data.itemSablon' : function (val){
+            this.getTotalItemSablon()
+        },
+        upah : function (val) {
+            if (this.upah != ""){
+                this.upah  = this.convertFloatToRupiah(val).toString() 
+                this.data.upah = this.convertRupiahToFloat(this.upah)
+                if(this.data.jumlah != ""){
+                    var calculate = this.convertRupiahToFloat(this.upah) * this.convertRupiahToFloat(this.data.jumlah) 
+                    this.totalUpah = calculate
 
+                    var calculateThingPrice = this.convertRupiahToFloat(this.upah) + this.convertRupiahToFloat(this.totalHarga) 
+                    this.hargaBarang = calculateThingPrice
+                }
+            }else{
+                this.data.upah = ""
+                this.totalUpah = ""
+                this.hargaBarang = ""
+            }
+        },
+        totalHarga : function (val) {
+            if (this.totalHarga != ""){
+                this.totalHarga  = this.convertFloatToRupiah(val).toString() 
+                this.data.totalHarga = this.convertRupiahToFloat(this.totalHarga)
+                if(this.data.upah != ""){
+                    var calculateThingPrice = this.convertRupiahToFloat(this.upah) + this.convertRupiahToFloat(this.totalHarga) 
+                    this.hargaBarang = calculateThingPrice
+                }
+            }else{
+                this.data.totalHarga = ""
+                this.hargaBarang = ""
+            }
+        },
+        'data.jumlah' : function (val) {
+            if (this.data.jumlah != ""){
+                if(this.upah != ""){
+                    var calculate = this.convertRupiahToFloat(this.upah) * this.convertRupiahToFloat(this.data.jumlah) 
+                    this.totalUpah = calculate
+                }
+            }else{
+                this.totalUpah = ""
+            }
+        },
+        totalUpah : function (val) {
+            if (this.totalUpah != ""){
+                this.totalUpah  = this.convertFloatToRupiah(val.toString())
+                this.data.totalUpah = this.convertRupiahToFloat(this.totalUpah)
+            }else{
+                this.data.totalUpah = ""
+            }
+        },
+        hargaBarang : function (val) {
+            if (this.hargaBarang != ""){
+                this.hargaBarang  = this.convertFloatToRupiah(val.toString())
+                this.data.hargaBarang = this.convertRupiahToFloat(this.hargaBarang)
+            }else{
+                this.data.hargaBarang = ""
+            }
+        },
+     },
+     methods:{
+        actTambah: async function() {
+            try{
+                this.setDisableButton()
+                var data = this.data
+                let res = await axios.post(apiUrl+'dataproduksi/sablon/tambah', { data:data })
+                if (res.data.success){
+                    this.setEnableButton()
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href =apiUrl + 'dataproduksi/sablon/'; }, 1000);
+                }
+            }catch(err){
+                alert("Add data"+' '+err)
+                this.setEnableButton()
+            }
+        },
+        customFormatter(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
+        getDataItemCutting: async function() {
+            try{
+                 const res = await axios.post(apiUrl+'dataproduksi/cutting')
+                 this.optionsCutting = res.data
+             }catch(err){
+                 alert("Get data Item Cutting"+' '+err)
+             }
+        },
+        getDataItemSablon: async function() {
+            try{
+                 const res = await axios.post(apiUrl+'dataproduksi/sablon')
+                 this.optionsSablon = res.data
+             }catch(err){
+                 alert("Get data Item Sablon"+' '+err)
+             }
+        },
+        checkValidation: async function(){
+            var validate = false
+            if (this.data.tanggal == "" || this.data.nama == "" || this.data.item == [] 
+            || this.data.upah == "" || this.data.totalHarga == "" || this.data.jumlah == ""
+            || this.data.ket == ""  || this.data.totalUpah == "" || this.data.hargaBarang == "" ) {
+                validate = false
+            } else {
+                validate = true
+            }
+
+            if(validate){
+                this.alertAdd()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        convertFloatToRupiah: function(val) {
+
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            return rupiah
+        },
+        convertRupiahToFloat: function(val){
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            return txtNumber
+        },
+        convertDataTanggal: function(val){
+            var convert = moment(val).format("YYYY-MM-DD")
+            this.data.tanggal = convert
+        },
+        alertAdd:  function (data) {
+             swal({
+                title: "Anda yakin ingin menambah data?",
+                text: "Pastikan data yang anda masukkan benar",
+                icon: "warning",
+                buttons: ["batal", "tambah"],
+                dangerMode: false,
+                })
+                .then((willAdd) => {
+                if (willAdd) {
+                     this.actTambah(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        },
+        setEnableButton: function(){
+            this.isButtonDisable = false
+        },
+        setDisableButton: function(){
+            this.isButtonDisable = true
+        },
+        customItemNameCutting ({ id, jumlah, ketWarnaBahan, ketTipeCutting, ketTipeSubCutting }) {
+            return `${id} — [${jumlah},${ketWarnaBahan},${ketTipeCutting} ${ketTipeSubCutting? ','+ketTipeSubCutting : ''}]`
+        },
+        customItemNameSablon ({ id, totalJumlah, nama }) {
+            return `${id} — [${totalJumlah},${nama}]`
+        },
+        getTotalItemCutting: function(){
+            if(this.data.itemCutting != []){
+                var itemCutting = this.data.itemCutting
+                var totalHarga = 0
+                var totalJumlah = 0
   
-     
+                for(i=0; i < itemCutting.length; i++){
+                    totalHarga += parseInt(itemCutting[i].totalBiayaPerPcs)
+                    totalJumlah += parseInt(itemCutting[i].jumlah)
+                }
 
+                this.totalHarga =  Math.ceil(totalHarga  / itemCutting.length).toString()
+                this.data.jumlah =  (totalJumlah).toString()
+            }
+        },
+        getTotalItemSablon: function(){
+            if(this.data.itemSablon != []){
+                var itemSablon = this.data.itemSablon
+                var totalHarga = 0
+                var totalJumlah = 0
+  
+                for(i=0; i < itemSablon.length; i++){
+                    totalHarga += parseInt(itemSablon[i].hargaBarang)
+                    totalJumlah += parseInt(itemSablon[i].totalJumlah)
+                }
+
+                this.totalHarga =  Math.ceil(totalHarga  / itemSablon.length).toString()
+                this.data.jumlah =  (totalJumlah).toString()
+            }
+        }
+     }
+})
  </script>

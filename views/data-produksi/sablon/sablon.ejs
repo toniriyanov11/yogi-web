@@ -43,8 +43,6 @@
                             <th>Upah/pcs (Rp)</th>
                             <th>Tot. Upah (Rp)</th>
                             <th>Harga Barang/pcs (Rp)</th>
-                            <th>Sub Item</th>
-
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -56,10 +54,10 @@
                             <td class="clicked"><a @click="detil(dataResponse.id)">{{dataResponse.id}}</a></td>
                             <td>{{dataResponse.nama}}</td>
                             <td>{{convertToRupiah(Math.ceil(dataResponse.totalBiaya))}}</td>
-                            <td>{{dataResponse.totalJumlah  }}</td>
+                            <td>{{dataResponse.totalJumlah}}</td>
                             <td>{{convertToRupiah(dataResponse.upah)}}</td>
                             <td>{{convertToRupiah(dataResponse.totalJumlah * dataResponse.upah)}}</td>
-                            <td>{{convertToRupiah(Math.ceil(dataResponse.totalBiaya + parseInt(dataResponse.upah)))}}</td>
+                            <td>{{convertToRupiah(Math.ceil(dataResponse.hargaBarang))}}</td>
                             <td>
                                 <button type="button" @click="edit(dataResponse.id)"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
                                 <button type="button" @click="alertDelete(dataResponse.id)" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>

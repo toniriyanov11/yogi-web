@@ -40,7 +40,7 @@
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data Cutting</label>
                         <div class="col-sm-10">
-                                <multiselect  v-model="data.item" :options="options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="" :custom-label="customItemName" label="id" track-by="id" :preselect-first="true">
+                                <multiselect  v-model="data.item" :options="options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="" :custom-label="customItemName" label="id" track-by="id">
                                   <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
                                 </multiselect>
                             <!-- <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><i class="icon-todolist"></i></button> -->
@@ -79,7 +79,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="example-number-input" class="col-sm-2 col-form-label">Harga Barang Setelah Sablon (Rp)</label>
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Harga Barang Setelah Sablon/Pcs (Rp)</label>
                         <div class="col-sm-10">
                             <input disabled  class="form-control" type="text" v-model="hargaBarang" id="example-number-input">
                         </div>

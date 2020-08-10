@@ -242,21 +242,115 @@ router.post('/sablon/hapus/:id', async function(req, res, next) {
 
 //---------------jahit-----------------
 router.get('/jahit', function(req, res, next) {
-  res.render('index', { title: 'Data Produksi - jahit', page:'data-produksi/jahit/jahit.ejs'});
-});
-
-router.get('/jahit/tambah', function(req, res, next) {
-  res.render('index', { title: 'Tambah jahit', page:'data-produksi/jahit/jahit_tambah.ejs'});
-});
-
-router.get('/jahit/edit/:id', function(req, res, next) {
-  res.render('index', { title: 'Edit jahit', page:'data-produksi/jahit/jahit_edit.ejs', data:req.query});
-});
-
-router.get('/jahit/detil/:id', function(req, res, next) {
-  res.render('index', { title: 'Detail jahit', page:'data-produksi/jahit/jahit_detil.ejs', data:req.query});
-});
-
+   res.render('index', { title: 'Data Produksi - Jahit', page:'data-produksi/jahit/jahit.ejs'});
+ });
+ 
+ router.post('/jahit',async function(req, res, next) {
+   try{
+      let dataResponse = await controllerDataProduksi.getJahitAll()
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertObjectStructureJahit(dataResponse,'DD/MM/YYYY')
+         console.log(data)
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+    }catch(err){
+      res.status(500).json(err);
+    }
+ })
+ 
+ router.get('/jahit/detil/:id', function(req, res, next) {
+   var id = req.params.id;
+   res.render('index', { title: 'Detail Jahit', page:'data-produksi/jahit/jahit_detil.ejs', data:JSON.stringify(id)});
+ });
+ 
+ router.post('/jahit/detil/:id',async function(req, res, next) {
+    try{
+       var id = req.params.id;
+       let dataResponse = await controllerDataProduksi.getJahitById(id)
+       var data =""
+       if (dataResponse.success) {
+          data = await util.convertObjectStructureJahit(dataResponse, 'DD/MM/YYYY')
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+   }catch(err){
+        res.status(500).json(err);
+   }
+ });
+ 
+ 
+ router.get('/jahit/tambah', function(req, res, next) {
+     res.render('index', { title: 'Tambah Jahit', page:'data-produksi/jahit/jahit_tambah.ejs'});
+ });
+ 
+ router.post('/jahit/tambah', async function(req, res, next) {
+   try{
+      var data = req.body.data
+      let dataManipulation = await util.manipulateData(data)
+      let dataResponse = await controllerDataProduksi.insertJahit(dataManipulation)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   }catch(err){
+      res.status(500).json(err);
+   }
+ });
+ 
+ router.get('/jahit/edit/:id', function(req, res, next) {
+     var id = req.params.id;
+     res.render('index', { title: 'Edit Jahit', page:'data-produksi/jahit/jahit_edit.ejs', data:JSON.stringify(id)});
+ });
+ 
+ router.post('/jahit/edit/:id', async function(req, res, next) {
+   try{
+      var id = req.params.id;
+      let dataResponse = await controllerDataProduksi.getJahitById(id)   
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertObjectStructure(dataResponse, 'YYYY-MM-DD')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+   } catch(err){
+      res.status(500).json(err);
+   }
+ });
+ 
+ router.post('/jahit/edit', async function(req, res, next) {
+   try {
+      var data = req.body.data
+      let dataResponse = await controllerDataProduksi.updateJahit(data)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch (err) {
+      res.status(500).json(err);
+   }
+ });
+ 
+ router.post('/jahit/hapus/:id', async function(req, res, next) {
+   try{
+      var id = req.params.id
+      let dataResponse = await controllerDataProduksi.deleteJahit(id)
+      if (dataResponse.success ) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch(err){
+      res.status(500).json(err);
+   }
+ });
+ //end of jahit
 
 
 //---------------barangjadi-----------------

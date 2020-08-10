@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" id="app">
     <div class="page-title-box">
         <div class="row align-items-center">
             <div class="col-sm-6">
@@ -15,10 +15,10 @@
     </div>
     <!-- end page-title -->
 
-    <!-- START button-->
-    <div class="row">
+     <!-- START button-->
+     <div class="row">
         <div class="col py-3 text-right">
-          <button type="button" class="btn btn-primary waves-effect waves-light"  onclick="tambah()"><i class="mdi mdi-plus align-middle mr-2"></i>Tambah jahit</button>
+          <button type="button" class="btn btn-primary waves-effect waves-light"  @click="tambah()"><i class="mdi mdi-plus align-middle mr-2"></i>Tambah Jahit</button>
         </div>
     </div>
     <!-- end button -->
@@ -43,16 +43,27 @@
                             <th>Upah/pcs (Rp)</th>
                             <th>Tot. Upah (Rp)</th>
                             <th>Harga Barang/pcs (Rp)</th>
-                            <th>Sub Item</th>
-                            <th>Ket</th>
                             <th>Action</th>
                         </tr>
                         </thead>
 
 
                         <tbody>
-                        <tr> 
-                            <td>Minggu 10,2020</td>
+                        <tr v-for="dataResponse in dataResponses" :key="dataResponse.id"> 
+                            <td>{{dataResponse.tanggal}}</td>
+                            <td class="clicked"><a @click="detil(dataResponse.id)">{{dataResponse.id}}</a></td>
+                            <td>{{dataResponse.nama}}</td>
+                            <td>{{convertToRupiah(Math.ceil(dataResponse.totalBiaya))}}</td>
+                            <td>{{dataResponse.totalJumlah}}</td>
+                            <td>{{convertToRupiah(dataResponse.upah)}}</td>
+                            <td>{{convertToRupiah(dataResponse.totalJumlah * dataResponse.upah)}}</td>
+                            <td>{{convertToRupiah(Math.ceil(dataResponse.totalBiaya + parseInt(dataResponse.upah)))}}</td>
+                            <td>
+                                <button type="button" @click="edit(dataResponse.id)"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
+                                <button type="button" @click="alertDelete(dataResponse.id)" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
+                            </td>
+
+                            <!-- <td>{{dataResponse.tanggal}}</td>
                             <td><a onclick="detil('3C-2020020001')" style="color:#2980b9">3C-2020020001</a></td>
                             <td>Kaos</td>
                             <td>32,500</td>
@@ -65,7 +76,7 @@
                             <td>
                                 <button type="button" onclick="edit('3C-2020020001')"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
                                 <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
-                            </td>
+                            </td> -->
                         </tr>
                         </tbody>
                     </table>
@@ -78,30 +89,86 @@
 </div>
 
 <script>
-    function tambah(){
-        location.href = "/dataproduksi/jahit/tambah";
-    }
-
-    function edit(id){
-        if(id=="3C-2020020001"){
-            location.href = "/dataproduksi/jahit/edit/"+id+"?id=3C-2020020001&tgl=2020-W10&jml=150&totbiaya=4,750,000&upahpcs=5,000&totupah=750,000&hargapcs=36,700&subitem=3A-2020020001,3A-2020020002&ket=- &jenis=cutting&totupahming=2,250,000&&sub=3A-2020020001,3A-2020020002&nama=kaos";
-        }
-    }
-
-    function detil(id){
-        if(id=="3C-2020020001"){
-            location.href = "/dataproduksi/jahit/detil/"+id+"?id=3C-2020020001&tgl=minggu 10,2020&jml=150&totbiaya=4,750,000&upahpcs=5,000&totupah=750,000&hargapcs=36,700&subitem=3A-2020020001,3A-2020020002&ket=-&jenis=cutting&totupahming=2,250,000&&sub=3A-2020020001,3A-2020020002&nama=kaos";
-        }
-    }
-
-    function detilsub(id){
-        if(id=="3A-2020020001"){
-            location.href = "/dataproduksi/cutting/detil/"+id+"?id=3A-2020020001&tgl=25/02/2020&nama=Singlet&berat=50&jumlah=100&tothbahan=2,500,000&totbiaya=3,000,000&upahpcs=5,000&hasilpcs=0.5&hargakg=50,000&jenis=polos&varian=solid&warna=putih&ket=-";
-        }else if(id=="3A-2020020002"){
-            location.href = "/dataproduksi/cutting/detil/"+id+"?id=3A-2020020002&tgl=25/02/2020&nama=Kaos&berat=30&jumlah=50&tothbahan=1,500,000&totbiaya=1,750,000&upahpcs=5,000&hasilpcs=1.6&hargakg=50,000&jenis=full print&varian=two tone&warna=biru&ket=-";
-       }
-    }
-</script>
+    const apiUrl = '<%= process.env.URL %>'
+     var app = new Vue({
+      el: '#app',
+      data: {
+          dataResponses : {},
+          detailAmount: {
+              totalJumlah:""
+          }
+      },
+      async created() {
+        await this.getData()
+      },
+      methods:{
+         edit: function(id){
+             location.href = "/dataproduksi/jahit/edit/"+id
+         },
+         detil: function(id){
+             location.href = "/dataproduksi/jahit/detil/"+id
+         },
+         tambah: function(){
+             location.href = "/dataproduksi/jahit/tambah"
+         },
+         getData: async function() {
+             try{
+                 const res = await axios.post(apiUrl+'dataproduksi/jahit')
+                 this.dataResponses = res.data
+                 console.log(this.dataResponses)
+             }catch(err){
+                 alert("Get data"+' '+err)
+             }
+         },
+         deleteData: async function(id){
+             try{
+                 const res = await axios.post(apiUrl+'dataproduksi/jahit/hapus/'+id)
+                 if (res.data.success){
+                     this.alertSuccess(res.data.msg)
+                     setTimeout(function(){ location.reload(); }, 1000);
+                 } else {
+                     alert(res.data.msg)
+                 }
+             }catch(err){
+                 alert("Delete data"+' '+err)
+             }
+         },
+         convertToRupiah: function (val) {
+             var txtNumber = parseFloat(val)
+             var txtString = txtNumber.toString()
+             var sisa = txtString.length % 3
+             var rupiah = txtString.substr(0, sisa)
+             var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+             if (ribuan) {
+                 var separator = sisa ? ',' : ''
+                 rupiah += separator + ribuan.join(',')
+             }
+             return rupiah
+         },
+         alertDelete:  function (data) {
+              swal({
+                 title: "Anda yakin ingin menghapus data?",
+                 text: "Ketika data terhapus, data tidak dapat dikembalikan!",
+                 icon: "warning",
+                 buttons: ["batal", "ya,hapus!"],
+                 dangerMode: true,
+                 })
+                 .then((willDelete) => {
+                 if (willDelete) {
+                      this.deleteData(data)
+                 }
+             });
+         },
+         alertSuccess: function (message){
+             swal({
+                 title:"",
+                 text:message, 
+                 icon:"success",
+                 buttons:false});
+         }
+      }
+ })    
+ </script>
 
 
 <style>

@@ -159,17 +159,21 @@ async function convertObjectStructure(dataResponse,dateFormat){
         var tampungId = ''
         var jumlah = 0
         var biaya = 0
+        var harga = 0
         for(i=0; i < data.length; i++){
             jumlah = 0
             biaya = 0
+            harga = 0
             tampungId = data[i].id
             for(j=0; j < dataDetail.length; j++){
                 if(dataDetail[j].id === tampungId){
                     data[i].detil.push(dataDetail[j])
                     jumlah += parseInt(dataDetail[j].jumlahItem)
                     biaya += parseInt(dataDetail[j].totalBiayaItemPerPcs)
+                    harga += parseInt(dataDetail[j].totalBiayaItemPerPcs) + parseInt(data[i].upah)  
                     data[i].totalJumlah = jumlah
                     data[i].totalBiaya = biaya / data[i].detil.length
+                    data[i].hargaBarang = harga / data[i].detil.length
                 }else{
                     tampungId = data[i].id
                 }
@@ -177,6 +181,113 @@ async function convertObjectStructure(dataResponse,dateFormat){
             }
         }
 
+      return data
+    }catch(err){
+      return err
+    }
+}
+
+
+async function convertObjectStructureJahit(dataResponse,dateFormat){
+    try{
+        var data = await this.convertDate(dataResponse, dateFormat)
+        const value = data
+
+        var dataDetail = _.cloneDeep(value);
+        dataDetail.forEach(function(v){ delete v.tanggal, delete v.upah, delete v.nama, delete v.ket });
+        
+       
+        var data = []
+        //filter id
+        var tampung = ''
+        for(i=0; i < value.length; i++){
+                if(value[i].id === tampung){
+                    tampung  = value[i].id
+                }else{
+                    tampung  = value[i].id
+                    data.push({
+                        id : value[i].id,
+                        tanggal : value[i].tanggal,
+                        nama: value[i].nama,
+                        upah : value[i].upah,
+                        ket : value[i].ket,
+                        detil : []
+                    })
+                }
+        }
+
+        //filter detil item by id
+        var tampungId = ''
+        var jumlah = 0
+        var biaya = 0
+        for(i=0; i < data.length; i++){
+            jumlah = 0
+            biaya = 0
+            tampungId = data[i].id
+            for(j=0; j < dataDetail.length; j++){
+                if(dataDetail[j].id === tampungId){
+                    data[i].detil.push(dataDetail[j])
+                    if(dataDetail[j].jumlahItemCutting != null) {
+                        jumlah += parseInt(dataDetail[j].jumlahItemCutting)
+                        biaya += parseInt(dataDetail[j].totalBiayaItemCuttingPerPcs)
+                    } else if(dataDetail[j].jumlahItemSablon != null){
+                        jumlah += parseInt(dataDetail[j].jumlahItemSablon)
+                        biaya += parseInt(dataDetail[j].totalBiayaItemSablonPerPcs)
+                    }
+                }else{
+                    tampungId = data[i].id
+                }
+          
+            }
+            data[i].totalJumlah = jumlah
+            data[i].totalBiaya = biaya / data[i].detil.length
+        }
+
+        //restructure detil item property
+        for(i=0; i < data.length; i++){
+            for(j=0; j < data[i].detil.length; j++){
+                if(data[i].detil[j].jumlahItemCutting != null) {
+                    data[i].detil[j].idItem = data[i].detil[j].idItemCutting
+                    data[i].detil[j].jumlahItem =  data[i].detil[j].jumlahItemCutting 
+                    data[i].detil[j].namaItem =  data[i].detil[j].namaItemCutting 
+                    data[i].detil[j].totalBiayaItemPerPcs =  data[i].detil[j].totalBiayaItemCuttingPerPcs 
+                    data[i].detil[j].upahItem =  data[i].detil[j].upahItemCutting 
+
+                    
+                    delete data[i].detil[j].idItemCutting
+                    delete data[i].detil[j].idItemSablon
+                    delete data[i].detil[j].jumlahItemCutting
+                    delete data[i].detil[j].jumlahItemSablon
+                    delete data[i].detil[j].namaItemCutting
+                    delete data[i].detil[j].namaItemSablon
+                    delete data[i].detil[j].totalBiayaItemCuttingPerPcs
+                    delete data[i].detil[j].totalBiayaItemSablonPerPcs
+                    delete data[i].detil[j].upahItemCutting
+                    delete data[i].detil[j].upahItemSablon
+                    
+                } else if(data[i].detil[j].jumlahItemSablon != null){
+                    data[i].detil[j].idItem = data[i].detil[j].idItemSablon
+                    data[i].detil[j].jumlahItem =  data[i].detil[j].jumlahItemSablon 
+                    data[i].detil[j].namaItem =  data[i].detil[j].namaItemSablon 
+                    data[i].detil[j].totalBiayaItemPerPcs =  data[i].detil[j].totalBiayaItemSablonPerPcs 
+                    data[i].detil[j].upahItem =  data[i].detil[j].upahItemSablon 
+                    
+                    
+                    delete data[i].detil[j].idItemCutting
+                    delete data[i].detil[j].idItemSablon
+                    delete data[i].detil[j].jumlahItemCutting
+                    delete data[i].detil[j].jumlahItemSablon
+                    delete data[i].detil[j].namaItemCutting
+                    delete data[i].detil[j].namaItemSablon
+                    delete data[i].detil[j].totalBiayaItemCuttingPerPcs
+                    delete data[i].detil[j].totalBiayaItemSablonPerPcs
+                    delete data[i].detil[j].upahItemCutting
+                    delete data[i].detil[j].upahItemSablon
+                }
+            }
+        }
+
+      
       return data
     }catch(err){
       return err
@@ -217,6 +328,7 @@ module.exports = {
     convertDate,
     convertRecordDate,
     convertObjectStructure,
-    manipulateData
+    manipulateData,
+    convertObjectStructureJahit,
 
 }

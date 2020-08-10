@@ -92,7 +92,7 @@ router.deleteCutting = function(id) {
 
 
 
-//Sablom
+//Sablon
 router.getSablonAll = function() {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`select x.id, x.tanggal, x.upah, x.nama, x.ket
@@ -113,7 +113,6 @@ router.getSablonAll = function() {
         })
     })
 }
-
 
 router.getSablonById = function(id) {
     return new Promise((resolve, reject) => {
@@ -179,7 +178,121 @@ router.deleteSablon = function(id) {
         })
     })
 }
-//End of Cutting
+//End of Sablon
+
+
+
+//Jahit
+router.getJahitAll = function() {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`SELECT x.id, x.idItemCutting, x.idItemSablon, x.tanggal, x.upah, x.nama, x.ket
+        , c.nama as namaItemCutting, c.jumlah as jumlahItemCutting, c.upah as upahItemCutting,
+        (c.harga_per_kg*(c.berat/c.jumlah)) + c.upah as totalBiayaItemCuttingPerPcs,
+        s.nama as namaItemSablon, s.jumlah as jumlahItemSablon, s.upah as upahItemSablon,  s.totalBiayaItemPerPcs as totalBiayaItemSablonPerPcs
+        FROM (SELECT j.id, j.tanggal, j.upah, j.nama,  j.ket,
+                dj.id_item_cutting as idItemCutting,
+                dj.id_item_sablon as idItemSablon
+                FROM jahit as j 
+                INNER JOIN detil_jahit as dj 
+                ON j.id = dj.id_jahit  AND j.status_aktif = 'Y' 
+              ) as x
+              LEFT join cutting as c on c.id in (x.idItemCutting)
+              LEFT join 
+              (SELECT s.id, s.tanggal, s.upah, s.nama,  s.ket,
+                ds.id_item as idItem, sum(c.jumlah) as jumlah,  sum((c.harga_per_kg*(c.berat/c.jumlah) + c.upah)) / count(c.id) + s.upah as totalBiayaItemPerPcs
+                FROM sablon as s 
+                INNER JOIN detil_sablon as ds 
+                INNER JOIN cutting as c
+                ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif = 'Y' GROUP BY ds.id_sablon
+              ) as s on s.id in (x.idItemSablon)
+               `,(err,results) => {
+            if (err) {
+                console.log(err)
+                return reject(err)
+            } 
+
+            return resolve(results)  
+        })
+    })
+}
+
+router.getJahitById = function(id) {
+    console.log("Id"+id)
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`SELECT x.id, x.idItemCutting, x.idItemSablon, x.tanggal, x.upah, x.nama, x.ket
+        , c.nama as namaItemCutting, c.jumlah as jumlahItemCutting, c.upah as upahItemCutting,
+        (c.harga_per_kg*(c.berat/c.jumlah)) + c.upah as totalBiayaItemCuttingPerPcs,
+        s.nama as namaItemSablon, s.jumlah as jumlahItemSablon, s.upah as upahItemSablon,  s.totalBiayaItemPerPcs as totalBiayaItemSablonPerPcs
+        FROM (SELECT j.id, j.tanggal, j.upah, j.nama,  j.ket,
+                dj.id_item_cutting as idItemCutting,
+                dj.id_item_sablon as idItemSablon
+                FROM jahit as j 
+                INNER JOIN detil_jahit as dj 
+                ON j.id = dj.id_jahit  AND j.status_aktif = 'Y' 
+              ) as x
+              LEFT join cutting as c on c.id in (x.idItemCutting)
+              LEFT join 
+              (SELECT s.id, s.tanggal, s.upah, s.nama,  s.ket,
+                ds.id_item as idItem, sum(c.jumlah) as jumlah,  sum((c.harga_per_kg*(c.berat/c.jumlah) + c.upah)) / count(c.id) + s.upah   as totalBiayaItemPerPcs
+                FROM sablon as s 
+                INNER JOIN detil_sablon as ds 
+                INNER JOIN cutting as c
+                ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif = 'Y' GROUP BY ds.id_sablon
+              ) as s on s.id in (x.idItemSablon) WHERE x.id = ?`,[id],(err,results) => {
+            if (err) {
+                return reject(err)
+            } 
+            return resolve(results)
+        })
+    })
+}
+
+router.insertJahit = function(data) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`START TRANSACTION;`)
+        database.getConnection().query(`
+        INSERT INTO sablon (id,tanggal,nama,upah,ket,status_aktif,tgl_rekam)
+        VALUES (f_gen_id("D"),?,?,?,?,'Y',?);`,[data.tanggal, data.nama, data.upah, data.ket, data.tglSekarang,])
+        database.getConnection().query(`INSERT INTO detil_sablon (id_item,id_sablon,id)
+        select id,(select max(id) from sablon),f_gen_id("DS") from cutting where id in (?)
+        `,[data.item],(err,results) => {
+            if (err) {
+                console.log(err)
+                database.getConnection().query(`ROLLBACK;`)
+                return reject(err)
+            }else{
+                database.getConnection().query(`COMMIT;`)
+                return resolve(results)
+            }
+        })
+    })
+}
+
+router.updateJahit = function(data) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`UPDATE sablon SET tanggal = ?, nama = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.ket,data.id],(err,results) => {
+            if (err) {
+                return reject(err)
+            }else{
+                return resolve(results)
+            }
+        })
+    })
+}
+
+router.deleteJahit = function(id) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`UPDATE sablon SET status_aktif = 'T' WHERE id = ?`,[id],(err,results) => {
+            if (err) {
+                return reject(err)
+            }else{
+                return resolve(results) 
+            } 
+        })
+    })
+}
+//End of Jahit
+
 
 
 module.exports = router
