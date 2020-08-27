@@ -299,14 +299,38 @@ async function convertObjectStructureJahit(dataResponse,dateFormat){
 async function manipulateData(data){
 try{
 
-    var arr = []
-    for(i=0; i < data.item.length; i++){
-        arr.push(data.item[i].id)
-    }
-    delete data.item
-    data.item = arr
+    if(data.item) {
+        var arr = []
+        for(i=0; i < data.item.length; i++){
+            arr.push(data.item[i].id)
+        }
+        delete data.item
+        data.item = arr
 
-    return data
+        return data
+    } else {
+        if(data.itemCutting.length != 0) {
+            var arr = []
+            for(i=0; i < data.itemCutting.length; i++){
+                arr.push(data.itemCutting[i].id)
+            }
+            delete data.item
+            data.item = arr.join()
+            data.jenisItem = "cutting"
+
+            return data 
+        }else if(data.itemSablon.length != 0) {
+            var arr = []
+            for(i=0; i < data.itemSablon.length; i++){
+                arr.push(data.itemSablon[i].id)
+            }
+            delete data.item
+            data.item = arr.join()
+            data.jenisItem = "sablon"
+
+            return data 
+        }
+    }
 }catch(err){
   return err
 }

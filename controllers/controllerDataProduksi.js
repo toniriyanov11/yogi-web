@@ -237,6 +237,7 @@ async function getJahitById(id) {
 
 async function insertJahit(data) {
     try {
+        console.log(data)
         return proccessInsertJahit(data)             
     } catch(err) {
        return util.responseErrorServer(err)
@@ -272,7 +273,6 @@ async function deleteJahit(id) {
 //function
 async function proccessInsertJahit(data){
     try{
-        console.log(data)
         if (data.tanggal != "" || data.nama != "" || data.item != [] 
         || data.upah != "" || data.totalHarga != "" || data.jumlah != ""
         || data.ket != ""  || data.totalUpah != "" || data.hargaBarang != "" ) {         
