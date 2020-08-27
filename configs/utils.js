@@ -327,7 +327,7 @@ try{
             arr.push(data.item[i].id)
         }
         delete data.item
-        data.item = arr
+        data.item = arr.join()
 
         return data
     } else {

@@ -136,16 +136,10 @@ router.getSablonById = function(id) {
 
 router.insertSablon = function(data) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`START TRANSACTION;`)
-        database.getConnection().query(`
-        INSERT INTO sablon (id,tanggal,nama,upah,ket,status_aktif,tgl_rekam)
-        VALUES (f_gen_id("D"),?,?,?,?,'Y',?);`,[data.tanggal, data.nama, data.upah, data.ket, data.tglSekarang,])
-        database.getConnection().query(`INSERT INTO detil_sablon (id_item,id_sablon,id)
-        select id,(select max(id) from sablon),f_gen_id("DS") from cutting where id in (?)
-        `,[data.item],(err,results) => {
+        database.getConnection().query(`CALL P_SABLON(?,?,?,?,?,?)`,[data.tanggal, data.nama, data.upah, data.ket , data.tglSekarang , data.item],(err,results) => {
             if (err) {
-                console.log(err)
                 database.getConnection().query(`ROLLBACK;`)
+                console.log(err)
                 return reject(err)
             }else{
                 database.getConnection().query(`COMMIT;`)
