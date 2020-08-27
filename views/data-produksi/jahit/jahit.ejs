@@ -62,21 +62,6 @@
                                 <button type="button" @click="edit(dataResponse.id)"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
                                 <button type="button" @click="alertDelete(dataResponse.id)" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
                             </td>
-
-                            <!-- <td>{{dataResponse.tanggal}}</td>
-                            <td><a onclick="detil('3C-2020020001')" style="color:#2980b9">3C-2020020001</a></td>
-                            <td>Kaos</td>
-                            <td>32,500</td>
-                            <td>150</td>
-                            <td>5,000</td>
-                            <td>750,000</td>
-                            <td>37,500</td>
-                            <td><a onclick="detilsub('3A-2020020001')" style="color:#2980b9">3A-2020020001</a>, <a onclick="detilsub('3A-2020020002')" style="color:#2980b9">3A-2020020002</a></td>
-                            <td>-</td>
-                            <td>
-                                <button type="button" onclick="edit('3C-2020020001')"  class="btn btn-light waves-effect"><i class="icon-pencil"></i></button>
-                                <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
-                            </td> -->
                         </tr>
                         </tbody>
                     </table>
@@ -115,7 +100,6 @@
              try{
                  const res = await axios.post(apiUrl+'dataproduksi/jahit')
                  this.dataResponses = res.data
-                 console.log(this.dataResponses)
              }catch(err){
                  alert("Get data"+' '+err)
              }

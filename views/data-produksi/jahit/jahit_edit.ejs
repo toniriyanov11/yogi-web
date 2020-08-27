@@ -32,76 +32,85 @@
                     
                      <div class="form-group row">
                         <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
-                            <div class="col-auto">
-                                <input class="form-control" type="week" id="weekpicker" value="<%= data.tgl%>"/>
+                        <div class="col-auto">
+                            <div class="input-group">
+                                <vuejs-datepicker  v-model="dataResponses.tanggal" @input="convertDataTanggal" :format="customFormatter"></vuejs-datepicker>
+                            </div><!-- input-group -->
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Pilih Data Jahit</label>
+                            <div class="col-sm-10">
+                                <select disabled class="form-control" v-model="dataResponses.jenisItem">
+                                    <option disabled style="color: gainsboro;">pilih produk</option>
+                                    <option :value="typeItemCutting">Cutting</option>
+                                    <option :value="typeItemSablon">Sablon</option>
+                                </select>
                             </div>
+                    </div>
+                    <div v-if="dataResponses.jenisItem == typeItemCutting "  class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data Cutting</label>
+                        <div class="col-sm-10">
+                             <multiselect disabled v:model="dataResponses.detil"   :options="optionsCutting" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder=""  label="id" track-by="id" :preselect-first="true">
+                                <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
+                              </multiselect>
+                        </div>
+                    </div>
+                    <div v-if="dataResponses.jenisItem == typeItemSablon "  class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data Sablon</label>
+                        <div class="col-sm-10">
+                             <multiselect disabled v:model="dataResponses.detil"   :options="optionsSablon" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder=""  label="id" track-by="id" :preselect-first="true">
+                                <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
+                              </multiselect>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Nama Item</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.nama%>" id="example-search-input">
-                        </div>
-                    </div>
-             
-                    <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data</label>
-                        <div class="col-sm-10">
-                            <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><i class="icon-todolist"></i></button>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2 col-form-label"></label>
-                        <div class="col-sm-10">
-                            <%= data.sub%>
+                            <input class="form-control" type="text" v-model="dataResponses.nama" id="example-text-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Upah/pcs (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.upahpcs%>" id="example-search-input">
+                            <input disabled class="form-control" type="text" v-model="upah" id="example-search-input">
                         </div>
                     </div>
                     <hr>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Total Harga (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.totbiaya%>" id="example-search-input">
+                            <input disabled class="form-control" type="text" v-model="totalHarga" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Banyak (pcs)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.jml%>" id="example-search-input">
+                            <input disabled class="form-control" type="text" v-model="dataResponses.totalJumlah" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
                         <div  class="col-sm-10">
-                            <textarea required class="form-control" rows="3"><%= data.ket%></textarea>
+                            <textarea required class="form-control" v-model="dataResponses.ket" rows="3"></textarea>
                         </div>
                     </div>
                     <hr>
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Upah (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.totupah%>" id="example-number-input">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="example-number-input" class="col-sm-2 col-form-label">Total Upah/minggu (Rp)</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.totupahming%>" id="example-number-input">
+                            <input disabled class="form-control" type="text" v-model="totalUpah" id="example-number-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Harga Barang (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="<%= data.hargapcs%>" id="example-number-input">
+                            <input disabled class="form-control" type="text" v-model="hargaBarang" id="example-number-input">
                         </div>
                     </div>
                     <div class="form-group text-right">
                         <div>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light">
+                            <button @click="checkValidation()" class="btn btn-primary waves-effect waves-light">
                                 Submit
                             </button>
                         </div>
@@ -111,127 +120,156 @@
         </div> <!-- end col -->
     </div>
     <!-- END ROW -->
-
-    <div class="row">
-        <div class="col-12">
-            <div class="card m-b-30">
-                <div class="card-body">
-
-                    <h4 class="mt-0 mb- header-title">Sub Item</h4>
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Tanggal</th>
-                                    <th>No</th>
-                                    <th>Nama Item</th>
-                                    <th>Banyak(Pcs)</th>
-                                    <th>Total Biaya(Rp)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>25/02/2020</td>
-                                    <td><a onclick="detilsub('3A-2020020001')" style="color:#2980b9">3A-2020020001</a></td>
-                                    <td>Singlet</td>
-                                    <td>100</td>
-                                    <td>3,000,000</td>
-                                </tr>
-                                <tr>
-                                    <td>25/02/2020</td>
-                                    <td><a onclick="detilsub('3A-2020020002')" style="color:#2980b9">3A-2020020002</a></td>
-                                    <td>Kaos</td>
-                                    <td>50</td>
-                                    <td>1,750,000</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                   
-                </div>
-            </div>
-        </div> <!-- end col -->
-    </div>
-
-    <!--  Modal content for the above example -->
-    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Daftar Data cutting</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="frm-example" action="/" method="POST">
-                    <table id="datatable-check" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>Tanggal</th>
-                            <th>No</th>
-                            <th>Nama Item</th>
-                            <th>Banyak(Pcs)</th>
-                            <th>Total Biaya(Rp)</th>
-                        </tr>
-                        </thead>
-
-
-                        <tbody>
-                        <tr> 
-                            <td></td>
-                            <td>25/02/2020</td>
-                            <td><a onclick="detil('3A-2020020001')" style="color:#2980b9">3A-2020020001</a></td>
-                            <td>Singlet</td>
-                            <td>100</td>
-                            <td>3,000,000</td>
-                        </tr>
-                        <tr>  
-                            <td></td>
-                            <td>25/02/2020</td>
-                            <td><a onclick="detil('3A-2020020002')" style="color:#2980b9">3A-2020020002</a></td>
-                            <td>Kaos</td>
-                            <td>50</td>
-                            <td>1,750,000</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div class="row">
-                        <div class="col py-3 text-center">
-                          <button type="button" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-format-vertical-align-bottom align-middle mr-2"></i>Submit</button>
-                        </div>
-                    </div>
-                 </form>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    
-
 </div>
 
 <script>
-    function tambah(){
-        location.href = "/jahit"
-    }
-    
-</script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
+     components: {
+            vuejsDatepicker, Multiselect: window.VueMultiselect.default
+    },
      data: {
-         valueJenis:'<%= data.jenis  %>',
-     }
-     })
+         id:'',
+         dataResponses:{
+         },
+         optionsCutting:[],
+         optionsSablon:[],
+         upah:'',
+         totalHarga:'',
+         totalUpah:'',
+         hargaBarang:'',
+         typeItemCutting: '1',
+         typeItemSablon: '2',
+         tglSekarang:moment().format('YYYY-MM-DD'),
+     },
+     async created() {
+        this.id = JSON.parse('<%-data%>')
+        await this.getDataItemCutting()
+        await this.getDataItemSablon()
+        await this.getData(this.id)
+        await this.handleResponseVariable()
+     },
+     watch: {
+        upah: function (val) {
+            var result = this.convertFloatToRupiah(val.toString())
+            this.upah = result
+        },
+        totalHarga: function (val) {
+            var result = this.convertFloatToRupiah(val.toString())
+            this.totalHarga = result
+        },
+        totalUpah: function (val) {
+            var result = this.convertFloatToRupiah(val.toString())
+            this.totalUpah = result
+        },
+        hargaBarang: function (val) {
+            var result = this.convertFloatToRupiah(val.toString())
+            this.hargaBarang = result
+        },     
+     },
+     methods : {
+        getData: async function(id) {
+            try{
+                const res = await axios.post(apiUrl+'dataproduksi/jahit/edit/'+id)
+                this.dataResponses = res.data[0]
+                console.log(this.dataResponses)
+            }catch(err){
+                alert("Get data"+' '+err)
+            }
+        },
+        actEdit: async function() {
+            try{
+                var data = this.dataResponses
+                const res = await axios.post(apiUrl+'dataproduksi/jahit/edit', { data:data })
+                if (res.data.success){
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href = apiUrl + 'dataproduksi/jahit'; }, 1000);
+                }
+            }catch(err){
+                alert("Edit data"+' '+err)
+            }
+        },
+        getDataItemCutting: async function() {
+            try{
+                 const res = await axios.post(apiUrl+'dataproduksi/cutting')
+                 this.optionsCutting = res.data
+                 console.log(this.optionsCutting)
+             }catch(err){
+                 alert("Get data Item Cutting"+' '+err)
+             }
+        },
+        getDataItemSablon: async function() {
+            try{
+                 const res = await axios.post(apiUrl+'dataproduksi/sablon')
+                 this.optionsSablon = res.data
+                 console.log(this.optionsSablon)
+             }catch(err){
+                 alert("Get data Item Sablon"+' '+err)
+             }
+        },
+        checkValidation: async function(){
+            var validate = false
+            if (this.dataResponses.tanggal == "" || this.dataResponses.nama == "" || this.dataResponses.detil.length == 0
+            || this.dataResponses.upah == ""  || this.dataResponses.ket == "" ) {
+                validate = false
+            } else {
+                validate = true
+            }
 
-     function detilsub(id){
-        if(id=="3A-2020020001"){
-            location.href = "/dataproduksi/cutting/detil/"+id+"?id=3A-2020020001&tgl=25/02/2020&nama=Singlet&berat=50&jumlah=100&tothbahan=2,500,000&totbiaya=3,000,000&upahpcs=5,000&hasilpcs=0.5&hargakg=50,000&jenis=polos&varian=solid&warna=putih&ket=-";
-        }else if(id=="3A-2020020002"){
-            location.href = "/dataproduksi/cutting/detil/"+id+"?id=3A-2020020002&tgl=25/02/2020&nama=Kaos&berat=30&jumlah=50&tothbahan=1,500,000&totbiaya=1,750,000&upahpcs=5,000&hasilpcs=1.6&hargakg=50,000&jenis=full print&varian=two tone&warna=biru&ket=-";
-       }
-    }
+            if(validate){
+                this.alertEdit()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        customFormatter(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
+        convertDataTanggal: function(val){
+            var convert = moment(val).format("YYYY-MM-DD")
+            this.dataResponses.tanggal = convert
+        },
+        convertFloatToRupiah: function (val) {
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+
+            return rupiah
+        },
+        handleResponseVariable() {
+            this.upah = this.dataResponses.upah
+            this.totalHarga = Math.ceil(this.dataResponses.totalBiaya)
+            this.totalUpah = this.dataResponses.totalJumlah * parseInt(this.dataResponses.upah)
+            this.hargaBarang = Math.ceil(this.dataResponses.totalBiaya + parseInt(this.dataResponses.upah))
+        },
+        alertEdit:  function (data) {
+             swal({
+                title: "Anda yakin ingin merubah data?",
+                text: "Pastikan data yang anda ubah benar",
+                icon: "warning",
+                buttons: ["batal", "ubah"],
+                dangerMode: false,
+                })
+                .then((willEdit) => {
+                if (willEdit) {
+                     this.actEdit(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+            }
+        }
+     })
  </script>

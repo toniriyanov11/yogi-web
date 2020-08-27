@@ -262,31 +262,9 @@ router.insertJahit = function(data) {
     })
 }
 
-
-// router.insertJahit = function(data) {
-//     return new Promise((resolve, reject) => {
-//         database.getConnection().query(`START TRANSACTION;`)
-//         database.getConnection().query(`
-//         INSERT INTO jahit (id,tanggal,nama,upah,ket,status_aktif,tgl_rekam)
-//         VALUES (f_gen_id("E"),?,?,?,?,'Y',?);`,[data.tanggal, data.nama, data.upah, data.ket, data.tglSekarang,])
-//         database.getConnection().query(`INSERT INTO detil_jahit (id_item_cutting,id_jahit,id)
-//         select id,(select max(id) from jahit where status_aktif = 'Y'),f_gen_id("DJ") from cutting where id in (?)
-//         `,[data.item],(err,results) => {
-//             if (err) {
-//                 console.log(err)
-//                 database.getConnection().query(`ROLLBACK;`)
-//                 return reject(err)
-//             }else{
-//                 database.getConnection().query(`COMMIT;`)
-//                 return resolve(results)
-//             }
-//         })
-//     })
-// }
-
 router.updateJahit = function(data) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`UPDATE sablon SET tanggal = ?, nama = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.ket,data.id],(err,results) => {
+        database.getConnection().query(`UPDATE jahit SET tanggal = ?, nama = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.ket,data.id],(err,results) => {
             if (err) {
                 return reject(err)
             }else{
@@ -298,7 +276,7 @@ router.updateJahit = function(data) {
 
 router.deleteJahit = function(id) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`UPDATE sablon SET status_aktif = 'T' WHERE id = ?`,[id],(err,results) => {
+        database.getConnection().query(`UPDATE jahit SET status_aktif = 'T' WHERE id = ?`,[id],(err,results) => {
             if (err) {
                 return reject(err)
             }else{

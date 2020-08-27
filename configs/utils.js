@@ -205,14 +205,36 @@ async function convertObjectStructureJahit(dataResponse,dateFormat){
                     tampung  = value[i].id
                 }else{
                     tampung  = value[i].id
-                    data.push({
-                        id : value[i].id,
-                        tanggal : value[i].tanggal,
-                        nama: value[i].nama,
-                        upah : value[i].upah,
-                        ket : value[i].ket,
-                        detil : []
-                    })
+                    // data.push({
+                    //     id : value[i].id,
+                    //     tanggal : value[i].tanggal,
+                    //     nama: value[i].nama,
+                    //     upah : value[i].upah,
+                    //     ket : value[i].ket,
+                    //     detil : []
+                    // })
+
+                    if(value[i].idItemCutting != null){
+                        data.push({
+                            id : value[i].id,
+                            tanggal : value[i].tanggal,
+                            nama: value[i].nama,
+                            upah : value[i].upah,
+                            ket : value[i].ket,
+                            jenisItem: '1',
+                            detil : []
+                        })
+                    }else if(value[i].idItemSablon != null){
+                        data.push({
+                            id : value[i].id,
+                            tanggal : value[i].tanggal,
+                            nama: value[i].nama,
+                            upah : value[i].upah,
+                            ket : value[i].ket,
+                            jenisItem : '2',
+                            detil : []
+                        })
+                    }
                 }
         }
 

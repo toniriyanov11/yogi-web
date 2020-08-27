@@ -313,7 +313,7 @@ router.get('/jahit', function(req, res, next) {
       let dataResponse = await controllerDataProduksi.getJahitById(id)   
       var data =""
       if (dataResponse.success) {
-         data = await util.convertObjectStructure(dataResponse, 'YYYY-MM-DD')
+         data = await util.convertObjectStructureJahit(dataResponse, 'YYYY-MM-DD')
          res.status(200).json(data);
       } else {
          res.status(400).json(data);
