@@ -38,7 +38,27 @@ async function getInventorys() {
     }
 }
 
+
+async function getAddingPrices() {
+    try {
+        const rows = await modelOthers.getAddingPrices()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
 module.exports = {
     getMaterials,
-    getInventorys
+    getInventorys,
+    getAddingPrices
 }

@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 
 
-const controllerDataProduksi= require('../controllers/controllerDataProduksi.js')
+const controllerDataProduksi= require('../controllers/controllerDataProduksi.js');
+const controllerOthers= require('../controllers/controllerOthers.js');
 const util = require('../configs/utils.js');
 const { clone } = require('lodash');
 
@@ -358,17 +359,130 @@ router.get('/barangjadi', function(req, res, next) {
   res.render('index', { title: 'Data Produksi - barang jadi', page:'data-produksi/barangjadi/barangjadi.ejs'});
 });
 
-router.get('/barangjadi/tambah', function(req, res, next) {
-  res.render('index', { title: 'Tambah barang jadi', page:'data-produksi/barangjadi/barangjadi_tambah.ejs'});
-});
+router.post('/barangjadi',async function(req, res, next) {
+   try{
+      let dataResponse = await controllerDataProduksi.getBarangJadiAll()
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertObjectStructureBarangJadi(dataResponse,'DD/MM/YYYY')
+         console.log(data)
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+    }catch(err){
+      res.status(500).json(err);
+    }
+ })
+ 
+ router.get('/barangjadi/detil/:id', function(req, res, next) {
+   var id = req.params.id;
+   res.render('index', { title: 'Detail Barang Jadi', page:'data-produksi/barangjadi/barangjadi_detil.ejs', data:JSON.stringify(id)});
+ });
+ 
+ router.post('/barangjadi/detil/:id',async function(req, res, next) {
+    try{
+       var id = req.params.id;
+       let dataResponse = await controllerDataProduksi.getBarangJadiById(id)
+       var data =""
+       if (dataResponse.success) {
+          data = await util.convertObjectStructureBarangJadi(dataResponse, 'DD/MM/YYYY')
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+   }catch(err){
+        res.status(500).json(err);
+   }
+ });
+ 
+ 
+ router.get('/barangjadi/tambah', function(req, res, next) {
+     res.render('index', { title: 'Tambah Barang Jadi', page:'data-produksi/barangjadi/barangjadi_tambah.ejs'});
+ });
+ 
+ router.post('/barangjadi/tambah', async function(req, res, next) {
+   try{
+      var data = req.body.data
+      let dataManipulation = await util.manipulateData(data)
+      let dataResponse = await controllerDataProduksi.insertBarangJadi(dataManipulation)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   }catch(err){
+      res.status(500).json(err);
+   }
+ });
+ 
+ router.get('/barangjadi/edit/:id', function(req, res, next) {
+     var id = req.params.id;
+     res.render('index', { title: 'Edit Barang Jadi', page:'data-produksi/barangjadi/barangjadi_edit.ejs', data:JSON.stringify(id)});
+ });
+ 
+ router.post('/barangjadi/edit/:id', async function(req, res, next) {
+   try{
+      var id = req.params.id;
+      let dataResponse = await controllerDataProduksi.getBarangJadiById(id)   
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertObjectStructureBarangJadi(dataResponse, 'YYYY-MM-DD')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+   } catch(err){
+      res.status(500).json(err);
+   }
+ });
+ 
+ router.post('/barangjadi/edit', async function(req, res, next) {
+   try {
+      var data = req.body.data
+      let dataResponse = await controllerDataProduksi.updateBarangJadi(data)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch (err) {
+      res.status(500).json(err);
+   }
+ });
+ 
+ router.post('/barangjadi/hapus/:id', async function(req, res, next) {
+   try{
+      var id = req.params.id
+      let dataResponse = await controllerDataProduksi.deleteBarangJadi(id)
+      if (dataResponse.success ) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch(err){
+      res.status(500).json(err);
+   }
+ });
 
-router.get('/barangjadi/edit/:id', function(req, res, next) {
-  res.render('index', { title: 'Edit barang jadi', page:'data-produksi/barangjadi/barangjadi_edit.ejs', data:req.query});
-});
-
-router.get('/barangjadi/detil/:id', function(req, res, next) {
-  res.render('index', { title: 'Detail barang jadi', page:'data-produksi/barangjadi/barangjadi_detil.ejs', data:req.query});
-});
+ router.post('/penambahanbiaya',async function(req, res, next) {
+   try{
+      var data = req.body.data
+      let dataResponse = await controllerOthers.getAddingPrices(data)
+      console.log(dataResponse)
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+    }catch(err){
+      console.log(err)
+      res.status(500).json(err);
+    }
+   })
+ //end of barang jadi
 
 
 module.exports = router;

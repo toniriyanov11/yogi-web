@@ -35,4 +35,17 @@ router.getInventorys= function() {
         })
     })
 }
+
+
+router.getAddingPrices= function(data) {
+
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`SELECT * from penambahan_biaya`,(err,results) => {
+            if (err) {
+                return reject(err)
+            } 
+            return resolve(results)
+        })
+    })
+}
 module.exports = router

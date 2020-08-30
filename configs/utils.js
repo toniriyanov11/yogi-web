@@ -205,14 +205,6 @@ async function convertObjectStructureJahit(dataResponse,dateFormat){
                     tampung  = value[i].id
                 }else{
                     tampung  = value[i].id
-                    // data.push({
-                    //     id : value[i].id,
-                    //     tanggal : value[i].tanggal,
-                    //     nama: value[i].nama,
-                    //     upah : value[i].upah,
-                    //     ket : value[i].ket,
-                    //     detil : []
-                    // })
 
                     if(value[i].idItemCutting != null){
                         data.push({
@@ -316,6 +308,109 @@ async function convertObjectStructureJahit(dataResponse,dateFormat){
     }
 }
 
+async function convertObjectStructureBarangJadi(dataResponse,dateFormat){
+    try{
+        var data = await this.convertDate(dataResponse, dateFormat)
+        const value = data
+        console.log(value)
+
+        var dataDetail = _.cloneDeep(value);
+        dataDetail.forEach(function(v){ delete v.tanggal, delete v.upah, delete v.nama, delete v.ket });
+        
+       
+        var data = []
+        //filter id
+        var tampung = ''
+        for(i=0; i < value.length; i++){
+                if(value[i].id === tampung){
+                    tampung  = value[i].id
+                }else{
+                    tampung  = value[i].id
+                    data.push({
+                        id : value[i].id,
+                        tanggal : value[i].tanggal,
+                        nama: value[i].nama,
+                        upah : value[i].upah,
+                        ket : value[i].ket,
+                        hargaBarang: value[i].hargaBarang,
+                        detil : [],
+                        tambahanBiaya: [],
+                    })
+                }
+        }
+
+        //filter item by id
+        var tampungId = ''
+        var jumlah = 0
+        var biaya = 0
+        var harga = 0
+        for(i=0; i < data.length; i++){
+            jumlah = 0
+            biaya = 0
+            harga = 0
+            tampungId = data[i].id
+            for(j=0; j < dataDetail.length; j++){
+                if(dataDetail[j].id === tampungId){
+                    data[i].detil.push(dataDetail[j])
+                    if(dataDetail[j].jumlahItemCutting != null) {
+                        jumlah += parseInt(dataDetail[j].jumlahItemCutting)
+                        biaya += parseInt(dataDetail[j].totalBiayaItemCuttingPerPcs)
+                    } else if(dataDetail[j].jumlahItemSablon != null){
+                        jumlah += parseInt(dataDetail[j].jumlahItemSablon)
+                        biaya += parseInt(dataDetail[j].totalBiayaItemSablonPerPcs)
+                    }
+                }else{
+                    tampungId = data[i].id
+                }
+          
+            }
+            data[i].totalJumlah = jumlah
+            data[i].totalBiaya = biaya / data[i].detil.length
+        }
+
+
+        //adding price
+        for(i=0; i < data.length; i++){
+            data[i].tambahanBiaya.push({nominal:value[i].tieDye, ket:'Tie Dye'})
+            data[i].tambahanBiaya.push({nominal: value[i].label, ket: 'Label'})
+            data[i].tambahanBiaya.push({nominal: value[i].handTag, ket:'Hand Tag'})
+            data[i].tambahanBiaya.push({nominal: value[i].packing, ket: 'Packing'})
+            data[i].tambahanBiaya.push({nominal: value[i].dll, ket:'Dll'})
+
+            data[i].totalTambahanBiaya = parseInt(value[i].tieDye) + parseInt(value[i].label) + parseInt(value[i].handTag) + parseInt(value[i].packing) + parseInt(value[i].dll)
+         }
+
+        //restructure detil item property
+        for(i=0; i < data.length; i++){
+            for(j=0; j < data[i].detil.length; j++){
+                if(data[i].detil[j].jumlahItemCutting != null) {
+                    data[i].detil[j].jumlahItem =  data[i].detil[j].jumlahItemCutting 
+                    data[i].detil[j].totalBiayaItemPerPcs =  data[i].detil[j].totalBiayaItemCuttingPerPcs 
+                    
+                    delete data[i].detil[j].jumlahItemCutting
+                    delete data[i].detil[j].jumlahItemSablon
+                    delete data[i].detil[j].totalBiayaItemCuttingPerPcs
+                    delete data[i].detil[j].totalBiayaItemSablonPerPcs
+                    
+                } else if(data[i].detil[j].jumlahItemSablon != null){
+                    data[i].detil[j].jumlahItem =  data[i].detil[j].jumlahItemSablon 
+                    data[i].detil[j].totalBiayaItemPerPcs =  data[i].detil[j].totalBiayaItemSablonPerPcs 
+                    
+                    delete data[i].detil[j].jumlahItemCutting
+                    delete data[i].detil[j].jumlahItemSablon
+                    delete data[i].detil[j].totalBiayaItemCuttingPerPcs
+                    delete data[i].detil[j].totalBiayaItemSablonPerPcs
+                }
+            }
+        }
+
+      return data
+    }catch(err){
+      return err
+    }
+}
+
+
 
 
 async function manipulateData(data){
@@ -376,5 +471,6 @@ module.exports = {
     convertObjectStructure,
     manipulateData,
     convertObjectStructureJahit,
+    convertObjectStructureBarangJadi
 
 }

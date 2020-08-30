@@ -295,6 +295,104 @@ async function proccessInsertJahit(data){
 
 
 
+//Barang Jadi
+async function getBarangJadiAll() {
+    try {
+        const rows = await modelDataProduksi.getBarangJadiAll()
+        
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function getBarangJadiById(id) {
+    try {
+        const rows = await modelDataProduksi.getBarangJadiById(id)
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function insertBarangJadi(data) {
+    try {
+        console.log(data)
+        return proccessInsertBarangJadi(data)             
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+async function updateBarangJadi(data) {
+    try {
+        const rows = await modelDataProduksi.updateBarangJadi(data)
+        if (rows.affectedRows >= 1) {
+            return util.responseSuccessUpdate()
+        } else {
+           return util.responseFailedUpdate()
+        }               
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+async function deleteBarangJadi(id) {
+    try {
+        const rows = await modelDataProduksi.deleteBarangJadi(id)
+        if (rows.affectedRows >= 1) {
+            return util.responseSuccessDelete()
+        } else {
+           return util.responseFailedDelete()
+        }
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+//function
+async function proccessInsertBarangJadi(data){
+    try{
+        if (data.tanggal != "" || data.nama != "" || data.item != [] 
+        || data.upah != "" || data.totalHarga != "" || data.jumlah != ""
+        || data.ket != ""  || data.totalUpah != "" || data.hargaBarang != "" ) {         
+            const rows = await modelDataProduksi.insertBarangJadi(data)
+            if (rows.affectedRows >= 1) {
+            return util.responseSuccess(rows)
+            } else {
+            return util.responseFailedPost()
+            }
+        } else {
+            return util.responseErrorNullParam()
+        }
+    } catch(err){
+        return util.responseErrorQuery()
+    }
+}
+
+
+//End of Jahit
+
+
+
 
 module.exports = {
     getCuttingAll,
@@ -312,4 +410,9 @@ module.exports = {
     insertJahit,
     deleteJahit,
     updateJahit,
+    getBarangJadiAll,
+    getBarangJadiById,
+    insertBarangJadi,
+    deleteBarangJadi,
+    updateBarangJadi
 }
