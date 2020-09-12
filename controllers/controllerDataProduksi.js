@@ -388,10 +388,29 @@ async function proccessInsertBarangJadi(data){
 }
 
 
-//End of Jahit
+//End of Barang Jadi
 
 
+//Home
+async function getCountDataProduksi() {
+    try {
+        const rows = await modelDataProduksi.getCountDataProduksi()
+        
 
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+//End of Home
 
 module.exports = {
     getCuttingAll,
@@ -413,5 +432,6 @@ module.exports = {
     getBarangJadiById,
     insertBarangJadi,
     deleteBarangJadi,
-    updateBarangJadi
+    updateBarangJadi,
+    getCountDataProduksi
 }

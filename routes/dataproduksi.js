@@ -485,4 +485,22 @@ router.post('/barangjadi',async function(req, res, next) {
  //end of barang jadi
 
 
+ //home
+ router.post('/beranda',async function(req, res, next) {
+   try{
+      let dataResponse = await controllerDataProduksi.getCountDataProduksi()
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+    }catch(err){
+      res.status(500).json(err);
+    }
+ })
+ //end of home
+
+
 module.exports = router;

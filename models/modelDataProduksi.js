@@ -417,4 +417,24 @@ router.deleteBarangJadi = function(id) {
 }
 //End of Barang Jadi
 
+
+//Barang Jadi
+router.getCountDataProduksi = function() {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`
+        SELECT * FROM ((SELECT (COUNT(ID)) as jumlahCutting FROM cutting WHERE status_aktif = 'Y') as cutting,
+        (SELECT (COUNT(ID)) as jumlahSablon FROM sablon WHERE status_aktif = 'Y') as sablon,
+        (SELECT (COUNT(ID)) as jumlahJahit FROM jahit WHERE status_aktif = 'Y') as jahit,
+        (SELECT (COUNT(ID)) as jumlahBarangJadi FROM barang_jadi WHERE status_aktif = 'Y') as barangJadi)
+               `,(err,results) => {
+            if (err) {
+                console.log(err)
+                return reject(err)
+            } 
+
+            return resolve(results)  
+        })
+    })
+}
+
 module.exports = router
