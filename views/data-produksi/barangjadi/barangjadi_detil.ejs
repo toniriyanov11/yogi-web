@@ -98,7 +98,7 @@
                         </div>
                         <div>
                             <div v-for="tambahanBiaya in dataResponses.tambahanBiaya" :key="tambahanBiaya.ket">
-                                <div>: {{tambahanBiaya.nominal}}</div> 
+                                <div>: {{convertToRupiah(tambahanBiaya.nominal)}}</div> 
                             </div>   
                         </div>
                    </div>
@@ -165,7 +165,6 @@
             try{
                 const res = await axios.post(apiUrl+'dataproduksi/barangjadi/detil/'+id)
                 this.dataResponses = res.data[0]
-                console.log(this.dataResponses)
             }catch(err){
                 alert("Get data"+' '+err)
             }

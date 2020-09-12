@@ -319,7 +319,7 @@ router.getBarangJadiAll = function() {
                         INNER JOIN detil_sablon as ds 
                         INNER JOIN cutting as c
                         ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif = 'Y' GROUP BY ds.id_sablon
-                      ) as s on s.id in (x.idItemSablon)) as y on y.id in (z.idItem) group by z.idItem
+                      ) as s on s.id in (x.idItemSablon)) as y on y.id in (z.idItem) group by z.id
                `,(err,results) => {
             if (err) {
                 console.log(err)
@@ -368,7 +368,7 @@ router.getBarangJadiById = function(id) {
                         INNER JOIN detil_sablon as ds 
                         INNER JOIN cutting as c
                         ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif = 'Y' GROUP BY ds.id_sablon
-                      ) as s on s.id in (x.idItemSablon)) as y on y.id in (z.idItem) where z.id = ? group by z.idItem`,[id],(err,results) => {
+                      ) as s on s.id in (x.idItemSablon)) as y on y.id in (z.idItem) where z.id = ? group by z.id`,[id],(err,results) => {
             if (err) {
                 return reject(err)
             } 
@@ -379,7 +379,7 @@ router.getBarangJadiById = function(id) {
 
 router.insertBarangJadi = function(data) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`CALL P_BARANG_JADI(?,?,?,?,?,?,?)`,[data.tanggal, data.nama, data.upah, data.ket , data.tglSekarang , data.item, data.jenisItem],(err,results) => {
+        database.getConnection().query(`CALL P_BARANG_JADI(?,?,?,?,?,?,?,?,?,?,?)`,[data.tanggal, data.nama, data.hargaPerPcs, data.ket , data.tglSekarang , data.item, data.biayaTambahan.tieDye, data.biayaTambahan.label, data.biayaTambahan.handtag, data.biayaTambahan.packing, data.biayaTambahan.dll],(err,results) => {
             if (err) {
                 database.getConnection().query(`ROLLBACK;`)
                 console.log(err)

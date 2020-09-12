@@ -175,4 +175,22 @@ router.getStuffStock = function() {
         })
     })
 }
+
+router.getStuffStock = function() {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`SELECT jp.kode,jp.nama,sum(sisa) as stock FROM bahan_baku as bb 
+        INNER JOIN pengeluaran as p 
+        INNER JOIN ms_jenis_produk as jp 
+        ON bb.id_pengeluaran = p.id and bb.kode_jenis = jp.kode and p.status_aktif = 'Y' 
+        GROUP BY jp.kode`,(err,results) => {
+            if (err) {
+                return reject(err)
+            } else {
+                return resolve(results)
+            }
+        })
+    })
+}
+
+
 module.exports = router

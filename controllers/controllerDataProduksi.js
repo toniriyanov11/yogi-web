@@ -335,7 +335,6 @@ async function getBarangJadiById(id) {
 
 async function insertBarangJadi(data) {
     try {
-        console.log(data)
         return proccessInsertBarangJadi(data)             
     } catch(err) {
        return util.responseErrorServer(err)

@@ -312,7 +312,6 @@ async function convertObjectStructureBarangJadi(dataResponse,dateFormat){
     try{
         var data = await this.convertDate(dataResponse, dateFormat)
         const value = data
-        console.log(value)
 
         var dataDetail = _.cloneDeep(value);
         dataDetail.forEach(function(v){ delete v.tanggal, delete v.upah, delete v.nama, delete v.ket });
@@ -417,14 +416,23 @@ async function manipulateData(data){
 try{
 
     if(data.item) {
-        var arr = []
-        for(i=0; i < data.item.length; i++){
-            arr.push(data.item[i].id)
-        }
-        delete data.item
-        data.item = arr.join()
+        if(Array.isArray(data.item)){
+            var arr = []
+            for(i=0; i < data.item.length; i++){
+                arr.push(data.item[i].id)
+            }
+            delete data.item
+            data.item = arr.join()
 
-        return data
+            return data
+        } else if(!Array.isArray(data.item)){
+            console.log("object sini")
+            data.item = data.item.id
+
+            return data
+        }   
+        
+      
     } else {
         if(data.itemCutting.length != 0) {
             var arr = []

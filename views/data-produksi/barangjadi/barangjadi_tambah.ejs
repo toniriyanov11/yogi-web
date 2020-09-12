@@ -25,49 +25,105 @@
                     
                     <div class="form-group row">
                         <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
-                            <div class="col-auto">
-                                <input class="form-control" type="week" id="weekpicker"/>
+                        <div class="col-auto">
+                            <div class="input-group">
+                                <vuejs-datepicker  v-model="data.tanggal" @input="convertDataTanggal" :format="customFormatter"></vuejs-datepicker>
                             </div>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Nama Item</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-search-input">
+                            <input class="form-control" type="text" v-model="data.nama" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data</label>
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data Jahit</label>
                         <div class="col-sm-10">
-                            <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><i class="icon-todolist"></i></button>
+                            <multiselect  v-model="data.item" :options="options"  :close-on-select="true" :clear-on-select="false" :preserve-search="true" placeholder="" :custom-label="customItemName" label="id" track-by="id">
+                                <template slot="singleLabel" slot-scope="{ values, search, isOpen }"></template>
+                            </multiselect>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Banyak (pcs)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-search-input">
+                            <input disabled class="form-control" type="number" v-model="data.jumlah" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Harga Barang Setelah Dijahit /Pcs (Rp)</label>
+                        <div class="col-sm-10">
+                            <input  disabled class="form-control" type="text" v-model="hargaSetelahJahit" id="example-search-input">
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Biaya Tambahan (Rp)</label>
+                        <!-- <div class="col-sm-10">
+                            <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><i class="icon-todolist"></i></button>
+                        </div> -->
+                    </div>
+                    <div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Tie Dye</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" v-model="tieDye" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Label</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" v-model="label" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Hand Tag</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" v-model="handtag" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Packing</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" v-model="packing" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Dll</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" v-model="dll" id="example-search-input">
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Total Biaya Tambahan (Rp)</label>
+                        <div class="col-sm-10">
+                            <input disabled class="form-control" type="text" v-model="totalBiayaTambahan" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Harga Pokok (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="text" value="" id="example-search-input">
+                            <input disabled class="form-control" type="text" v-model="hargaPokok" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="example-search-input" class="col-sm-2 col-form-label">Total Harga (Rp)</label>
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Harga Barang/Pcs (Rp)</label>
                         <div class="col-sm-10">
-                            <input class="form-control" type="number" value="" id="example-search-input">
+                            <input class="form-control" type="text" v-model="hargaPerPcs" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
                         <div  class="col-sm-10">
-                            <textarea required class="form-control" rows="3"></textarea>
+                            <textarea required class="form-control" rows="3" v-model="data.ket"></textarea>
                         </div>
                     </div>
                     <div class="form-group text-right">
                         <div>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light">
+                            <button  :disabled="isButtonDisable" @click="checkValidation()" type="submit" class="btn btn-primary waves-effect waves-light">
                                 Submit
                             </button>
                         </div>
@@ -78,48 +134,48 @@
     </div>
     <!-- END ROW -->
 
- 
 
      <!--  Modal content for the above example -->
      <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Daftar Data Jahit</h5>
+                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Biaya Tambahan</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="frm-example" action="/" method="POST">
-                        <table id="datatable-check" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead>
-                            <tr>
-                                <th></th>
-                                <th>Pekan</th>
-                                <th>No</th>                  
-                                <th>Banyak (pcs)</th>
-                                <th>Harga Barang/pcs (Rp)</th>
-                            </tr>
-                            </thead>
-    
-    
-                            <tbody>
-                            <tr> 
-                                <td></td>
-                                <td>Minggu 10,2020</td>
-                                <td><a onclick="detil('3C-2020020001')" style="color:#2980b9">3C-2020020001</a></td>
-                                <td>150</td>
-                                <td>36,700</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    <div class="row">
-                        <div class="col py-3 text-center">
-                          <button type="button" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-format-vertical-align-bottom align-middle mr-2"></i>Submit</button>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Tie Dye</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" value="" id="example-search-input">
                         </div>
                     </div>
-                 </form>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Label</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" value="" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Hand Tag</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" value="" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Packing</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" value="" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Dll</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="text" value="" id="example-search-input">
+                        </div>
+                    </div>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -128,22 +184,268 @@
 </div>
 
 <script>
-    function tambah(){
-        location.href = "/barangjadi"
-    }
-    
-</script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
+     components: {
+            vuejsDatepicker, Multiselect: window.VueMultiselect.default
+    },
      data: {
-         valueJenis:'',
-         valueStatus:'',
+         data:{
+            tanggal:'',
+            nama:'testes',
+            item: [],
+            biayaTambahan: 
+                {
+                    tieDye: 0,
+                    label: 0,
+                    handtag: 0,
+                    packing: 0,
+                    dll: 0
+                },
+            hargaPerPcs:'',
+            hargaPokok:'',
+            jumlah:'',
+            ket:'',
+            jenisItem:'',
+            tglSekarang:moment().format('YYYY-MM-DD'),
+            userAkun:''
+         },
+         tieDye: 0,
+         label: 0,
+         handtag: 0,
+         packing: 0,
+         dll: 0,
+         hargaSetelahJahit:'',
+         totalBiayaTambahan:'',
+         options: [],
+         hargaPerPcs: '',
+         hargaPokok: '',
+         dataProductTypes:{},
+         isButtonDisable: false
+     },
+     async created(){
+        await this.getDataItem()
+     },
+     watch: {
+        'data.item' : function (val){
+            this.getTotalItem()
+            
+        },
+        tieDye : function (val){
+            if (this.tieDye != ""){
+                this.tieDye  = this.convertFloatToRupiah(val.toString())
+                this.data.biayaTambahan.tieDye = this.convertRupiahToFloat(this.tieDye)
+                this.sumTotalBiayaTambahan()
+            }else{
+                this.tieDye = 0
+                this.data.biayaTambahan.tieDye =  0
+                this.sumTotalBiayaTambahan()
+                 
+            }
+        },
+        label : function (val){
+            if (this.label != ""){
+                this.label  = this.convertFloatToRupiah(val.toString())
+                this.data.biayaTambahan.label = this.convertRupiahToFloat(this.label)
+                this.sumTotalBiayaTambahan()
+            }else{
+                this.label = 0
+                this.data.biayaTambahan.label = 0
+                this.sumTotalBiayaTambahan()
+                
+            }
+        },
+        handtag : function (val){
+            if (this.handtag != ""){
+                this.handtag  = this.convertFloatToRupiah(val.toString())
+                this.data.biayaTambahan.handtag = this.convertRupiahToFloat(this.handtag)
+                 this.sumTotalBiayaTambahan()
+            }else{
+                this.handtag = 0
+                this.data.biayaTambahan.handtag = 0
+                 this.sumTotalBiayaTambahan()
+               
+            }
+        },
+        packing : function (val){
+            if (this.packing != ""){
+                this.packing  = this.convertFloatToRupiah(val.toString())
+                this.data.biayaTambahan.packing = this.convertRupiahToFloat(this.packing)
+                 this.sumTotalBiayaTambahan()
+            }else{
+                this.packing = 0
+                this.data.biayaTambahan.packing = 0
+                 this.sumTotalBiayaTambahan()
+            }
+        },
+        dll : function (val){
+            if (this.dll != ""){
+                this.dll  = this.convertFloatToRupiah(val.toString())
+                this.data.biayaTambahan.dll = this.convertRupiahToFloat(this.dll)
+                this.sumTotalBiayaTambahan()
+            }else{
+                this.dll = 0
+                this.data.biayaTambahan.dll = 0
+                this.sumTotalBiayaTambahan()
+                
+            }
+        },
+        totalBiayaTambahan : function (val){
+            if (this.totalBiayaTambahan != ""){
+                this.totalBiayaTambahan  = this.convertFloatToRupiah(val.toString())
+                if ( this.data.jumlah != ""){
+                    this.hargaPokok = this.convertRupiahToFloat(this.totalBiayaTambahan)  + parseInt(this.data.item.totalBiaya)
+                }
+            }else{
+                this.totalBiayaTambahan = 0
+                if ( this.data.jumlah != ""){
+                  this.hargaPokok  = parseInt(this.data.item.totalBiaya)
+                }
+            }
+        },
+        hargaSetelahJahit : function (val){
+            if (this.hargaSetelahJahit != ""){
+                this.hargaSetelahJahit  = this.convertFloatToRupiah(val.toString())
+                
+                if (this.data.item != null) {
+                    if(this.totalBiayaTambahan != "" || this.totalBiayaTambahan != 0){
+                        this.hargaPokok  = this.convertRupiahToFloat(this.totalBiayaTambahan)  + parseInt(this.data.item.totalBiaya)
+                    } else {
+                        this.hargaPokok  = parseInt(this.data.item.totalBiaya)
+                    }   
+                }
+
+            } else {
+                if (this.data.item == null) {
+                    this.hargaPokok  = ""
+                }
+            }
+        },
+        hargaPokok : function (val){
+            if (this.hargaPokok != ""){
+                this.hargaPokok  = this.convertFloatToRupiah(val.toString())
+                this.data.hargaPokok = this.convertRupiahToFloat(this.hargaPokok)
+            }else{
+                this.data.hargaPokok = ""
+            }
+        },
+        hargaPerPcs : function (val){
+            if (this.hargaPerPcs != ""){
+                this.hargaPerPcs  = this.convertFloatToRupiah(val.toString())
+                this.data.hargaPerPcs = this.convertRupiahToFloat(this.hargaPerPcs)
+            }else{
+                this.data.hargaPerPcs = ""
+            }
+        }
+     },
+     methods:{
+        actTambah: async function() {
+            try{
+                this.setDisableButton()
+                var data = this.data
+                let res = await axios.post(apiUrl+'dataproduksi/barangjadi/tambah', { data:data })
+                if (res.data.success){
+                    this.setEnableButton()
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href =apiUrl + 'dataproduksi/barangjadi/'; }, 1000);
+                }
+            }catch(err){
+                alert("Add data"+' '+err)
+                this.setEnableButton()
+            }
+        },
+        customFormatter(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
+        getDataItem: async function() {
+            try{
+                 const res = await axios.post(apiUrl+'dataproduksi/jahit')
+                 this.options= res.data
+             }catch(err){
+                 alert("Get data Item "+' '+err)
+             }
+        },
+        checkValidation: async function(){
+            var validate = false
+            if (this.data.tanggal == "" || this.data.nama == "" || this.data.item == null
+            || this.data.jumlah == ""  || this.data.ket == ""   || this.data.hargaPokok == "" 
+            || this.data.hargaPerPcs == "" ) {
+                validate = false
+            } else {
+                validate = true
+            }
+
+            if(validate){
+                this.alertAdd()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        convertFloatToRupiah: function(val) {
+
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            return rupiah
+        },
+        convertRupiahToFloat: function(val){
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            return txtNumber
+        },
+        convertDataTanggal: function(val){
+            var convert = moment(val).format("YYYY-MM-DD")
+            this.data.tanggal = convert
+        },
+        alertAdd:  function (data) {
+             swal({
+                title: "Anda yakin ingin menambah data?",
+                text: "Pastikan data yang anda masukkan benar",
+                icon: "warning",
+                buttons: ["batal", "tambah"],
+                dangerMode: false,
+                })
+                .then((willAdd) => {
+                if (willAdd) {
+                     this.actTambah(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        },
+        setEnableButton: function(){
+            this.isButtonDisable = false
+        },
+        setDisableButton: function(){
+            this.isButtonDisable = true
+        },
+        customItemName ({ id, tanggal, totalJumlah}) {
+            return `${id} — [${tanggal}, ${totalJumlah}]`
+        },
+        getTotalItem: function(){
+            if(this.data.item != null){
+                var item = this.data.item
+                this.data.jumlah =  item.totalJumlah
+                this.hargaSetelahJahit = item.totalBiaya
+            }else{
+                this.data.jumlah = ''
+                this.hargaSetelahJahit = ''
+            }
+        },
+        sumTotalBiayaTambahan(){
+            this.totalBiayaTambahan = parseInt(this.data.biayaTambahan.tieDye) + parseInt(this.data.biayaTambahan.label) + parseInt(this.data.biayaTambahan.handtag) + parseInt(this.data.biayaTambahan.packing) + parseInt(this.data.biayaTambahan.dll) 
+        }
      }
-     })
-
-  
-     
-
+})
  </script>
