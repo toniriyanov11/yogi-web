@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" id="app">
     <div class="page-title-box">
         <div class="row align-items-center">
             <div class="col-sm-6">
@@ -18,7 +18,7 @@
     <!-- START button-->
     <div class="row">
         <div class="col py-3 text-right">
-          <button type="button" class="btn btn-primary waves-effect waves-light"  onclick="tambah()"><i class="mdi mdi-plus align-middle mr-2"></i>Buat Invoice</button>
+          <button type="button" class="btn btn-primary waves-effect waves-light"  @click="tambah()"><i class="mdi mdi-plus align-middle mr-2"></i>Buat Invoice</button>
         </div>
     </div>
     <!-- end button -->
@@ -38,7 +38,6 @@
                             <th>Tanggal</th>
                             <th>No</th>                  
                             <th>Nama Penerima</th>
-                            <th>Ket</th>
                             <th>Total (Rp)</th>
                             <th>status</th>
                             <th>Action</th>
@@ -47,13 +46,12 @@
 
 
                         <tbody>
-                        <tr> 
-                            <td>19/03/2020</td>
-                            <td><a onclick="detil('in-2020020001')" style="color:#2980b9">in-2020020001</a></td>
-                            <td>Yogi</td>
-                            <td>Pembayaran Sablon</td>
-                            <td>6,000,000</td>
-                            <td style="color: #6ec06e;">Lunas</td>
+                        <tr v-for="dataResponse in dataResponses" :key="dataResponse.id"> 
+                            <td>{{dataResponse.tanggal}}</td>
+                            <td class="clicked"><a @click="detil(dataResponse.id)">{{dataResponse.id}}</a></td>
+                            <td>{{dataResponse.namaClient}}</td>
+                            <td></td>
+                            <td style="color: #6ec06e;"></td>
                             <td> <button type="button" class="btn btn-light waves-effect"><i class="icon-printer"></i></button>
                                 <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
                             </td>
@@ -69,16 +67,84 @@
 </div>
 
 <script>
-    function tambah(){
-        location.href = "/invoice/buat";
-    }
-
-    function detil(id){
-        if(id=="in-2020020001"){
-            location.href = "invoice/detil/"+id+"?id=in-2020020001&tgl=19/03/2020&nama=Yogi&jml=150&total=6,000,000&sub=3D-2020020001"
-        }
-    }
-</script>
+    const apiUrl = '<%= process.env.URL %>'
+     var app = new Vue({
+      el: '#app',
+      data: {
+          dataResponses : {},
+          dataAddingPrices: {},
+      },
+      async created() {
+        await this.getData()
+      },
+      methods:{
+         edit: function(id){
+             location.href = "/invoice/edit/"+id
+         },
+         detil: function(id){
+             location.href = "/invoice/detil/"+id
+         },
+         tambah: function(){
+             location.href = "/invoice/tambah"
+         },
+         getData: async function() {
+             try{
+                 const res = await axios.post(apiUrl+'invoice')
+                 this.dataResponses = res.data
+                 console.log(this.dataResponses)
+             }catch(err){
+                 alert("Get data"+' '+err)
+             }
+         },
+         deleteData: async function(id){
+             try{
+                 const res = await axios.post(apiUrl+'invoice/hapus/'+id)
+                 if (res.data.success){
+                     this.alertSuccess(res.data.msg)
+                     setTimeout(function(){ location.reload(); }, 1000);
+                 } else {
+                     alert(res.data.msg)
+                 }
+             }catch(err){
+                 alert("Delete data"+' '+err)
+             }
+         },
+         convertToRupiah: function (val) {
+             var txtNumber = parseFloat(val)
+             var txtString = txtNumber.toString()
+             var sisa = txtString.length % 3
+             var rupiah = txtString.substr(0, sisa)
+             var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+             if (ribuan) {
+                 var separator = sisa ? ',' : ''
+                 rupiah += separator + ribuan.join(',')
+             }
+             return rupiah
+         },
+         alertDelete:  function (data) {
+              swal({
+                 title: "Anda yakin ingin menghapus data?",
+                 text: "Ketika data terhapus, data tidak dapat dikembalikan!",
+                 icon: "warning",
+                 buttons: ["batal", "ya,hapus!"],
+                 dangerMode: true,
+                 })
+                 .then((willDelete) => {
+                 if (willDelete) {
+                      this.deleteData(data)
+                 }
+             });
+         },
+         alertSuccess: function (message){
+             swal({
+                 title:"",
+                 text:message, 
+                 icon:"success",
+                 buttons:false});
+         }
+      }
+ })    
+ </script>
 
 
 <style>

@@ -187,7 +187,6 @@ async function convertObjectStructure(dataResponse,dateFormat){
     }
 }
 
-
 async function convertObjectStructureJahit(dataResponse,dateFormat){
     try{
         var data = await this.convertDate(dataResponse, dateFormat)
@@ -409,6 +408,67 @@ async function convertObjectStructureBarangJadi(dataResponse,dateFormat){
     }
 }
 
+async function convertObjectStructureInvoice(dataResponse,dateFormat){
+    try{
+        var data = await this.convertDate(dataResponse, dateFormat)
+        const value = data
+
+        var dataDetail = _.cloneDeep(value);
+        dataDetail.forEach(function(v){ delete v.tanggal, delete v.upah, delete v.nama, delete v.ket });
+        
+       
+        var data = []
+        //filter id
+        var tampung = ''
+        for(i=0; i < value.length; i++){
+                if(value[i].id === tampung){
+                    tampung  = value[i].id
+                }else{
+                    tampung  = value[i].id
+                    data.push({
+                        id : value[i].id,
+                        tanggal : value[i].tanggal,
+                        kodeClient : value[i].kodeClient,
+                        namaClient : value[i].namaClient,
+                        ket : value[i].ket,
+                        detil : []
+                    })
+                }
+        }
+
+        //filter item by id
+        // var tampungId = ''
+        // var jumlah = 0
+        // var biaya = 0
+        // var harga = 0
+        // for(i=0; i < data.length; i++){
+        //     jumlah = 0
+        //     biaya = 0
+        //     harga = 0
+        //     tampungId = data[i].id
+        //     for(j=0; j < dataDetail.length; j++){
+        //         if(dataDetail[j].id === tampungId){
+        //             data[i].detil.push(dataDetail[j])
+        //             jumlah += parseInt(dataDetail[j].jumlahItem)
+        //             biaya += parseInt(dataDetail[j].totalBiayaItemPerPcs)
+        //             harga += parseInt(dataDetail[j].totalBiayaItemPerPcs) + parseInt(data[i].upah)  
+        //             data[i].totalJumlah = jumlah
+        //             data[i].totalBiaya = biaya / data[i].detil.length
+        //             data[i].hargaBarang = harga / data[i].detil.length
+        //         }else{
+        //             tampungId = data[i].id
+        //         }
+          
+        //     }
+        // }
+
+      return data
+    }catch(err){
+      return err
+    }
+}
+
+
 
 
 
@@ -479,6 +539,7 @@ module.exports = {
     convertObjectStructure,
     manipulateData,
     convertObjectStructureJahit,
-    convertObjectStructureBarangJadi
+    convertObjectStructureBarangJadi,
+    convertObjectStructureInvoice
 
 }

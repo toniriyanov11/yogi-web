@@ -287,7 +287,7 @@ router.getBarangJadiAll = function() {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`SELECT z.id, z.idItem, z.tanggal, z.harga_barang as hargaBarang, z.nama, z.ket
         , j.nama as namaItem, j.upah, sum(y.jumlahItemSablon) as jumlahItemSablon, sum(y.jumlahItemCutting) as jumlahItemCutting,
-        (sum(y.totalBiayaItemCuttingPerPcs) / count(y.totalBiayaItemCuttingPerPcs)) as totalBiayaItemCuttingPerPcs,(sum(y.totalBiayaItemSablonPerPcs) / count(y.totalBiayaItemSablonPerPcs)) as totalBiayaItemSablonPerPcs,
+        (sum(y.totalBiayaItemCuttingPerPcs) / count(y.totalBiayaItemCuttingPerPcs) + j.upah) as totalBiayaItemCuttingPerPcs,(sum(y.totalBiayaItemSablonPerPcs) / count(y.totalBiayaItemSablonPerPcs) + y.upah) as totalBiayaItemSablonPerPcs,
         (select nominal from penambahan_biaya where kode = 1 and id_barang_jadi = z.id) as tieDye,
         (select nominal from penambahan_biaya where kode = 2 and id_barang_jadi = z.id) as label,
         (select nominal from penambahan_biaya where kode = 3 and id_barang_jadi = z.id) as handTag,
@@ -336,7 +336,7 @@ router.getBarangJadiById = function(id) {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`SELECT z.id, z.idItem, z.tanggal, z.harga_barang as hargaBarang, z.nama, z.ket
         , j.nama as namaItem, j.upah, sum(y.jumlahItemSablon) as jumlahItemSablon, sum(y.jumlahItemCutting) as jumlahItemCutting,
-        (sum(y.totalBiayaItemCuttingPerPcs) / count(y.totalBiayaItemCuttingPerPcs)) as totalBiayaItemCuttingPerPcs,(sum(y.totalBiayaItemSablonPerPcs) / count(y.totalBiayaItemSablonPerPcs)) as totalBiayaItemSablonPerPcs,
+        (sum(y.totalBiayaItemCuttingPerPcs) / count(y.totalBiayaItemCuttingPerPcs) + j.upah) as totalBiayaItemCuttingPerPcs,(sum(y.totalBiayaItemSablonPerPcs) / count(y.totalBiayaItemSablonPerPcs) + y.upah) as totalBiayaItemSablonPerPcs,
         (select nominal from penambahan_biaya where kode = 1 and id_barang_jadi = z.id) as tieDye,
         (select nominal from penambahan_biaya where kode = 2 and id_barang_jadi = z.id) as label,
         (select nominal from penambahan_biaya where kode = 3 and id_barang_jadi = z.id) as handTag,

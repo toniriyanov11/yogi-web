@@ -97,6 +97,7 @@
             try{
                 const res = await axios.post(apiUrl+'pemasukan')
                 this.dataResponses = res.data
+                console.log(this.dataResponses)
             }catch(err){
                 alert("Get data"+' '+err)
             }
