@@ -65,10 +65,7 @@
                     </div>
                     <hr/>
                     <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2 col-form-label">Biaya Tambahan (Rp)</label>
-                        <!-- <div class="col-sm-10">
-                            <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><i class="icon-todolist"></i></button>
-                        </div> -->
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Biaya Tambahan Produksi (Rp)</label>
                     </div>
                     <div>
                         <div class="form-group row">
@@ -76,6 +73,27 @@
                             <div class="col-sm-6">
                                 <input disabled class="form-control" type="text" v-model="tieDye" id="example-search-input">
                             </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Packing</label>
+                            <div class="col-sm-6">
+                                <input disabled class="form-control" type="text" v-model="packing" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Dll</label>
+                            <div class="col-sm-6">
+                                <input disabled class="form-control" type="text" v-model="dllProduksi" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label">Total Biaya Tambahan Produksi (Rp)</label>
+                            <div class="col-sm-6">
+                                <input disabled class="form-control" type="text" v-model="totalBiayaTambahanProduksi" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-text-input" class="col-sm-2 col-form-label">Biaya Tambahan Aksesoris (Rp)</label>
                         </div>
                         <div class="form-group row">
                             <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Label</label>
@@ -90,16 +108,16 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Packing</label>
-                            <div class="col-sm-6">
-                                <input disabled class="form-control" type="text" v-model="packing" id="example-search-input">
-                            </div>
-                        </div>
-                        <div class="form-group row">
                             <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Dll</label>
                             <div class="col-sm-6">
-                                <input disabled class="form-control" type="text" v-model="dll" id="example-search-input">
+                                <input disabled class="form-control" type="text" v-model="dllAksesoris" id="example-search-input">
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Total Biaya Tambahan Aksesoris (Rp)</label>
+                        <div class="col-sm-6">
+                            <input disabled class="form-control" type="text" v-model="totalBiayaTambahanAksesoris" id="example-search-input">
                         </div>
                     </div>
                     <hr/>
@@ -157,12 +175,15 @@
         label: 0,
         handtag: 0,
         packing: 0,
-        dll: 0,
+        dllProduksi: 0,
+        dllAksesoris: 0,
         options:[],
         hargaPerPcs:'',
         hargaPokok:'',
         jumlah:'',
         hargaSetelahJahit:'',
+        totalBiayaTambahanProduksi:'',
+        totalBiayaTambahanAksesoris:'',
         totalBiayaTambahan:'',
         tglSekarang:moment().format('YYYY-MM-DD'),
      },
@@ -205,9 +226,13 @@
             var result = this.convertFloatToRupiah(val.toString())
             this.packing= result
         },
-        dll: function (val) {
+        dllProduksi: function (val) {
             var result = this.convertFloatToRupiah(val.toString())
-            this.dll= result
+            this.dllProduksi= result
+        },
+        dllAksesoris: function (val) {
+            var result = this.convertFloatToRupiah(val.toString())
+            this.dllAksesoris= result
         }
         
      },
@@ -216,6 +241,7 @@
             try{
                 const res = await axios.post(apiUrl+'dataproduksi/barangJadi/edit/'+id)
                 this.dataResponses = res.data[0]
+                console.log(this.dataResponses)
             }catch(err){
                 alert("Get data"+' '+err)
             }
@@ -278,16 +304,15 @@
         },
         handleResponseVariable() {
             this.hargaSetelahJahit = Math.ceil(this.dataResponses.totalBiaya)
-            var tambahBiaya = 0
-            for(i=0; i < this.dataResponses.tambahanBiaya.length; i++){
-                tambahBiaya += parseInt(this.dataResponses.tambahanBiaya[i].nominal)
-            }
-            this.tieDye = this.dataResponses.tambahanBiaya[0].nominal
-            this.label = this.dataResponses.tambahanBiaya[1].nominal
-            this.handtag = this.dataResponses.tambahanBiaya[2].nominal
-            this.packing = this.dataResponses.tambahanBiaya[3].nominal
-            this.dll = this.dataResponses.tambahanBiaya[4].nominal
-            this.totalBiayaTambahan = tambahBiaya
+            this.tieDye = this.dataResponses.tambahanBiayaProduksi[0].nominal
+            this.packing = this.dataResponses.tambahanBiayaProduksi[1].nominal
+            this.dllProduksi = this.dataResponses.tambahanBiayaProduksi[2].nominal
+            this.label = this.dataResponses.tambahanBiayaAksesoris[0].nominal
+            this.handtag = this.dataResponses.tambahanBiayaAksesoris[1].nominal
+            this.dllAksesoris = this.dataResponses.tambahanBiayaAksesoris[2].nominal
+            this.totalBiayaTambahanProduksi =  parseInt(this.tieDye)  + parseInt(this.packing) + parseInt(this.dllProduksi)   
+            this.totalBiayaTambahanAksesoris = parseInt(this.label) + parseInt(this.handtag) +  parseInt(this.dllAksesoris)
+            this.totalBiayaTambahan = this.dataResponses.totalTambahanBiaya
             this.hargaPokok = Math.ceil(this.totalBiayaTambahan) + this.hargaSetelahJahit
             this.hargaPerPcs = Math.ceil(this.dataResponses.hargaBarang)
         },

@@ -59,10 +59,7 @@
                     </div>
                     <hr/>
                     <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2 col-form-label">Biaya Tambahan (Rp)</label>
-                        <!-- <div class="col-sm-10">
-                            <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-lg"><i class="icon-todolist"></i></button>
-                        </div> -->
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Biaya Tambahan Produksi (Rp)</label>
                     </div>
                     <div>
                         <div class="form-group row">
@@ -70,6 +67,27 @@
                             <div class="col-sm-6">
                                 <input class="form-control" type="text" v-model="tieDye" id="example-search-input">
                             </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Packing</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" v-model="packing" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Dll</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" v-model="dllProduksi" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label">Total Biaya Tambahan Produksi (Rp)</label>
+                            <div class="col-sm-6">
+                                <input disabled class="form-control" type="text" v-model="totalBiayaTambahanProduksi" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-text-input" class="col-sm-2 col-form-label">Biaya Tambahan Aksesoris (Rp)</label>
                         </div>
                         <div class="form-group row">
                             <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Label</label>
@@ -84,16 +102,16 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Packing</label>
-                            <div class="col-sm-6">
-                                <input class="form-control" type="text" v-model="packing" id="example-search-input">
-                            </div>
-                        </div>
-                        <div class="form-group row">
                             <label for="example-search-input" class="col-sm-2 col-form-label font-weight-normal">Dll</label>
                             <div class="col-sm-6">
-                                <input class="form-control" type="text" v-model="dll" id="example-search-input">
+                                <input class="form-control" type="text" v-model="dllAksesoris" id="example-search-input">
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">Total Biaya Tambahan Aksesoris (Rp)</label>
+                        <div class="col-sm-6">
+                            <input disabled class="form-control" type="text" v-model="totalBiayaTambahanAksesoris" id="example-search-input">
                         </div>
                     </div>
                     <hr/>
@@ -201,7 +219,8 @@
                     label: 0,
                     handtag: 0,
                     packing: 0,
-                    dll: 0
+                    dllProduksi: 0,
+                    dllAksesoris: 0,
                 },
             hargaPerPcs:'',
             hargaPokok:'',
@@ -215,9 +234,12 @@
          label: 0,
          handtag: 0,
          packing: 0,
-         dll: 0,
+         dllProduksi: 0,
+         dllAksesoris: 0,
          hargaSetelahJahit:'',
          totalBiayaTambahan:'',
+         totalBiayaTambahanProduksi:'',
+         totalBiayaTambahanAksesoris:'',
          options: [],
          hargaPerPcs: '',
          hargaPokok: '',
@@ -236,71 +258,110 @@
             if (this.tieDye != ""){
                 this.tieDye  = this.convertFloatToRupiah(val.toString())
                 this.data.biayaTambahan.tieDye = this.convertRupiahToFloat(this.tieDye)
-                this.sumTotalBiayaTambahan()
             }else{
                 this.tieDye = 0
                 this.data.biayaTambahan.tieDye =  0
-                this.sumTotalBiayaTambahan()
-                 
             }
+
+            this.sumTotalBiayaTambahanProduksi()
+            this.sumTotalBiayaTambahan()
         },
         label : function (val){
             if (this.label != ""){
                 this.label  = this.convertFloatToRupiah(val.toString())
                 this.data.biayaTambahan.label = this.convertRupiahToFloat(this.label)
-                this.sumTotalBiayaTambahan()
             }else{
                 this.label = 0
                 this.data.biayaTambahan.label = 0
-                this.sumTotalBiayaTambahan()
-                
             }
+
+            this.sumTotalBiayaTambahanAksesoris()
+            this.sumTotalBiayaTambahan()
         },
         handtag : function (val){
             if (this.handtag != ""){
                 this.handtag  = this.convertFloatToRupiah(val.toString())
                 this.data.biayaTambahan.handtag = this.convertRupiahToFloat(this.handtag)
-                 this.sumTotalBiayaTambahan()
             }else{
                 this.handtag = 0
                 this.data.biayaTambahan.handtag = 0
-                 this.sumTotalBiayaTambahan()
-               
             }
+
+            this.sumTotalBiayaTambahanAksesoris()
+            this.sumTotalBiayaTambahan()
         },
         packing : function (val){
             if (this.packing != ""){
                 this.packing  = this.convertFloatToRupiah(val.toString())
                 this.data.biayaTambahan.packing = this.convertRupiahToFloat(this.packing)
-                 this.sumTotalBiayaTambahan()
             }else{
                 this.packing = 0
                 this.data.biayaTambahan.packing = 0
-                 this.sumTotalBiayaTambahan()
+            }
+
+            this.sumTotalBiayaTambahanProduksi()
+            this.sumTotalBiayaTambahan()
+        },
+        dllProduksi : function (val){
+            if (this.dllProduksi != ""){
+                this.dllProduksi  = this.convertFloatToRupiah(val.toString())
+                this.data.biayaTambahan.dllProduksi = this.convertRupiahToFloat(this.dllProduksi)
+            }else{
+                this.dllProduksi = 0
+                this.data.biayaTambahan.dllProduksi = 0
+            }
+
+            this.sumTotalBiayaTambahanProduksi()
+            this.sumTotalBiayaTambahan()
+        },
+        dllAksesoris : function (val){
+            if (this.dllAksesoris != ""){
+                this.dllAksesoris  = this.convertFloatToRupiah(val.toString())
+                this.data.biayaTambahan.dllAksesoris = this.convertRupiahToFloat(this.dllAksesoris)
+            }else{
+                this.dllAksesoris = 0
+                this.data.biayaTambahan.dllAksesoris = 0
+            }
+
+            this.sumTotalBiayaTambahanAksesoris()
+            this.sumTotalBiayaTambahan()
+        },
+        totalBiayaTambahanProduksi : function (val){
+            if (this.totalBiayaTambahanProduksi != ""){
+                this.totalBiayaTambahanProduksi  = this.convertFloatToRupiah(val.toString())
+                if ( this.data.jumlah != ""){
+                    this.hargaPokok = this.convertRupiahToFloat(this.totalBiayaTambahanProduksi)  + this.convertRupiahToFloat(this.hargaSetelahJahit)
+                }
+            }else{
+                this.totalBiayaTambahanProduksi = 0
+                if ( this.data.jumlah != ""){
+                  this.hargaPokok  = this.convertRupiahToFloat(this.hargaSetelahJahit)
+                }
             }
         },
-        dll : function (val){
-            if (this.dll != ""){
-                this.dll  = this.convertFloatToRupiah(val.toString())
-                this.data.biayaTambahan.dll = this.convertRupiahToFloat(this.dll)
-                this.sumTotalBiayaTambahan()
+        totalBiayaTambahanAksesoris : function (val){
+            if (this.totalBiayaTambahanAksesoris != ""){
+                this.totalBiayaTambahanAksesoris  = this.convertFloatToRupiah(val.toString())
+                if ( this.data.jumlah != ""){
+                    this.hargaPokok = this.convertRupiahToFloat(this.totalBiayaTambahanAksesoris)  + this.convertRupiahToFloat(this.hargaSetelahJahit)
+                }
             }else{
-                this.dll = 0
-                this.data.biayaTambahan.dll = 0
-                this.sumTotalBiayaTambahan()
-                
+                this.totalBiayaTambahanAksesoris = 0
+                if ( this.data.jumlah != ""){
+                  this.hargaPokok  = this.convertRupiahToFloat(this.hargaSetelahJahit)
+                }
             }
         },
         totalBiayaTambahan : function (val){
             if (this.totalBiayaTambahan != ""){
                 this.totalBiayaTambahan  = this.convertFloatToRupiah(val.toString())
                 if ( this.data.jumlah != ""){
-                    this.hargaPokok = this.convertRupiahToFloat(this.totalBiayaTambahan)  + parseInt(this.data.item.totalBiaya)
+                    this.hargaPokok = this.convertRupiahToFloat(this.totalBiayaTambahan)  + this.convertRupiahToFloat(this.hargaSetelahJahit)
                 }
             }else{
                 this.totalBiayaTambahan = 0
                 if ( this.data.jumlah != ""){
-                  this.hargaPokok  = parseInt(this.data.item.totalBiaya)
+                  this.hargaPokok  = this.convertRupiahToFloat(this.hargaSetelahJahit)
                 }
             }
         },
@@ -310,9 +371,9 @@
                 
                 if (this.data.item != null) {
                     if(this.totalBiayaTambahan != "" || this.totalBiayaTambahan != 0){
-                        this.hargaPokok  = this.convertRupiahToFloat(this.totalBiayaTambahan)  + parseInt(this.data.item.totalBiaya)
+                        this.hargaPokok  = this.convertRupiahToFloat(this.totalBiayaTambahan) + this.convertRupiahToFloat(this.hargaSetelahJahit)
                     } else {
-                        this.hargaPokok  = parseInt(this.data.item.totalBiaya)
+                        this.hargaPokok  = this.convertRupiahToFloat(this.hargaSetelahJahit)
                     }   
                 }
 
@@ -437,14 +498,22 @@
             if(this.data.item != null){
                 var item = this.data.item
                 this.data.jumlah =  item.totalJumlah
-                this.hargaSetelahJahit = item.totalBiaya
+                const totalBiaya = item.totalBiaya ? parseInt(item.totalBiaya) : 0
+                const upah = item.upah ? parseInt(item.upah) : 0
+                this.hargaSetelahJahit = totalBiaya  + upah
             }else{
                 this.data.jumlah = ''
                 this.hargaSetelahJahit = ''
             }
         },
+        sumTotalBiayaTambahanProduksi(){
+            this.totalBiayaTambahanProduksi = parseInt(this.data.biayaTambahan.tieDye)  + parseInt(this.data.biayaTambahan.packing) + parseInt(this.data.biayaTambahan.dllProduksi)   
+        },
+        sumTotalBiayaTambahanAksesoris(){
+            this.totalBiayaTambahanAksesoris = parseInt(this.data.biayaTambahan.label) + parseInt(this.data.biayaTambahan.handtag) +  parseInt(this.data.biayaTambahan.dllAksesoris)
+        },
         sumTotalBiayaTambahan(){
-            this.totalBiayaTambahan = parseInt(this.data.biayaTambahan.tieDye) + parseInt(this.data.biayaTambahan.label) + parseInt(this.data.biayaTambahan.handtag) + parseInt(this.data.biayaTambahan.packing) + parseInt(this.data.biayaTambahan.dll) 
+            this.totalBiayaTambahan = parseInt(this.data.biayaTambahan.tieDye) + parseInt(this.data.biayaTambahan.label) + parseInt(this.data.biayaTambahan.handtag) + parseInt(this.data.biayaTambahan.packing) + parseInt(this.data.biayaTambahan.dllAksesoris) + parseInt(this.data.biayaTambahan.dllProduksi)   
         }
      }
 })

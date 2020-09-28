@@ -289,10 +289,11 @@ router.getBarangJadiAll = function() {
         , j.nama as namaItem, j.upah, sum(y.jumlahItemSablon) as jumlahItemSablon, sum(y.jumlahItemCutting) as jumlahItemCutting,
         (sum(y.totalBiayaItemCuttingPerPcs) / count(y.totalBiayaItemCuttingPerPcs) + j.upah) as totalBiayaItemCuttingPerPcs,(sum(y.totalBiayaItemSablonPerPcs) / count(y.totalBiayaItemSablonPerPcs) + y.upah) as totalBiayaItemSablonPerPcs,
         (select nominal from penambahan_biaya where kode = 1 and id_barang_jadi = z.id) as tieDye,
-        (select nominal from penambahan_biaya where kode = 2 and id_barang_jadi = z.id) as label,
-        (select nominal from penambahan_biaya where kode = 3 and id_barang_jadi = z.id) as handTag,
-        (select nominal from penambahan_biaya where kode = 4 and id_barang_jadi = z.id) as packing,
-        (select nominal from penambahan_biaya where kode = 5 and id_barang_jadi = z.id) as dll
+        (select nominal from penambahan_biaya where kode = 2 and id_barang_jadi = z.id) as packing,
+        (select nominal from penambahan_biaya where kode = 3 and id_barang_jadi = z.id) as dllProduksi,
+        (select nominal from penambahan_biaya where kode = 4 and id_barang_jadi = z.id) as label,
+        (select nominal from penambahan_biaya where kode = 5 and id_barang_jadi = z.id) as handTag,
+        (select nominal from penambahan_biaya where kode = 6 and id_barang_jadi = z.id) as dllAksesoris
         FROM (SELECT bj.id, bj.tanggal, bj.harga_barang, bj.nama,  bj.ket,
                 dbj.id_item as idItem
                 FROM barang_jadi as bj 
@@ -338,10 +339,11 @@ router.getBarangJadiById = function(id) {
         , j.nama as namaItem, j.upah, sum(y.jumlahItemSablon) as jumlahItemSablon, sum(y.jumlahItemCutting) as jumlahItemCutting,
         (sum(y.totalBiayaItemCuttingPerPcs) / count(y.totalBiayaItemCuttingPerPcs) + j.upah) as totalBiayaItemCuttingPerPcs,(sum(y.totalBiayaItemSablonPerPcs) / count(y.totalBiayaItemSablonPerPcs) + y.upah) as totalBiayaItemSablonPerPcs,
         (select nominal from penambahan_biaya where kode = 1 and id_barang_jadi = z.id) as tieDye,
-        (select nominal from penambahan_biaya where kode = 2 and id_barang_jadi = z.id) as label,
-        (select nominal from penambahan_biaya where kode = 3 and id_barang_jadi = z.id) as handTag,
-        (select nominal from penambahan_biaya where kode = 4 and id_barang_jadi = z.id) as packing,
-        (select nominal from penambahan_biaya where kode = 5 and id_barang_jadi = z.id) as dll
+        (select nominal from penambahan_biaya where kode = 2 and id_barang_jadi = z.id) as packing,
+        (select nominal from penambahan_biaya where kode = 3 and id_barang_jadi = z.id) as dllProduksi,
+        (select nominal from penambahan_biaya where kode = 4 and id_barang_jadi = z.id) as label,
+        (select nominal from penambahan_biaya where kode = 5 and id_barang_jadi = z.id) as handTag,
+        (select nominal from penambahan_biaya where kode = 6 and id_barang_jadi = z.id) as dllAksesoris
         FROM (SELECT bj.id, bj.tanggal, bj.harga_barang, bj.nama,  bj.ket,
                 dbj.id_item as idItem
                 FROM barang_jadi as bj 
@@ -379,7 +381,7 @@ router.getBarangJadiById = function(id) {
 
 router.insertBarangJadi = function(data) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`CALL P_BARANG_JADI(?,?,?,?,?,?,?,?,?,?,?)`,[data.tanggal, data.nama, data.hargaPerPcs, data.ket , data.tglSekarang , data.item, data.biayaTambahan.tieDye, data.biayaTambahan.label, data.biayaTambahan.handtag, data.biayaTambahan.packing, data.biayaTambahan.dll],(err,results) => {
+        database.getConnection().query(`CALL P_BARANG_JADI(?,?,?,?,?,?,?,?,?,?,?,?)`,[data.tanggal, data.nama, data.hargaPerPcs, data.ket , data.tglSekarang , data.item, data.biayaTambahan.tieDye, data.biayaTambahan.label, data.biayaTambahan.handtag, data.biayaTambahan.packing, data.biayaTambahan.dllProduksi, data.biayaTambahan.dllAksesoris],(err,results) => {
             if (err) {
                 database.getConnection().query(`ROLLBACK;`)
                 console.log(err)

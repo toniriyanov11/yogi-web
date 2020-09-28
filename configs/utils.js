@@ -332,7 +332,8 @@ async function convertObjectStructureBarangJadi(dataResponse,dateFormat){
                         ket : value[i].ket,
                         hargaBarang: value[i].hargaBarang,
                         detil : [],
-                        tambahanBiaya: [],
+                        tambahanBiayaProduksi: [],
+                        tambahanBiayaAksesoris: [],
                     })
                 }
         }
@@ -369,13 +370,21 @@ async function convertObjectStructureBarangJadi(dataResponse,dateFormat){
 
         //adding price
         for(i=0; i < data.length; i++){
-            data[i].tambahanBiaya.push({nominal:value[i].tieDye, ket:'Tie Dye'})
-            data[i].tambahanBiaya.push({nominal: value[i].label, ket: 'Label'})
-            data[i].tambahanBiaya.push({nominal: value[i].handTag, ket:'Hand Tag'})
-            data[i].tambahanBiaya.push({nominal: value[i].packing, ket: 'Packing'})
-            data[i].tambahanBiaya.push({nominal: value[i].dll, ket:'Dll'})
+            data[i].tambahanBiayaProduksi.push({nominal:value[i].tieDye, ket:'Tie Dye'})
+            data[i].tambahanBiayaProduksi.push({nominal: value[i].packing, ket: 'Packing'})
+            data[i].tambahanBiayaProduksi.push({nominal: value[i].dllProduksi, ket:'Dll'})
+            data[i].tambahanBiayaAksesoris.push({nominal: value[i].label, ket: 'Label'})
+            data[i].tambahanBiayaAksesoris.push({nominal: value[i].handTag, ket:'Hand Tag'})
+            data[i].tambahanBiayaAksesoris.push({nominal: value[i].dllAksesoris, ket:'Dll'})
 
-            data[i].totalTambahanBiaya = parseInt(value[i].tieDye) + parseInt(value[i].label) + parseInt(value[i].handTag) + parseInt(value[i].packing) + parseInt(value[i].dll)
+            const tieDye = parseInt(value[i].tieDye) ? parseInt(value[i].tieDye) : 0
+            const packing = parseInt(value[i].packing) ? parseInt(value[i].packing) : 0
+            const dllProduksi = parseInt(value[i].dllProduksi) ? parseInt(value[i].dllProduksi) : 0
+            const label = parseInt(value[i].label) ? parseInt(value[i].label) : 0
+            const handTag = parseInt(value[i].handTag) ? parseInt(value[i].handTag) : 0
+            const dllAksesoris = parseInt(value[i].dllAksesoris) ? parseInt(value[i].dllAksesoris) : 0
+
+            data[i].totalTambahanBiaya =  tieDye + packing + dllProduksi +  label + handTag + dllAksesoris
          }
 
         //restructure detil item property
