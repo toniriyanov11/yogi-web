@@ -41,13 +41,17 @@ async function getPembelianById(id) {
 
 async function insertPembelian(data) {
     try {
+        console.log('sini brox')
         var typeIsMaterial = '1'
         var typeIsInventory = '2'
+        var typeAccessoris = '7'
         if (data.jenisPembelian == typeIsMaterial){
             return typeMaterial(data)
         } else if(data.jenisPembelian == typeIsInventory){
            return typeInventory(data)
-        }               
+        } else {
+           return typePembelianOthers(data)
+        }
     } catch(err) {
        return util.responseErrorServer(err)
     }
@@ -132,6 +136,31 @@ async function typeInventory(data){
     }
 }
 
+async function typePembelianOthers(data){
+    try{
+        if (data.tanggal !== "" && 
+            data.jenisPemasukan !== "" && 
+            data.nama !== "" && 
+            data.jumlah !== "" && 
+            data.statusBayar !== "" &&
+            data.hutang !== "" && 
+            data.total !== "" && 
+            data.ket !== "") {         
+
+            const rows = await modelPengeluaran.insertPembelianTypeOthers(data)
+            if (rows.affectedRows >= 1) {
+            return util.responseSuccess(rows)
+            } else {
+                return util.responseFailedPost()
+            }
+        } else {
+            return util.responseErrorNullParam()
+        }
+    } catch(err) {
+        return util.responseErrorQuery()
+    }
+}
+
 //End of Pembelian
 
 
@@ -175,7 +204,7 @@ async function insertBeban(data) {
     try {
         var typeIsOthers = '3'
         if (data.jenisBeban == typeIsOthers){
-            return typeOthers(data)
+            return typeBebanOthers(data)
         }            
     } catch(err) {
        return util.responseErrorServer(err)
@@ -209,7 +238,7 @@ async function deleteBeban(id) {
 }
 
 //function
-async function typeOthers(data){
+async function typeBebanOthers(data){
     try{
         if (data.tanggal !== "" && 
             data.jenisBeban !== "" && 
