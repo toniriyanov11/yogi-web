@@ -39,7 +39,6 @@
                             <th>No</th>                  
                             <th>Nama Penerima</th>
                             <th>Total (Rp)</th>
-                            <th>status</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -50,7 +49,6 @@
                             <td>{{dataResponse.tanggal}}</td>
                             <td class="clicked"><a @click="detil(dataResponse.id)">{{dataResponse.id}}</a></td>
                             <td>{{dataResponse.namaClient}}</td>
-                            <td></td>
                             <td style="color: #6ec06e;"></td>
                             <td> <button type="button" class="btn btn-light waves-effect"><i class="icon-printer"></i></button>
                                 <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
@@ -71,8 +69,7 @@
      var app = new Vue({
       el: '#app',
       data: {
-          dataResponses : {},
-          dataAddingPrices: {},
+          dataResponses : {}
       },
       async created() {
         await this.getData()

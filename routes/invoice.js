@@ -30,18 +30,18 @@ router.post('/',async function(req, res, next) {
     }
  })
  
- router.get('/invoice/detil/:id', function(req, res, next) {
+ router.get('/detil/:id', function(req, res, next) {
    var id = req.params.id;
-   res.render('index', { title: 'Detail Barang Jadi', page:'data-produksi/invoice/invoice_detil.ejs', data:JSON.stringify(id)});
+   res.render('index', { title: 'Detail Barang Jadi', page:'invoice/invoice_detil.ejs', data:JSON.stringify(id)});
  });
  
- router.post('/invoice/detil/:id',async function(req, res, next) {
+ router.post('/detil/:id',async function(req, res, next) {
     try{
        var id = req.params.id;
-       let dataResponse = await controllerDataProduksi.getBarangJadiById(id)
+       let dataResponse = await controllerInvoice.getInvoiceById(id)
        var data =""
        if (dataResponse.success) {
-          data = await util.convertObjectStructureBarangJadi(dataResponse, 'DD/MM/YYYY')
+          data = await util.convertObjectStructureInvoice(dataResponse, 'DD/MM/YYYY')
           res.status(200).json(data);
        } else {
           res.status(400).json(data);

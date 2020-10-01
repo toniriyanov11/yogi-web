@@ -25,44 +25,73 @@
                     
                     <div class="form-group row">
                         <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
-                            <div class="col-sm-10">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker-autoclose">
-                                    <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div>
-                                </div><!-- input-group -->
+                        <div class="col-auto">
+                            <div class="input-group">
+                                <vuejs-datepicker  v-model="data.tanggal" @input="convertDataTanggal" :format="customFormatter"></vuejs-datepicker>
                             </div>
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Nama Penerima</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" v-model="valueClient">
-                                <option >pilih nama client</option>
-                                <option>client satu</option>
-                                <option>client dua</option>
-                            </select>
-                        </div>
+                            <div class="col-md-5">
+                                <select class="form-control" v-model="data.kodeClient">
+                                    <option disabled style="color: gainsboro" >pilih Nama Client</option>
+                                    <option  v-for="dataClient in dataClients" :key="dataClient.kode" :value="dataClient.kode">{{dataClient.nama}}</option>
+                                </select>
+                            </div>
                     </div>
                     <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data</label>
-                        <div class="col-sm-10">
-                            <button type="button" class="btn btn-light waves-effect waves-light" data-toggle="modal" data-target="#modalPilihData"><i class="icon-todolist"></i></button>
+                        <label class="col-sm-2 col-form-label">Pilih Data Invoice</label>
+                            <div class="col-sm-5">
+                                <select class="form-control" v-model="data.jenisItem">
+                                    <option disabled style="color: gainsboro;">pilih produk</option>
+                                    <option :value="typeItemBarangJadi">Data Barang Jadi</option>
+                                    <option :value="typeItemBarangReturn">Data Barang Return</option>
+                                    <option :value="typeItemBarangSisa">Data Barang Sisa</option>
+                                </select>
+                            </div>
+                    </div>
+                    <div v-if="data.jenisItem == typeItemBarangJadi " class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data Barang Jadi</label>
+                        <div class="col-sm-5">
+                            <multiselect  v-model="data.itemBarangJadi" :options="optionsBarangJadi" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="" :custom-label="customItemName" label="id" track-by="id">
+                                <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
+                            </multiselect>
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <div v-if="data.jenisItem == typeItemBarangReturn " class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data Barang Return</label>
+                        <div class="col-sm-5">
+                            <multiselect  v-model="data.itemBarangReturn" :options="optionsBarangReturn" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="" :custom-label="customItemName" label="id" track-by="id">
+                                <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
+                            </multiselect>
+                        </div>
+                    </div>
+                    <div v-if="data.jenisItem == typeItemBarangSisa " class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data Barang Sisa</label>
+                        <div class="col-sm-5">
+                            <multiselect  v-model="data.itemBarangSisa" :options="optionsBarangSisa" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="" :custom-label="customItemName" label="id" track-by="id">
+                                <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
+                            </multiselect>
+                        </div>
+                    </div>
+                    <div  v-if="data.jenisItem == typeItemBarangJadi " v-for="itemBarangJadi in data.itemBarangJadi" class="form-group row" style="margin:0">
                         <label for="example-text-input" class="col-sm-2 col-form-label"></label>
-                        <div class="col-sm-10" >
-                            <div v-for="a in choosedData"><a data-toggle="modal" data-target="#modalKonfirmasi" onclick="detil(a)" style="color:#2980b9">{{a}}</a></div>
+                        <div class="col-sm-3" >
+                            <div  @click="sortItem(itemBarangJadi)" class="alert alert-dark alert-dismissible fade show" role="alert" >
+                                {{itemBarangJadi.id}} - {{itemBarangJadi.tanggal}}
+                            </div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Grand Total (Rp)</label>
-                        <div class="col-sm-10">
+                        <div class="col-sm-5">
                             <input class="form-control" type="number" value="" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
-                        <div  class="col-sm-10">
+                        <div  class="col-sm-5">
                             <textarea required class="form-control" rows="3"></textarea>
                         </div>
                     </div>
@@ -81,136 +110,276 @@
 
  
     <!--  Modal content for the above example -->
-    <div id="modalKonfirmasi" class="modal  fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Konfrimasi Data</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group row">
-                        <label for="example-text-input" class="col-sm-2">banyak</label>
-                        <div class="col-sm-2">
-                            150 
+    <div v-if="modal">
+        <div class="modals  show">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Konfrimasi Data</h5>
+                        {{sortedItem.id}}
+                        <button @click="closeModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label for="example-text-input" class="col-sm-2">banyak</label>
+                            <div class="col-sm-2">
+                                {{sortedItem.totalJumlah}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang return</label>
+                            <div class="col-sm-8">
+                                <input v-model="sortToBarangReturn" class="form-control" type="number" value="" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang sisa </label>
+                            <div class="col-sm-8">
+                                <input v-model="sortToBarangSisa" class="form-control" type="number" value="" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col py-3 text-center">
+                            <button type="button" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-format-vertical-align-bottom align-middle mr-2"></i>Submit</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang return</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="number" value="" id="example-search-input">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang sisa </label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="number" value="" id="example-search-input">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col py-3 text-center">
-                          <button type="button" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-format-vertical-align-bottom align-middle mr-2"></i>Submit</button>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <div @click="closeModal" class="modals-backdrop"></div>
+    </div>
+    <!-- /.modal -->
 
-     <!--  Modal content for the above example -->
-     <div id="modalBarangJadi" class="modal  fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Daftar Data {{data}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="frm-example" action="/" method="POST">
-                        <table id="datatable-check" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Pekan</th>
-                                    <th>No</th>      
-                                    <th>Nama Item</th>               
-                                    <th>Banyak (pcs)</th>
-                                    <th>Harga Barang/pcs (Rp)</th>
-                                </tr>
-                                </thead>
-        
-        
-                                <tbody>
-                                <tr> 
-                                    <td @click="choosedData.push('3D-2020020001')"></td>
-                                    <td>Minggu 11,2020</td>
-                                    <td><a onclick="detil('3D-2020020001')" style="color:#2980b9">3D-2020020001</a></td>
-                                    <td>Kaos</td>   
-                                    <td>150</td>
-                                    <td>80,000</td>
-                                </tr>
-                                </tbody>
-                        </table>
-                    <div class="row">
-                        <div class="col py-3 text-center">
-                          <button type="button" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-format-vertical-align-bottom align-middle mr-2"></i>Submit</button>
-                        </div>
-                    </div>
-                 </form>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    
-
-    <!--  Modal content for the above example -->
-    <div id="modalPilihData" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Pilih Data </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="d-flex flex-row justify-content-around my-5">
-                        <div  @click="data ='barang return'"  class="btn-square" data-toggle="modal" data-target="#modalBarangJadi" data-dismiss="modal" ><i class="icon-cloud-download mr-2"></i>data barang return</div>
-                        <div  @click="data ='barang jadi'" class="btn-square" data-toggle="modal" data-target="#modalBarangJadi" data-dismiss="modal" > <i class="mdi mdi-tshirt-crew mr-2"></i>data barang jadi</div>
-                        <div  @click="data ='barang sisa'" class="btn-square" data-toggle="modal" data-target="#modalBarangJadi" data-dismiss="modal" ><i class="icon-cloud-upload mr-2"></i>data barang sisa</div>
-                    </div>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
 
 </div>
 
 <script>
-    function tambah(){
-        location.href = "/invoice"
-    }
-    
-</script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
-<script>
+    const apiUrl = '<%=process.env.URL%>'
     var app = new Vue({
      el: '#app',
+     components: {
+            vuejsDatepicker, Multiselect: window.VueMultiselect.default
+    },
      data: {
-         valueJenis:'',
-         valueStatus:'',
-         valueClient:'',
-         data:'',
-         choosedData: []
+         data:{
+            tanggal:'',
+            kodeClient:'testes',
+            itemBarangJadi: [],
+            itemBarangReturn: [],
+            itemBarangSisa: [],
+            grandTotal:'',
+            ket:'',
+            jenisItem:'',
+            tglSekarang:moment().format('YYYY-MM-DD'),
+            userAkun:''
+         },
+         sortedItem: {},
+         modal:false,
+         options: [],
+         grandTotal: '',
+         dataClients:{},
+         sortToBarangReturn:0,
+         sortToBarangSisa:0,
+         typeItemBarangJadi:'1',
+         typeItemBarangReturn:'2',
+         typeItemBarangSisa:'3',
+         optionsBarangJadi: [],
+         optionsBarangReturn: [],
+         optionsBarangSisa: [],
+         isButtonDisable: false
+     },
+     async created(){
+        await this.getDataItemBarangJadi()
+        await this.getDataItemBarangReturn()
+        await this.getDataItemBarangSisa()
+        await this.getMasterClient()
+     },
+     watch: {
+        'data.itemBarangJadi' : function (val){
+           
+            
+        },
+        hargaPerPcs : function (val){
+            if (this.hargaPerPcs != ""){
+                this.hargaPerPcs  = this.convertFloatToRupiah(val.toString())
+                this.data.hargaPerPcs = this.convertRupiahToFloat(this.hargaPerPcs)
+            }else{
+                this.data.hargaPerPcs = ""
+            }
+        }
+     },
+     methods:{
+        actTambah: async function() {
+            try{
+                this.setDisableButton()
+                var data = this.data
+                let res = await axios.post(apiUrl+'dataproduksi/barangjadi/tambah', { data:data })
+                if (res.data.success){
+                    this.setEnableButton()
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href =apiUrl + 'dataproduksi/barangjadi/'; }, 1000);
+                }
+            }catch(err){
+                alert("Add data"+' '+err)
+                this.setEnableButton()
+                return false 
+            }
+        },
+        customFormatter(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
+        getDataItemBarangJadi: async function() {
+            try{
+                 const res = await axios.post(apiUrl+'dataproduksi/BarangJadi')
+                 this.optionsBarangJadi = res.data
+             }catch(err){
+                 alert("Get data Item Barang Jadi"+' '+err)
+                 return false 
+             }
+        },
+        getDataItemBarangReturn: async function() {
+            try{
+                 const res = await axios.post(apiUrl+'dataproduksi/BarangJadi')
+                 this.optionsBarangReturn = res.data
+             }catch(err){
+                 alert("Get data Item Barang Return"+' '+err)
+                 return false 
+             }
+        },
+        getDataItemBarangSisa: async function() {
+            try{
+                 const res = await axios.post(apiUrl+'dataproduksi/BarangJadi')
+                 this.optionsBarangSisa = res.data
+             }catch(err){
+                 alert("Get data Item Barang Sisa"+' '+err)
+                 return false             }
+        },
+        getMasterClient: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/client')
+                this.dataClients = res.data
+            }catch(err){
+                alert("Get Client"+' '+err)
+                return false 
+            }
+        },
+        sortItem: async function(data) {
+            console.log(data)
+            this.sortedItem = data
+            this.modal = true
+        },
+        closeModal: async function(){
+            this.modal = false
+            console.log(this.modal)
+        },
+        checkValidation: async function(){
+            var validate = false
+            if (this.data.tanggal == "" || this.data.nama == "" || this.data.item == null
+            || this.data.jumlah == ""  || this.data.ket == ""   || this.data.hargaPokok == "" 
+            || this.data.hargaPerPcs == "" ) {
+                validate = false
+            } else {
+                validate = true
+            }
+
+            if(validate){
+                this.alertAdd()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        convertFloatToRupiah: function(val) {
+
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            return rupiah
+        },
+        convertRupiahToFloat: function(val){
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            return txtNumber
+        },
+        convertDataTanggal: function(val){
+            var convert = moment(val).format("YYYY-MM-DD")
+            this.data.tanggal = convert
+        },
+        alertAdd:  function (data) {
+             swal({
+                title: "Anda yakin ingin menambah data?",
+                text: "Pastikan data yang anda masukkan benar",
+                icon: "warning",
+                buttons: ["batal", "tambah"],
+                dangerMode: false,
+                })
+                .then((willAdd) => {
+                if (willAdd) {
+                     this.actTambah(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        },
+        setEnableButton: function(){
+            this.isButtonDisable = false
+        },
+        setDisableButton: function(){
+            this.isButtonDisable = true
+        },
+        customItemName ({ id, tanggal, totalJumlah}) {
+            return `${id} — [${tanggal}, ${totalJumlah}]`
+        },
+        getTotalItem: function(){
+            if(this.data.item != null){
+                var item = this.data.item
+                this.data.jumlah =  item.totalJumlah
+                const totalBiaya = item.totalBiaya ? parseInt(item.totalBiaya) : 0
+                const upah = item.upah ? parseInt(item.upah) : 0
+                this.hargaSetelahJahit = totalBiaya  + upah
+            }else{
+                this.data.jumlah = ''
+                this.hargaSetelahJahit = ''
+            }
+        }
      }
-     })
-
-  
-     
-
+})
  </script>
+
+ <style>
+.modals{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    outline: 0;
+    opacity: 100;
+}
+    
+.modals-backdrop{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    opacity: .5;
+}
+ </style>

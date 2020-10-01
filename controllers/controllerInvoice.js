@@ -24,7 +24,7 @@ async function getInvoiceAll() {
 
 async function getInvoiceById(id) {
     try {
-        const rows = await modelDataProduksi.getInvoiceById(id)
+        const rows = await modelInvoice.getInvoiceById(id)
 
         if ( rows.length >= 1 ) {
             return util.responseSuccess(rows)

@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" id="app">
     <div class="page-title-box">
         <div class="row align-items-center">
             <div class="col-sm-6">
@@ -32,13 +32,13 @@
                                 <div class="col-6">
                                     <address>
                                         <strong>Penerima : </strong><br>
-                                        <%= data.nama %>
+                                        {{dataResponses.namaClient}}
                                     </address>
                                 </div>
                                 <div class="col-6 text-right">
                                     <address>
                                         <strong>Tanggal:</strong><br>
-                                        <%= data.tgl%><br><br>
+                                        {{dataResponses.tanggal}}<br><br>
                                     </address>
                                 </div>
                             </div>
@@ -67,17 +67,17 @@
                                             <tbody>
                                             <!-- foreach ($order->lineItems as $line) or some such thing here -->
                                             <tr>
-                                                <td>3D-2020020001 (Kaos)</td>
-                                                <td class="text-center">150</td>
-                                                <td class="text-center">Rp.80,000</td>
-                                                <td class="text-right">Rp.12,000,000</td>
+                                                <td></td>
+                                                <td class="text-center"></td>
+                                                <td class="text-center"></td>
+                                                <td class="text-right"></td>
                                             </tr>
                                             <tr>
                                                 <td class="no-line"></td>
                                                 <td class="no-line"></td>
                                                 <td class="no-line text-center">
                                                     <strong>Grand Total</strong></td>
-                                                <td class="no-line text-right"><h4 class="m-0">Rp.12,000,000</h4></td>
+                                                <td class="no-line text-right"><h4 class="m-0"></h4></td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -128,16 +128,41 @@
 
 </div>
 
-<script>
-    function edit(id){
-        if(id=="3D-2020020001"){
-            location.href = "/dataproduksi/barangjadi/edit/"+id+"?id=3D-2020020001&tgl=2020-W11&jml=150&hargapokok=6,000,000&hargabrgpcs=40,000&sub=3C-2020020001&nama=kaos";
-        }
-    }
 
-    function detilsub(id){
-        if(id=="3C-2020020001"){
-            location.href = "/dataproduksi/jahit/detil/"+id+"?id=3C-2020020001&tgl=minggu 10,2020&jml=150&totbiaya=4,750,000&upahpcs=5,000&totupah=750,000&hargapcs=36,700&subitem=3A-2020020001,3A-2020020002&ket=-&jenis=cutting&totupahming=2,250,000&&sub=3A-2020020001,3A-2020020002";
+<script>
+    const apiUrl = '<%=process.env.URL%>'
+    var app = new Vue({
+     el: '#app',
+     data: {
+         id:'',
+         dataResponses:{}
+     },
+     async created() {
+        this.id = JSON.parse('<%-data%>')
+        await this.getData(this.id)
+     },
+     methods : {
+        getData: async function(id) {
+            try{
+                const res = await axios.post(apiUrl+'invoice/detil/'+id)
+                this.dataResponses = res.data[0]
+                console.log(this.dataResponses)
+            }catch(err){
+                alert("Get data"+' '+err)
+            }
+        },
+        convertToRupiah: function (val) {
+            var txtNumber = parseFloat(val)
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            return rupiah
         }
-    }
+     }
+})
 </script>
