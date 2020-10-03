@@ -129,15 +129,21 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="example-text-input" class="col-sm-2">sisa</label>
+                            <div class="col-sm-2">
+                                {{ totalRest(this.data) }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang return</label>
                             <div class="col-sm-8">
-                                <input v-model="sortToBarangReturn" class="form-control" type="number" value="" id="example-search-input">
+                                <input @change="checkTotalBalance('barang return')" v-model="data.itemBarangJadi[indexChoosedItem].jmlBarangReturn" class="form-control" type="number" value="" id="example-search-input">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang sisa </label>
                             <div class="col-sm-8">
-                                <input v-model="sortToBarangSisa" class="form-control" type="number" value="" id="example-search-input">
+                                <input @change="checkTotalBalance('barang sisa')" v-model="data.itemBarangJadi[indexChoosedItem].jmlBarangSisa" class="form-control" type="number" value="" id="example-search-input">
                             </div>
                         </div>
                         <div class="row">
@@ -176,6 +182,7 @@
             tglSekarang:moment().format('YYYY-MM-DD'),
             userAkun:''
          },
+         indexChoosedItem:-1,
          sortedItem: {},
          modal:false,
          options: [],
@@ -198,9 +205,17 @@
         await this.getMasterClient()
      },
      watch: {
-        'data.itemBarangJadi' : function (val){
-           
-            
+        'data.itemBarangJadi' : async function (val){
+          if(val.length == 0)
+            await this.getDataItemBarangJadi() 
+        },
+        'data.itemBarangReturn' : async function (val){
+          if(val.length == 0)
+            await this.getDataItemBarangReturn() 
+        },
+        'data.itemBarangSisa' : async function (val){
+          if(val.length == 0)
+            await this.getDataItemBarangSisa() 
         },
         hargaPerPcs : function (val){
             if (this.hargaPerPcs != ""){
@@ -267,9 +282,11 @@
             }
         },
         sortItem: async function(data) {
-            console.log(data)
             this.sortedItem = data
             this.modal = true
+            const indexChoosedItem = this.data.itemBarangJadi.map((item) => item.id).indexOf(data.id)
+            this.indexChoosedItem = indexChoosedItem
+            console.log(this.data.itemBarangJadi)
         },
         closeModal: async function(){
             this.modal = false
@@ -292,7 +309,6 @@
             }
         },
         convertFloatToRupiah: function(val) {
-
             var txtNumber = parseFloat(val.replace(/,/g, ''))
             var txtString = txtNumber.toString()
             var sisa = txtString.length % 3
@@ -353,6 +369,28 @@
                 this.data.jumlah = ''
                 this.hargaSetelahJahit = ''
             }
+        },
+        checkTotalBalance(item){
+            const jmlBarangSisaInt = parseInt(this.data.itemBarangJadi[this.indexChoosedItem].jmlBarangSisa)
+            const jmlBarangReturnInt = parseInt(this.data.itemBarangJadi[this.indexChoosedItem].jmlBarangReturn)
+            const jmlBarangInt = parseInt(this.data.itemBarangJadi[this.indexChoosedItem].totalJumlah)
+            if (item == "barang return") {
+                if ( jmlBarangReturnInt > jmlBarangInt || jmlBarangReturnInt > (jmlBarangInt - jmlBarangSisaInt) ){
+                    alert('melebihi jumlah barang')
+                    this.data.itemBarangJadi[this.indexChoosedItem].jmlBarangReturn = 0
+                }
+            } else if (item == "barang sisa") {
+                if ( jmlBarangSisaInt > jmlBarangInt || jmlBarangSisaInt > (jmlBarangInt - jmlBarangReturnInt) ){
+                    alert('melebihi jumlah barang')
+                    this.data.itemBarangJadi[this.indexChoosedItem].jmlBarangSisa = 0
+                }
+            }
+        },
+        totalRest: function(data){
+            const totalJumlah = parseInt(this.sortedItem.totalJumlah)
+            const jmlBarangSisa = data.itemBarangJadi[this.indexChoosedItem].jmlBarangSisa == undefined || data.itemBarangJadi[this.indexChoosedItem].jmlBarangSisa == "" ? 0 : parseInt(data.itemBarangJadi[this.indexChoosedItem].jmlBarangSisa)
+            const jmlBarangReturn = data.itemBarangJadi[this.indexChoosedItem].jmlBarangReturn == undefined || data.itemBarangJadi[this.indexChoosedItem].jmlBarangReturn == "" ? 0 : parseInt(data.itemBarangJadi[this.indexChoosedItem].jmlBarangReturn)
+            return totalJumlah - (jmlBarangReturn + jmlBarangSisa)
         }
      }
 })
