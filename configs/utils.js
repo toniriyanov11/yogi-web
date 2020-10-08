@@ -444,7 +444,7 @@ async function convertObjectStructureInvoice(dataResponse,dateFormat){
                     })
                 }
         }
-
+        
         //filter item by id
         // var tampungId = ''
         // var jumlah = 0

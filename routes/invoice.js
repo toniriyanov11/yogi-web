@@ -32,7 +32,7 @@ router.post('/',async function(req, res, next) {
  
  router.get('/detil/:id', function(req, res, next) {
    var id = req.params.id;
-   res.render('index', { title: 'Detail Barang Jadi', page:'invoice/invoice_detil.ejs', data:JSON.stringify(id)});
+   res.render('index', { title: 'Detail Invoice', page:'invoice/invoice_detil.ejs', data:JSON.stringify(id)});
  });
  
  router.post('/detil/:id',async function(req, res, next) {
@@ -53,7 +53,7 @@ router.post('/',async function(req, res, next) {
  
  
  router.get('/tambah', function(req, res, next) {
-     res.render('index', { title: 'Tambah Barang Jadi', page:'invoice/invoice_buat.ejs'});
+     res.render('index', { title: 'Tambah Invoice', page:'invoice/invoice_buat.ejs'});
  });
  
  router.post('/tambah', async function(req, res, next) {
@@ -73,7 +73,7 @@ router.post('/',async function(req, res, next) {
  
  router.get('/invoice/edit/:id', function(req, res, next) {
      var id = req.params.id;
-     res.render('index', { title: 'Edit Barang Jadi', page:'data-produksi/invoice/invoice_edit.ejs', data:JSON.stringify(id)});
+     res.render('index', { title: 'Edit Invoice', page:'data-produksi/invoice/invoice_edit.ejs', data:JSON.stringify(id)});
  });
  
  router.post('/invoice/edit/:id', async function(req, res, next) {
@@ -121,7 +121,7 @@ router.post('/',async function(req, res, next) {
  });
 
 
- //end of barang jadi
+ //end of Invoice
 
 
 module.exports = router;

@@ -75,29 +75,35 @@
                             </multiselect>
                         </div>
                     </div>
-                    <div  v-if="data.jenisItem == typeItemBarangJadi " v-for="itemBarangJadi in data.itemBarangJadi" class="form-group row" style="margin:0">
+                    <div  v-if="data.itemBarangJadi.length != 0 " v-for="itemBarangJadi in data.itemBarangJadi" class="form-group row" style="margin:0">
                         <label for="example-text-input" class="col-sm-2 col-form-label"></label>
                         <div class="col-sm-3" >
-                            <div  @click="sortItem(itemBarangJadi)" class="alert alert-dark alert-dismissible fade show" role="alert" >
-                                {{itemBarangJadi.id}} - {{itemBarangJadi.tanggal}}
+                            <div  @click="sortItemBarangJadi(itemBarangJadi)" class="alert alert-dark alert-dismissible fade show" role="alert" >
+                                <b>{{itemBarangJadi.id}}</b> 
+                                <div>tanggal : {{itemBarangJadi.tanggal}}</div>  
+                                <div>jumlah: {{itemBarangJadi.totalJumlahSisa}} </div>
+                                <div>total harga: {{convertFloatToRupiah(itemBarangJadi.totalHargaBarang.toString())}}</div>
                             </div>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">Grand Total (Rp)</label>
                         <div class="col-sm-5">
-                            <input class="form-control" type="number" value="" id="example-search-input">
+                            <input disabled class="form-control" v-model="grandTotal" type="text" value="" id="example-search-input">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
                         <div  class="col-sm-5">
-                            <textarea required class="form-control" rows="3"></textarea>
+                            <textarea required  v-model="data.ket" class="form-control" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="form-group text-right">
                         <div>
-                            <button type="submit" class="btn btn-primary waves-effect waves-light">
+                            <button @click="previewInvoice" :disabled="isButtonPreviewDisable" type="submit" class="btn btn-success waves-effect waves-light">
+                                Preview
+                            </button>
+                            <button @click="checkValidation()" type="submit" class="btn btn-primary waves-effect waves-light">
                                 Submit
                             </button>
                         </div>
@@ -110,14 +116,14 @@
 
  
     <!--  Modal content for the above example -->
-    <div v-if="modal">
+    <div v-if="modalBarangJadi">
         <div class="modals  show">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Konfrimasi Data</h5>
                         {{sortedItem.id}}
-                        <button @click="closeModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button @click="closeModalBarangJadi" type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -131,33 +137,96 @@
                         <div class="form-group row">
                             <label for="example-text-input" class="col-sm-2">sisa</label>
                             <div class="col-sm-2">
-                                {{ totalRest(this.data) }}
+                                {{sortedItem.totalJumlahSisa}}
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang return</label>
                             <div class="col-sm-8">
-                                <input @change="checkTotalBalance('barang return')" v-model="data.itemBarangJadi[indexChoosedItem].jmlBarangReturn" class="form-control" type="number" value="" id="example-search-input">
+                                <input v-model="sortedItem.jmlMasukBarangReturn" class="form-control" type="number" value="" id="example-search-input">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang sisa </label>
                             <div class="col-sm-8">
-                                <input @change="checkTotalBalance('barang sisa')" v-model="data.itemBarangJadi[indexChoosedItem].jmlBarangSisa" class="form-control" type="number" value="" id="example-search-input">
+                                <input  v-model="sortedItem.jmlMasukBarangSisa" class="form-control" type="number" value="" id="example-search-input">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col py-3 text-center">
-                            <button type="button" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-format-vertical-align-bottom align-middle mr-2"></i>Submit</button>
+                            <button @click="saveDataSortItemBarangJadi" type="button" class="btn btn-primary waves-effect waves-light">Simpan</button>
                             </div>
                         </div>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div>
-        <div @click="closeModal" class="modals-backdrop"></div>
+        <div @click="closeModalBarangJadi" class="modals-backdrop"></div>
     </div>
     <!-- /.modal -->
+
+    <!--  Modal content for the above example -->
+    <div v-if="modalPreview">
+        <div class="modals  show">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Preview Invoice</h5>
+                        <button @click="closeModalPreview" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="panel panel-default">
+                                    <div class="p-2">
+                                        <h3 class="panel-title font-20"><strong>
+                                            Invoice</strong></h3>
+                                    </div>
+                                    <div>
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <td><strong>Barang</strong></td>
+                                                    <td class="text-center"><strong>Banyak</strong>
+                                                    <td class="text-center"><strong>Harga</strong></td>
+                                                    </td>
+                                                    <td class="text-right"><strong>Total</strong></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="item in data.itemBarangJadi">
+                                                    <td>{{item.id}}</td>
+                                                    <td class="text-center">{{item.totalJumlahSisa}}</td>
+                                                    <td class="text-center">{{convertFloatToRupiah(item.hargaBarang)}}</td>
+                                                    <td class="text-right">{{convertFloatToRupiah(item.totalHargaBarang.toString())}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="no-line"></td>
+                                                    <td class="no-line"></td>
+                                                    <td class="no-line text-center">
+                                                        <strong>Grand Total</strong></td>
+                                                    <td class="no-line text-right"><h4 class="m-0">{{convertFloatToRupiah(data.grandTotal.toString())}}</h4></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                        <!-- end row -->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <div @click="closeModalPreview" class="modals-backdrop"></div>
+    </div>
+    <!-- /.modal -->
+
+    
 
 
 </div>
@@ -172,7 +241,7 @@
      data: {
          data:{
             tanggal:'',
-            kodeClient:'testes',
+            kodeClient:'',
             itemBarangJadi: [],
             itemBarangReturn: [],
             itemBarangSisa: [],
@@ -184,19 +253,19 @@
          },
          indexChoosedItem:-1,
          sortedItem: {},
-         modal:false,
+         modalBarangJadi:false,
+         modalPreview:false,
          options: [],
          grandTotal: '',
          dataClients:{},
-         sortToBarangReturn:0,
-         sortToBarangSisa:0,
          typeItemBarangJadi:'1',
          typeItemBarangReturn:'2',
          typeItemBarangSisa:'3',
          optionsBarangJadi: [],
          optionsBarangReturn: [],
          optionsBarangSisa: [],
-         isButtonDisable: false
+         isButtonDisable: false,
+         isButtonPreviewDisable: true
      },
      async created(){
         await this.getDataItemBarangJadi()
@@ -205,24 +274,44 @@
         await this.getMasterClient()
      },
      watch: {
+         'sortedItem.jmlMasukBarangReturn':async function(val){
+            this.checkTotalBalance('barang return')
+         },
+         'sortedItem.jmlMasukBarangSisa':async function(val){
+            this.checkTotalBalance('barang sisa')
+         },
+         'sortedItem.totalJumlahSisa' : function(val){
+            this.setItemTotalHargaBarang()
+         },
         'data.itemBarangJadi' : async function (val){
-          if(val.length == 0)
+            if(val.length == 0){
+                this.grandTotal = ""
+            }else{
+                this.calculateGrandTotal()
+            }
             await this.getDataItemBarangJadi() 
         },
         'data.itemBarangReturn' : async function (val){
-          if(val.length == 0)
+          if(val.length == 0){}
             await this.getDataItemBarangReturn() 
         },
         'data.itemBarangSisa' : async function (val){
           if(val.length == 0)
             await this.getDataItemBarangSisa() 
         },
-        hargaPerPcs : function (val){
-            if (this.hargaPerPcs != ""){
-                this.hargaPerPcs  = this.convertFloatToRupiah(val.toString())
-                this.data.hargaPerPcs = this.convertRupiahToFloat(this.hargaPerPcs)
+        'data.ket' : async function (val){
+          if(val.length == 0)
+            await this.getDataItemBarangSisa() 
+        },
+        grandTotal : function (val){
+            if (this.grandTotal != ""){
+                this.grandTotal  = this.convertFloatToRupiah(val.toString())
+                this.data.grandTotal = this.convertRupiahToFloat(this.grandTotal)
+                this.setEnableButtonPreview()
             }else{
-                this.data.hargaPerPcs = ""
+                this.data.grandTotal = ""
+                this.setDisableButtonPreview()
+                console.log("A")
             }
         }
      },
@@ -249,7 +338,14 @@
         getDataItemBarangJadi: async function() {
             try{
                  const res = await axios.post(apiUrl+'dataproduksi/BarangJadi')
+                 res.data.forEach((item) => { 
+                    item.totalHargaBarang = (parseInt(item.hargaBarang) * item.totalJumlah)
+                    item.totalJumlahSisa =  item.totalJumlah
+                    item.jmlMasukBarangReturn = 0
+                    item.jmlMasukBarangSisa = 0
+                    })
                  this.optionsBarangJadi = res.data
+                 
              }catch(err){
                  alert("Get data Item Barang Jadi"+' '+err)
                  return false 
@@ -281,22 +377,63 @@
                 return false 
             }
         },
-        sortItem: async function(data) {
-            this.sortedItem = data
-            this.modal = true
-            const indexChoosedItem = this.data.itemBarangJadi.map((item) => item.id).indexOf(data.id)
-            this.indexChoosedItem = indexChoosedItem
-            console.log(this.data.itemBarangJadi)
+        sortItemBarangJadi: async function(data) {
+            this.sortedItem = Object.assign({}, data) 
+            const indexChoosedItem = this.data.itemBarangJadi.indexOf(data)
+            this.indexChoosedItem = indexChoosedItem 
+            this.modalBarangJadi = true
         },
-        closeModal: async function(){
-            this.modal = false
-            console.log(this.modal)
+        checkTotalBalance: async function (item){
+            const jmlMasukBarangSisaInt = this.sortedItem.jmlMasukBarangSisa != ""? parseInt(this.sortedItem.jmlMasukBarangSisa) : 0
+            const jmlMasukBarangReturnInt = this.sortedItem.jmlMasukBarangReturn != ""? parseInt(this.sortedItem.jmlMasukBarangReturn) : 0
+            const jmlBarangInt = parseInt(this.sortedItem.totalJumlah)
+            var data = {jmlBarangInt,jmlMasukBarangReturnInt,jmlMasukBarangSisaInt}
+            await this.updateItemTotalJumlahSisa(data)
+            if (item == "barang return") {
+                if ( jmlMasukBarangReturnInt > jmlBarangInt || jmlMasukBarangReturnInt > (jmlBarangInt - jmlMasukBarangSisaInt) ){
+                    alert('melebihi jumlah barang')
+                    this.sortedItem.jmlMasukBarangReturn = 0
+                } 
+            } else if (item == "barang sisa") {
+                if ( jmlMasukBarangSisaInt > jmlBarangInt || jmlMasukBarangSisaInt > (jmlBarangInt - jmlMasukBarangReturnInt) ){
+                    alert('melebihi jumlah barang')
+                    this.sortedItem.jmlMasukBarangSisa = 0
+                }
+            }
+        },
+        updateItemTotalJumlahSisa(data){
+            var {jmlBarangInt,jmlMasukBarangReturnInt,jmlMasukBarangSisaInt} = data
+            this.sortedItem.totalJumlahSisa = jmlBarangInt - jmlMasukBarangSisaInt - jmlMasukBarangReturnInt
+        },
+        calculateGrandTotal:async function(){
+            const total = this.data.itemBarangJadi.map((item) => ( parseInt(item.hargaBarang) * (parseInt(item.totalJumlahSisa)) ))
+            const grandTotal = total.reduce((currentTotal, item) => item + currentTotal)
+            this.grandTotal =  grandTotal
+        },
+        setItemTotalHargaBarang(){
+            this.sortedItem.totalHargaBarang = parseInt(this.sortedItem.hargaBarang) * parseInt(this.sortedItem.totalJumlahSisa)
+        },
+        saveDataSortItemBarangJadi() {
+            this.data.itemBarangJadi[this.indexChoosedItem] = this.sortedItem
+            this.calculateGrandTotal()
+            this.closeModalBarangJadi()
+        },
+        closeModalBarangJadi: async function(){
+            this.sortedItem = {}
+            this.modalBarangJadi = false
+            this.indexChoosedItem = -1
+        },
+        previewInvoice(){
+            this.modalPreview = true
+        },
+        closeModalPreview: async function(){
+            this.modalPreview = false
         },
         checkValidation: async function(){
+            console.log(this.data)
             var validate = false
-            if (this.data.tanggal == "" || this.data.nama == "" || this.data.item == null
-            || this.data.jumlah == ""  || this.data.ket == ""   || this.data.hargaPokok == "" 
-            || this.data.hargaPerPcs == "" ) {
+            if (this.data.tanggal == "" || this.data.kodeClient == null
+            || this.data.grandTotal == ""  || this.data.ket == "") {
                 validate = false
             } else {
                 validate = true
@@ -355,6 +492,12 @@
         setDisableButton: function(){
             this.isButtonDisable = true
         },
+        setEnableButtonPreview: function(){
+            this.isButtonPreviewDisable = false
+        },
+        setDisableButtonPreview: function(){
+            this.isButtonPreviewDisable = true
+        },
         customItemName ({ id, tanggal, totalJumlah}) {
             return `${id} — [${tanggal}, ${totalJumlah}]`
         },
@@ -369,28 +512,6 @@
                 this.data.jumlah = ''
                 this.hargaSetelahJahit = ''
             }
-        },
-        checkTotalBalance(item){
-            const jmlBarangSisaInt = parseInt(this.data.itemBarangJadi[this.indexChoosedItem].jmlBarangSisa)
-            const jmlBarangReturnInt = parseInt(this.data.itemBarangJadi[this.indexChoosedItem].jmlBarangReturn)
-            const jmlBarangInt = parseInt(this.data.itemBarangJadi[this.indexChoosedItem].totalJumlah)
-            if (item == "barang return") {
-                if ( jmlBarangReturnInt > jmlBarangInt || jmlBarangReturnInt > (jmlBarangInt - jmlBarangSisaInt) ){
-                    alert('melebihi jumlah barang')
-                    this.data.itemBarangJadi[this.indexChoosedItem].jmlBarangReturn = 0
-                }
-            } else if (item == "barang sisa") {
-                if ( jmlBarangSisaInt > jmlBarangInt || jmlBarangSisaInt > (jmlBarangInt - jmlBarangReturnInt) ){
-                    alert('melebihi jumlah barang')
-                    this.data.itemBarangJadi[this.indexChoosedItem].jmlBarangSisa = 0
-                }
-            }
-        },
-        totalRest: function(data){
-            const totalJumlah = parseInt(this.sortedItem.totalJumlah)
-            const jmlBarangSisa = data.itemBarangJadi[this.indexChoosedItem].jmlBarangSisa == undefined || data.itemBarangJadi[this.indexChoosedItem].jmlBarangSisa == "" ? 0 : parseInt(data.itemBarangJadi[this.indexChoosedItem].jmlBarangSisa)
-            const jmlBarangReturn = data.itemBarangJadi[this.indexChoosedItem].jmlBarangReturn == undefined || data.itemBarangJadi[this.indexChoosedItem].jmlBarangReturn == "" ? 0 : parseInt(data.itemBarangJadi[this.indexChoosedItem].jmlBarangReturn)
-            return totalJumlah - (jmlBarangReturn + jmlBarangSisa)
         }
      }
 })
