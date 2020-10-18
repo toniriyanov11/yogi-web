@@ -48,40 +48,14 @@ async function insertInvoice(data) {
     }
 }
 
-async function updateInvoice(data) {
-    try {
-        const rows = await modelDataProduksi.updateInvoice(data)
-        if (rows.affectedRows >= 1) {
-            return util.responseSuccessUpdate()
-        } else {
-           return util.responseFailedUpdate()
-        }               
-    } catch(err) {
-       return util.responseErrorServer(err)
-    }
-}
 
-async function deleteInvoice(id) {
-    try {
-        const rows = await modelDataProduksi.deleteInvoice(id)
-        if (rows.affectedRows >= 1) {
-            return util.responseSuccessDelete()
-        } else {
-           return util.responseFailedDelete()
-        }
-    } catch(err) {
-       return util.responseErrorServer(err)
-    }
-}
 
 //function
 async function proccessInsertInvoice(data){
     try{
-        if (data.tanggal !== "" & data.nama !== "" & data.jenisProduk !== "" 
-        & data.jenisBahan !== "" & data.varianBahan !== "" & data.warnaBahan !== ""
-        & data.tipeInvoice !== "" & data.berat !== "" & data.jumlah !== "" 
-        & data.upah !== "" & data.hargaPerKg !== "" ) {         
-            const rows = await modelDataProduksi.insertInvoice(data)
+        if (data.tanggal !== "" & data.grandTotal !== "" & data.kodeClient !== ""
+        & data.jenisItem !== ""& data.ket !== "" ) {         
+            const rows = await modelInvoice.insertInvoice(data)
             if (rows.affectedRows >= 1) {
             return util.responseSuccess(rows)
             } else {
@@ -103,7 +77,5 @@ async function proccessInsertInvoice(data){
 module.exports = {
     getInvoiceAll,
     getInvoiceById,
-    insertInvoice,
-    deleteInvoice,
-    updateInvoice
+    insertInvoice
 }

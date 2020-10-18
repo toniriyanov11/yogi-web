@@ -1,14 +1,15 @@
 const database = require('../configs/database.js');
 var express = require('express');
 const { query } = require('express');
+const { forEach } = require('lodash');
 var router = express.Router();
 
 
 //Invoice
 router.getInvoiceAll = function() {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`SELECT i.id, i.tanggal, i.kode_client as kodeClient, c.nama as namaClient, i.ket,
-        di.id_item_jahit as idItemJahit,
+        database.getConnection().query(`SELECT i.id, i.tanggal, i.kode_client as kodeClient, c.nama as namaClient, i.ket, i.grand_total as grandTotal,
+        di.id_item_barang_jadi as idItemBarangJadi,
         di.id_item_barang_return as idItemBarangReturn,
         di.id_item_barang_sisa as idItemBarangSisa
         FROM invoice as i 
@@ -27,7 +28,7 @@ router.getInvoiceAll = function() {
 
 router.getInvoiceById = function(id) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(` SELECT i.id, i.tanggal, i.kode_client as kodeClient, c.nama as namaClient, i.ket,
+        database.getConnection().query(` SELECT i.id, i.tanggal, i.kode_client as kodeClient, c.nama as namaClient, i.ket, i.grand_total as grandTotal,
         di.id_item_jahit as idItemJahit,
         di.id_item_barang_return as idItemBarangReturn,
         di.id_item_barang_sisa as idItemBarangSisa
@@ -45,42 +46,73 @@ router.getInvoiceById = function(id) {
 
 router.insertInvoice = function(data) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`CALL P_CUTTING(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,[data.tanggal, data.nama, data.jenisProduk, data.jenisBahan , data.varianBahan , data.warnaBahan, data.tipeCutting, data.tipeSubCutting, data.berat, data.jumlah, data.upah, data.hargaPerKg, data.ket, data.tglSekarang],(err,results) => {
+        console.log('sampe sini')
+        database.getConnection().beginTransaction((err) => {
             if (err) {
-                database.getConnection().query(`ROLLBACK;`)
                 console.log(err)
                 return reject(err)
-            }else{
-                database.getConnection().query(`COMMIT;`)
-                return resolve(results)
             }
+            console.log('nah sini')
+                database.getConnection().query(`INSERT INTO invoice (id,tanggal,kode_client,grand_total,ket,status_aktif,tgl_rekam)
+                VALUES (f_gen_id("I"),?,?,?,?,'Y',?)`,[data.tanggal, data.kodeClient, data.grandTotal, data.ket, data.tglSekarang],(err,results) =>{  
+                    if (err) {
+                        console.log(err)
+                        database.getConnection().query(`ROLLBACK;`)
+                        return reject(err)
+                    }})
+                    console.log(data)
+                    if(data.jenisItem == 'barang jadi'){
+                        data.itemBarangJadi.forEach((item,index) => { 
+                            database.getConnection().query(`
+                            INSERT INTO detil_invoice (id_item_barang_jadi,jml_barang_sisa,jml_barang_return,id_invoice,id)
+                            select id,?,?,(select max(id) from invoice where status_aktif = 'Y'),f_gen_id("DI") from barang_jadi where id = ?`,[data.itemBarangJadi[index].jmlMasukBarangSisa, data.itemBarangJadi[index].jmlMasukBarangReturn, data.itemBarangJadi[index].id],(err,results) => {
+                                if (err) {
+                                    console.log(err)
+                                    database.getConnection().query(`ROLLBACK;`)
+                                    return reject(err)
+                                }
+                                database.getConnection().query(`COMMIT`) 
+                                return resolve(results)
+                            })
+                        })
+                    }
+                    else if(data.jenisItem == 'barang sisa'){
+                        data.itemBarangSisa.forEach((item,index) => { 
+                            database.getConnection().query(`
+                            INSERT INTO detil_invoice (id_item_barang_return,id_invoice,id)
+                            select id,(select max(id) from invoice where status_aktif = 'Y'),f_gen_id("DI") from barang_sisa where id = ? `,[data.itemBarangSisa[index].id],(err,results) => {
+                                if (err) {
+                                    console.log(err)
+                                    database.getConnection().query(`ROLLBACK;`)
+                                    return reject(err)
+                                }
+                                database.getConnection().query(`COMMIT`) 
+                                return resolve(results)
+                            })
+                        })
+                    }
+                    else if(data.jenisItem == 'barang return'){
+                        data.itemBarangSisa.forEach((item,index) => { 
+                            database.getConnection().query(`
+                            INSERT INTO detil_invoice (id_item_barang_return,id_invoice,id)
+                            select id,(select max(id) from invoice where status_aktif = 'Y'),f_gen_id("DI") from barang_return where id = ? `,[data.itemBarangReturn[index].id],(err,results) => {
+                                if (err) {
+                                    console.log(err)
+                                    database.getConnection().query(`ROLLBACK;`)
+                                    return reject(err)
+                                }
+                                database.getConnection().query(`COMMIT`) 
+                                return resolve(results)
+                            })
+                        })
+                    }else{
+                        database.getConnection().query(`ROLLBACK;`)
+                        return reject(err)
+                    }
         })
     })
 }
 
-router.updateInvoice = function(data) {
-    return new Promise((resolve, reject) => {
-        database.getConnection().query(`UPDATE cutting SET tanggal = ?, nama = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.ket,data.id],(err,results) => {
-            if (err) {
-                return reject(err)
-            }else{
-                return resolve(results)
-            }
-        })
-    })
-}
-
-router.deleteInvoice = function(id) {
-    return new Promise((resolve, reject) => {
-        database.getConnection().query(`UPDATE cutting SET status_aktif = 'T' WHERE pengeluaran.id = ?`,[id],(err,results) => {
-            if (err) {
-                return reject(err)
-            }else{
-                return resolve(results) 
-            } 
-        })
-    })
-}
 //End of Invoice
 
 

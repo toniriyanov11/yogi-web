@@ -59,8 +59,9 @@ router.post('/',async function(req, res, next) {
  router.post('/tambah', async function(req, res, next) {
    try{
       var data = req.body.data
-      let dataManipulation = await util.manipulateData(data)
-      let dataResponse = await controllerDataProduksi.insertBarangJadi(dataManipulation)
+      let dataManipulation = await util.manipulateDataInvoice(data)
+      console.log("tambah invoice")
+      let dataResponse = await controllerInvoice.insertInvoice(dataManipulation)
       if (dataResponse.success) {
          res.status(200).json(dataResponse);
       } else {
@@ -70,56 +71,6 @@ router.post('/',async function(req, res, next) {
       res.status(500).json(err);
    }
  });
- 
- router.get('/invoice/edit/:id', function(req, res, next) {
-     var id = req.params.id;
-     res.render('index', { title: 'Edit Invoice', page:'data-produksi/invoice/invoice_edit.ejs', data:JSON.stringify(id)});
- });
- 
- router.post('/invoice/edit/:id', async function(req, res, next) {
-   try{
-      var id = req.params.id;
-      let dataResponse = await controllerDataProduksi.getBarangJadiById(id)   
-      var data =""
-      if (dataResponse.success) {
-         data = await util.convertObjectStructureBarangJadi(dataResponse, 'YYYY-MM-DD')
-         res.status(200).json(data);
-      } else {
-         res.status(400).json(data);
-      }
-   } catch(err){
-      res.status(500).json(err);
-   }
- });
- 
- router.post('/invoice/edit', async function(req, res, next) {
-   try {
-      var data = req.body.data
-      let dataResponse = await controllerDataProduksi.updateBarangJadi(data)
-      if (dataResponse.success) {
-         res.status(200).json(dataResponse);
-      } else {
-         res.status(400).json();
-      }
-   } catch (err) {
-      res.status(500).json(err);
-   }
- });
- 
- router.post('/invoice/hapus/:id', async function(req, res, next) {
-   try{
-      var id = req.params.id
-      let dataResponse = await controllerDataProduksi.deleteBarangJadi(id)
-      if (dataResponse.success ) {
-         res.status(200).json(dataResponse);
-      } else {
-         res.status(400).json();
-      }
-   } catch(err){
-      res.status(500).json(err);
-   }
- });
-
 
  //end of Invoice
 

@@ -439,46 +439,32 @@ async function convertObjectStructureInvoice(dataResponse,dateFormat){
                         tanggal : value[i].tanggal,
                         kodeClient : value[i].kodeClient,
                         namaClient : value[i].namaClient,
+                        grandTotal: value[i].grandTotal,
                         ket : value[i].ket,
                         detil : []
                     })
                 }
         }
         
-        //filter item by id
-        // var tampungId = ''
-        // var jumlah = 0
-        // var biaya = 0
-        // var harga = 0
-        // for(i=0; i < data.length; i++){
-        //     jumlah = 0
-        //     biaya = 0
-        //     harga = 0
-        //     tampungId = data[i].id
-        //     for(j=0; j < dataDetail.length; j++){
-        //         if(dataDetail[j].id === tampungId){
-        //             data[i].detil.push(dataDetail[j])
-        //             jumlah += parseInt(dataDetail[j].jumlahItem)
-        //             biaya += parseInt(dataDetail[j].totalBiayaItemPerPcs)
-        //             harga += parseInt(dataDetail[j].totalBiayaItemPerPcs) + parseInt(data[i].upah)  
-        //             data[i].totalJumlah = jumlah
-        //             data[i].totalBiaya = biaya / data[i].detil.length
-        //             data[i].hargaBarang = harga / data[i].detil.length
-        //         }else{
-        //             tampungId = data[i].id
-        //         }
+        // filter item by id
+        var tampungId = ''
+        for(i=0; i < data.length; i++){
+            tampungId = data[i].id
+            for(j=0; j < dataDetail.length; j++){
+                if(dataDetail[j].id === tampungId){
+                    data[i].detil.push(dataDetail[j])
+                }else{
+                    tampungId = data[i].id
+                }
           
-        //     }
-        // }
+            }
+        }
 
       return data
     }catch(err){
       return err
     }
 }
-
-
-
 
 
 async function manipulateData(data){
@@ -495,7 +481,6 @@ try{
 
             return data
         } else if(!Array.isArray(data.item)){
-            console.log("object sini")
             data.item = data.item.id
 
             return data
@@ -531,6 +516,46 @@ try{
  
 }
 
+async function manipulateDataInvoice(data){
+    try{
+        if(data.itemBarangJadi.length != 0) {
+            var arr = []
+            for(i=0; i < data.itemBarangJadi.length; i++){
+                arr.push(data.itemBarangJadi[i].id)
+                // +"-"+data.itemBarangJadi[i].jmlMasukBarangReturn+"-"+data.itemBarangJadi[i].jmlMasukBarangSisa                                                                                                                                              
+            }
+            delete data.item
+            data.item = arr.join()
+            data.jenisItem = "barang jadi"
+
+            return data 
+        }else if(data.itemBarangReturn.length != 0) {
+            var arr = []
+            for(i=0; i < data.itemBarangReturn.length; i++){
+                arr.push(data.itemBarangReturn[i].id)
+            }
+            delete data.item
+            data.item = arr.join()
+            data.jenisItem = "barang return"
+
+            return data 
+        }else if(data.itemBarangSisa.length != 0) {
+            var arr = []
+            for(i=0; i < data.itemBarangSisa.length; i++){
+                arr.push(data.itemBarangSisa[i].id)
+            }
+            delete data.item
+            data.item = arr.join()
+            data.jenisItem = "barang sisa"
+
+            return data 
+        }
+    }catch(err){
+      return err
+    }
+     
+}
+
 module.exports = {
     responseSuccess,
     responseSuccessUpdate,
@@ -547,6 +572,7 @@ module.exports = {
     convertRecordDate,
     convertObjectStructure,
     manipulateData,
+    manipulateDataInvoice,
     convertObjectStructureJahit,
     convertObjectStructureBarangJadi,
     convertObjectStructureInvoice

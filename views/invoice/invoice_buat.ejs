@@ -333,11 +333,11 @@
             try{
                 this.setDisableButton()
                 var data = this.data
-                let res = await axios.post(apiUrl+'/invoice/tambah', { data:data })
+                let res = await axios.post(apiUrl+'invoice/tambah', { data:data })
                 if (res.data.success){
                     this.setEnableButton()
                     this.alertSuccess(res.data.msg)
-                    setTimeout(function(){ window.location.href =apiUrl + '/invoice/'; }, 1000);
+                    setTimeout(function(){ window.location.href =apiUrl + 'invoice/'; }, 1000);
                 }
             }catch(err){
                 alert("Add data"+' '+err)
@@ -528,7 +528,8 @@
         },
         getNamaClient: function(kode){
             console.log(kode)
-            let namaClient = this.dataClients.find((item) => item.kode = kode).nama
+            let namaClient = this.dataClients.find((item) => item.kode == kode).nama
+            console.log(namaClient)
             return namaClient
         }
      }
