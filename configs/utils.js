@@ -460,6 +460,35 @@ async function convertObjectStructureInvoice(dataResponse,dateFormat){
             }
         }
 
+         //restructure detil item property
+         for(i=0; i < data.length; i++){
+            for(j=0; j < data[i].detil.length; j++){
+                if(data[i].detil[j].idItemBarangJadi != null) {
+                    data[i].detil[j].idItem = data[i].detil[j].idItemBarangJadi
+                    data[i].detil[j].banyakItem = data[i].detil[j].jumlahItemBarangJadi - data[i].detil[j].jumlahItemMasukBarangReturn- data[i].detil[j].jumlahItemMasukBarangSisa 
+                    data[i].detil[j].hargaItem =  data[i].detil[j].hargaItemBarangJadi
+                    data[i].detil[j].totalItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)
+                    
+                } else if(data[i].detil[j].idItemBarangReturn != null){
+                    data[i].detil[j].idItem = data[i].detil[j].idItemBarangReturn
+
+                } else if(data[i].detil[j].idItemBarangSisa != null){
+                    data[i].detil[j].idItem = data[i].detil[j].idItemBarangSisa
+    
+                }
+
+                delete data[i].detil[j].id
+                delete data[i].detil[j].idItemBarangJadi
+                delete data[i].detil[j].idItemBarangReturn
+                delete data[i].detil[j].idItemBarangSisa
+                delete data[i].detil[j].grandTotal
+                delete data[i].detil[j].kodeClient
+                delete data[i].detil[j].namaClient
+
+            }
+        }
+
+
       return data
     }catch(err){
       return err

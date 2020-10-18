@@ -11,11 +11,16 @@ router.getInvoiceAll = function() {
         database.getConnection().query(`SELECT i.id, i.tanggal, i.kode_client as kodeClient, c.nama as namaClient, i.ket, i.grand_total as grandTotal,
         di.id_item_barang_jadi as idItemBarangJadi,
         di.id_item_barang_return as idItemBarangReturn,
-        di.id_item_barang_sisa as idItemBarangSisa
+        di.id_item_barang_sisa as idItemBarangSisa,
+        di.jml_barang_sisa as jumlahItemMasukBarangSisa,
+        di.jml_barang_return as jumlahItemMasukBarangReturn,
+        bj.harga_barang as hargaItemBarangJadi,
+        bj.jumlah as jumlahItemBarangJadi
         FROM invoice as i 
         INNER JOIN detil_invoice as di 
         INNER JOIN client as c 
-        ON i.id = di.id_invoice AND i.kode_client = c.kode  AND i.status_aktif = 'Y'`,(err,results) => {
+        INNER JOIN barang_jadi as bj
+        ON i.id = di.id_invoice AND di.id_item_barang_jadi = bj.id  AND i.kode_client = c.kode  AND i.status_aktif = 'Y'`,(err,results) => {
             if (err) {
                 console.log(err)
                 return reject(err)
@@ -29,13 +34,18 @@ router.getInvoiceAll = function() {
 router.getInvoiceById = function(id) {
     return new Promise((resolve, reject) => {
         database.getConnection().query(` SELECT i.id, i.tanggal, i.kode_client as kodeClient, c.nama as namaClient, i.ket, i.grand_total as grandTotal,
-        di.id_item_jahit as idItemJahit,
+        di.id_item_barang_jadi as idItemBarangJadi,
         di.id_item_barang_return as idItemBarangReturn,
-        di.id_item_barang_sisa as idItemBarangSisa
+        di.id_item_barang_sisa as idItemBarangSisa,
+        di.jml_barang_sisa as jumlahItemMasukBarangSisa,
+        di.jml_barang_return as jumlahItemMasukBarangReturn,
+        bj.harga_barang as hargaItemBarangJadi,
+        bj.jumlah as jumlahItemBarangJadi
         FROM invoice as i 
         INNER JOIN detil_invoice as di 
         INNER JOIN client as c 
-        ON i.id = di.id_invoice AND i.kode_client = c.kode  AND i.status_aktif = 'Y' AND i.id = ?`,[id],(err,results) => {
+        INNER JOIN barang_jadi as bj
+        ON i.id = di.id_invoice AND di.id_item_barang_jadi = bj.id  AND i.kode_client = c.kode  AND i.status_aktif = 'Y' AND i.id = ?`,[id],(err,results) => {
             if (err) {
                 return reject(err)
             } 

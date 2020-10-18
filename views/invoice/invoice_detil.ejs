@@ -32,13 +32,13 @@
                                 <div class="col-6">
                                     <address>
                                         <strong>Penerima : </strong><br>
-                                        {{dataResponses.namaClient}}
+                                        <h5>{{dataResponses.namaClient}}</h5>
                                     </address>
                                 </div>
                                 <div class="col-6 text-right">
                                     <address>
                                         <strong>Tanggal:</strong><br>
-                                        {{dataResponses.tanggal}}<br><br>
+                                        <h5>{{dataResponses.tanggal}}</h5><br><br>
                                     </address>
                                 </div>
                             </div>
@@ -65,19 +65,18 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <!-- foreach ($order->lineItems as $line) or some such thing here -->
-                                            <tr>
-                                                <td></td>
-                                                <td class="text-center"></td>
-                                                <td class="text-center"></td>
-                                                <td class="text-right"></td>
+                                            <tr v-for="item in dataResponses.detil">
+                                                <td>{{item.idItem}}</td>
+                                                <td class="text-center">{{item.banyakItem}}</td>
+                                                <td class="text-center">{{convertToRupiah(item.hargaItem)}}</td>
+                                                <td class="text-right">{{convertToRupiah(item.totalItem)}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="no-line"></td>
                                                 <td class="no-line"></td>
                                                 <td class="no-line text-center">
                                                     <strong>Grand Total</strong></td>
-                                                <td class="no-line text-right"><h4 class="m-0"></h4></td>
+                                                <td class="no-line text-right"><h4 class="m-0">{{convertToRupiah(dataResponses.grandTotal)}}</h4></td>
                                             </tr>
                                             </tbody>
                                         </table>
