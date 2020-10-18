@@ -57,6 +57,7 @@ router.getInvoiceById = function(id) {
 router.insertInvoice = function(data) {
     return new Promise((resolve, reject) => {
         console.log('sampe sini')
+        console.log(data.itemBarangJadi)
         database.getConnection().beginTransaction((err) => {
             if (err) {
                 console.log(err)
@@ -70,6 +71,8 @@ router.insertInvoice = function(data) {
                         database.getConnection().query(`ROLLBACK;`)
                         return reject(err)
                     }})
+                
+                
                     console.log(data)
                     if(data.jenisItem == 'barang jadi'){
                         data.itemBarangJadi.forEach((item,index) => { 
@@ -81,6 +84,30 @@ router.insertInvoice = function(data) {
                                     database.getConnection().query(`ROLLBACK;`)
                                     return reject(err)
                                 }
+                                if(data.itemBarangJadi[index].jmlMasukBarangReturn != 0){
+                                    database.getConnection().query(`
+                                    INSERT INTO barang_return (id_detil_invoice,jumlah,id)
+                                    select max(id),?,f_gen_id("BR") from detil_invoice`,[ data.itemBarangJadi[index].jmlMasukBarangReturn],(err,results) => {
+                                        if (err) {
+                                            console.log(err)
+                                            database.getConnection().query(`ROLLBACK;`)
+                                            return reject(err)
+                                        }
+                                    })
+                                }
+
+                                if(data.itemBarangJadi[index].jmlMasukBarangSisa != 0){
+                                    database.getConnection().query(`
+                                    INSERT INTO barang_sisa(id_detil_invoice,jumlah,id)
+                                    select max(id),?,f_gen_id("BS") from detil_invoice`,[ data.itemBarangJadi[index].jmlMasukBarangSisa],(err,results) => {
+                                        if (err) {
+                                            console.log(err)
+                                            database.getConnection().query(`ROLLBACK;`)
+                                            return reject(err)
+                                        }
+                                    })
+                                }
+
                                 database.getConnection().query(`COMMIT`) 
                                 return resolve(results)
                             })
