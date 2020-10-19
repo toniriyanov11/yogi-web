@@ -14,13 +14,16 @@ router.getInvoiceAll = function() {
         di.id_item_barang_sisa as idItemBarangSisa,
         di.jml_barang_sisa as jumlahItemMasukBarangSisa,
         di.jml_barang_return as jumlahItemMasukBarangReturn,
-        bj.harga_barang as hargaItemBarangJadi,
-        bj.jumlah as jumlahItemBarangJadi
+       (select harga_barang from barang_jadi where id = di.id_item_barang_jadi) as hargaItemBarangJadi,
+       (select jumlah from barang_jadi where id = di.id_item_barang_jadi) as jumlahItemBarangJadi,
+       (select harga from barang_return where id = di.id_item_barang_return) as hargaItemBarangReturn,
+       (select jumlah from barang_return where id = di.id_item_barang_return) as jumlahItemBarangReturn,
+        (select harga from barang_sisa where id = di.id_item_barang_sisa) as hargaItemBarangSisa,
+       (select jumlah from barang_sisa where id = di.id_item_barang_sisa) as jumlahItemBarangSisa
         FROM invoice as i 
         INNER JOIN detil_invoice as di 
         INNER JOIN client as c 
-        INNER JOIN barang_jadi as bj
-        ON i.id = di.id_invoice AND di.id_item_barang_jadi = bj.id  AND i.kode_client = c.kode  AND i.status_aktif = 'Y'`,(err,results) => {
+        ON i.id = di.id_invoice AND i.kode_client = c.kode  AND i.status_aktif = 'Y'`,(err,results) => {
             if (err) {
                 console.log(err)
                 return reject(err)
@@ -39,13 +42,16 @@ router.getInvoiceById = function(id) {
         di.id_item_barang_sisa as idItemBarangSisa,
         di.jml_barang_sisa as jumlahItemMasukBarangSisa,
         di.jml_barang_return as jumlahItemMasukBarangReturn,
-        bj.harga_barang as hargaItemBarangJadi,
-        bj.jumlah as jumlahItemBarangJadi
+       (select harga_barang from barang_jadi where id = di.id_item_barang_jadi) as hargaItemBarangJadi,
+       (select jumlah from barang_jadi where id = di.id_item_barang_jadi) as jumlahItemBarangJadi,
+       (select harga from barang_return where id = di.id_item_barang_return) as hargaItemBarangReturn,
+       (select jumlah from barang_return where id = di.id_item_barang_return) as jumlahItemBarangReturn,
+        (select harga from barang_sisa where id = di.id_item_barang_sisa) as hargaItemBarangSisa,
+       (select jumlah from barang_sisa where id = di.id_item_barang_sisa) as jumlahItemBarangSisa
         FROM invoice as i 
         INNER JOIN detil_invoice as di 
         INNER JOIN client as c 
-        INNER JOIN barang_jadi as bj
-        ON i.id = di.id_invoice AND di.id_item_barang_jadi = bj.id  AND i.kode_client = c.kode  AND i.status_aktif = 'Y' AND i.id = ?`,[id],(err,results) => {
+        ON i.id = di.id_invoice AND i.kode_client = c.kode  AND i.status_aktif = 'Y' AND i.id = ?`,[id],(err,results) => {
             if (err) {
                 return reject(err)
             } 
@@ -56,8 +62,9 @@ router.getInvoiceById = function(id) {
 
 router.insertInvoice = function(data) {
     return new Promise((resolve, reject) => {
-        console.log('sampe sini')
-        console.log(data.itemBarangJadi)
+        let typeItemBarangJadi = 'barang jadi' 
+        let typeItemBarangReturn = 'barang return' 
+        let typeItemBarangSisa = 'barang sisa' 
         database.getConnection().beginTransaction((err) => {
             if (err) {
                 console.log(err)
@@ -74,7 +81,7 @@ router.insertInvoice = function(data) {
                 
                 
                     console.log(data)
-                    if(data.jenisItem == 'barang jadi'){
+                    if(data.jenisItem == typeItemBarangJadi){
                         data.itemBarangJadi.forEach((item,index) => { 
                             database.getConnection().query(`
                             INSERT INTO detil_invoice (id_item_barang_jadi,jml_barang_sisa,jml_barang_return,id_invoice,id)
@@ -113,10 +120,10 @@ router.insertInvoice = function(data) {
                             })
                         })
                     }
-                    else if(data.jenisItem == 'barang sisa'){
+                    else if(data.jenisItem == typeItemBarangSisa){
                         data.itemBarangSisa.forEach((item,index) => { 
                             database.getConnection().query(`
-                            INSERT INTO detil_invoice (id_item_barang_return,id_invoice,id)
+                            INSERT INTO detil_invoice (id_item_barang_sisa,id_invoice,id)
                             select id,(select max(id) from invoice where status_aktif = 'Y'),f_gen_id("DI") from barang_sisa where id = ? `,[data.itemBarangSisa[index].id],(err,results) => {
                                 if (err) {
                                     console.log(err)
@@ -128,8 +135,8 @@ router.insertInvoice = function(data) {
                             })
                         })
                     }
-                    else if(data.jenisItem == 'barang return'){
-                        data.itemBarangSisa.forEach((item,index) => { 
+                    else if(data.jenisItem == typeItemBarangReturn){
+                        data.itemBarangReturn.forEach((item,index) => { 
                             database.getConnection().query(`
                             INSERT INTO detil_invoice (id_item_barang_return,id_invoice,id)
                             select id,(select max(id) from invoice where status_aktif = 'Y'),f_gen_id("DI") from barang_return where id = ? `,[data.itemBarangReturn[index].id],(err,results) => {

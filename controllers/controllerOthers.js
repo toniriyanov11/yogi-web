@@ -57,8 +57,46 @@ async function getAddingPrices() {
     }
 }
 
+async function getBarangReturnAll() {
+    try {
+        const rows = await modelOthers.getBarangReturnAll()
+        console.log(rows)
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function getBarangSisaAll() {
+    try {
+        const rows = await modelOthers.getBarangSisaAll()
+        console.log(rows)
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
 module.exports = {
     getMaterials,
     getInventorys,
-    getAddingPrices
+    getAddingPrices,
+    getBarangReturnAll,
+    getBarangSisaAll
 }

@@ -465,15 +465,21 @@ async function convertObjectStructureInvoice(dataResponse,dateFormat){
             for(j=0; j < data[i].detil.length; j++){
                 if(data[i].detil[j].idItemBarangJadi != null) {
                     data[i].detil[j].idItem = data[i].detil[j].idItemBarangJadi
-                    data[i].detil[j].banyakItem = data[i].detil[j].jumlahItemBarangJadi - data[i].detil[j].jumlahItemMasukBarangReturn- data[i].detil[j].jumlahItemMasukBarangSisa 
+                    data[i].detil[j].banyakItem = data[i].detil[j].jumlahItemBarangJadi - data[i].detil[j].jumlahItemMasukBarangReturn - data[i].detil[j].jumlahItemMasukBarangSisa 
                     data[i].detil[j].hargaItem =  data[i].detil[j].hargaItemBarangJadi
                     data[i].detil[j].totalItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)
                     
                 } else if(data[i].detil[j].idItemBarangReturn != null){
                     data[i].detil[j].idItem = data[i].detil[j].idItemBarangReturn
+                    data[i].detil[j].banyakItem = data[i].detil[j].jumlahItemBarangReturn
+                    data[i].detil[j].hargaItem =  data[i].detil[j].hargaItemBarangReturn
+                    data[i].detil[j].totalItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)
 
                 } else if(data[i].detil[j].idItemBarangSisa != null){
                     data[i].detil[j].idItem = data[i].detil[j].idItemBarangSisa
+                    data[i].detil[j].banyakItem = data[i].detil[j].jumlahItemBarangSisa 
+                    data[i].detil[j].hargaItem =  data[i].detil[j].hargaItemBarangSisa
+                    data[i].detil[j].totalItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)
     
                 }
 
@@ -481,6 +487,12 @@ async function convertObjectStructureInvoice(dataResponse,dateFormat){
                 delete data[i].detil[j].idItemBarangJadi
                 delete data[i].detil[j].idItemBarangReturn
                 delete data[i].detil[j].idItemBarangSisa
+                delete data[i].detil[j].jumlahItemBarangJadi
+                delete data[i].detil[j].jumlahItemBarangReturn
+                delete data[i].detil[j].jumlahItemBarangSisa
+                delete data[i].detil[j].hargaItemBarangJadi
+                delete data[i].detil[j].hargaItemBarangReturn
+                delete data[i].detil[j].hargaItemBarangSisa
                 delete data[i].detil[j].grandTotal
                 delete data[i].detil[j].kodeClient
                 delete data[i].detil[j].namaClient
@@ -550,8 +562,7 @@ async function manipulateDataInvoice(data){
         if(data.itemBarangJadi.length != 0) {
             var arr = []
             for(i=0; i < data.itemBarangJadi.length; i++){
-                arr.push(data.itemBarangJadi[i].id)
-                // +"-"+data.itemBarangJadi[i].jmlMasukBarangReturn+"-"+data.itemBarangJadi[i].jmlMasukBarangSisa                                                                                                                                              
+                arr.push(data.itemBarangJadi[i].id)                                                                                                                                            
             }
             delete data.item
             data.item = arr.join()

@@ -17,6 +17,7 @@ router.post('/',async function(req, res, next) {
    try{
       let dataResponse = await controllerInvoice.getInvoiceAll()
       var data =""
+      console.log('-------------------------------incovoice------------------------')
       console.log(dataResponse)
       if (dataResponse.success) {
          data = await util.convertObjectStructureInvoice(dataResponse,'DD/MM/YYYY')

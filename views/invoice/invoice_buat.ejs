@@ -54,7 +54,7 @@
                     <div v-if="data.jenisItem == typeItemBarangJadi " class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Pilih Data Barang Jadi</label>
                         <div class="col-sm-5">
-                            <multiselect  v-model="data.itemBarangJadi" :options="optionsBarangJadi" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="" :custom-label="customItemName" label="id" track-by="id">
+                            <multiselect  v-model="data.itemBarangJadi" :options="optionsBarangJadi" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="" :custom-label="customItemNameBarangJadi" label="id" track-by="id">
                                 <template slot="selection" slot-scope="{ values, search, isOpen }"><span class="multiselect__single" v-if="values.length &amp;&amp; !isOpen">{{ values.length }} options selected</span></template>
                             </multiselect>
                         </div>
@@ -83,6 +83,28 @@
                                 <div>tanggal : {{itemBarangJadi.tanggal}}</div>  
                                 <div>jumlah: {{itemBarangJadi.totalJumlahSisa}} </div>
                                 <div>total harga: {{convertFloatToRupiah(itemBarangJadi.totalHargaBarang.toString())}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div  v-if="data.itemBarangReturn.length != 0 " v-for="itemBarangReturn in data.itemBarangReturn" class="form-group row" style="margin:0">
+                        <label for="example-text-input" class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-3" >
+                            <div  class="alert alert-primary alert-dismissible fade show" role="alert" >
+                                <b>{{itemBarangReturn.id}}</b> 
+                                <div>tanggal : {{itemBarangReturn.tanggal}}</div>  
+                                <div>jumlah: {{itemBarangReturn.jumlah}} </div>
+                                <div>total harga: {{convertFloatToRupiah(itemBarangReturn.harga.toString())}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div  v-if="data.itemBarangSisa.length != 0 " v-for="itemBarangSisa in data.itemBarangSisa" class="form-group row" style="margin:0">
+                        <label for="example-text-input" class="col-sm-2 col-form-label"></label>
+                        <div class="col-sm-3" >
+                            <div  class="alert alert-primary alert-dismissible fade show" role="alert" >
+                                <b>{{itemBarangSisa.id}}</b> 
+                                <div>tanggal : {{itemBarangSisa.tanggal}}</div>  
+                                <div>jumlah: {{itemBarangSisa.jumlah}} </div>
+                                <div>total harga: {{convertFloatToRupiah(itemBarangSisa.harga.toString())}}</div>
                             </div>
                         </div>
                     </div>
@@ -288,14 +310,17 @@
         await this.getMasterClient()
      },
      watch: {
-         'sortedItem.jmlMasukBarangReturn':async function(val){
+        'sortedItem.jmlMasukBarangReturn':async function(val){
             this.checkTotalBalance('barang return')
          },
-         'sortedItem.jmlMasukBarangSisa':async function(val){
+        'sortedItem.jmlMasukBarangSisa':async function(val){
             this.checkTotalBalance('barang sisa')
          },
-         'sortedItem.totalJumlahSisa' : function(val){
+        'sortedItem.totalJumlahSisa' : function(val){
             this.setItemTotalHargaBarang()
+         },
+        'data.jenisItem' : async function(val){
+            this.setEmptyItemBarang()
          },
         'data.itemBarangJadi' : async function (val){
             if(val.length == 0){
@@ -306,15 +331,19 @@
             await this.getDataItemBarangJadi() 
         },
         'data.itemBarangReturn' : async function (val){
-          if(val.length == 0){}
+          if(val.length == 0){
+              this.grandTotal = ""
+          }else{
+              this.calculateGrandTotal()
+          }
             await this.getDataItemBarangReturn() 
         },
         'data.itemBarangSisa' : async function (val){
-          if(val.length == 0)
-            await this.getDataItemBarangSisa() 
-        },
-        'data.ket' : async function (val){
-          if(val.length == 0)
+            if(val.length == 0){
+              this.grandTotal = ""
+          }else{
+              this.calculateGrandTotal()
+          }
             await this.getDataItemBarangSisa() 
         },
         grandTotal : function (val){
@@ -350,7 +379,7 @@
         },
         getDataItemBarangJadi: async function() {
             try{
-                 const res = await axios.post(apiUrl+'dataproduksi/BarangJadi')
+                 const res = await axios.post(apiUrl+'dataproduksi/barangjadi')
                  res.data.forEach((item) => { 
                     item.totalHargaBarang = (parseInt(item.hargaBarang) * item.totalJumlah)
                     item.totalJumlahSisa =  item.totalJumlah
@@ -366,7 +395,7 @@
         },
         getDataItemBarangReturn: async function() {
             try{
-                 const res = await axios.post(apiUrl+'dataproduksi/BarangJadi')
+                 const res = await axios.post(apiUrl+ 'barangreturn')
                  this.optionsBarangReturn = res.data
              }catch(err){
                  alert("Get data Item Barang Return"+' '+err)
@@ -375,7 +404,7 @@
         },
         getDataItemBarangSisa: async function() {
             try{
-                 const res = await axios.post(apiUrl+'dataproduksi/BarangJadi')
+                 const res = await axios.post(apiUrl+ 'barangsisa')
                  this.optionsBarangSisa = res.data
              }catch(err){
                  alert("Get data Item Barang Sisa"+' '+err)
@@ -419,7 +448,17 @@
             this.sortedItem.totalJumlahSisa = jmlBarangInt - jmlMasukBarangSisaInt - jmlMasukBarangReturnInt
         },
         calculateGrandTotal:async function(){
-            const total = this.data.itemBarangJadi.map((item) => ( parseInt(item.hargaBarang) * (parseInt(item.totalJumlahSisa)) ))
+            let total = 0
+            let jenisItem = this.data.jenisItem
+            console.log(jenisItem)
+            if (jenisItem == this.typeItemBarangJadi ){
+                total = this.data.itemBarangJadi.map((item) => ( parseInt(item.hargaBarang) * (parseInt(item.totalJumlahSisa)) ))
+            }else if (jenisItem == this.typeItemBarangReturn ){
+                total = this.data.itemBarangReturn.map((item) => ( parseInt(item.harga) * (parseInt(item.jumlah)) ))
+            }else if (jenisItem == this.typeItemBarangSisa ){
+                total = this.data.itemBarangSisa.map((item) => ( parseInt(item.harga) * (parseInt(item.jumlah)) ))
+            }
+            console.log(this.data.itemBarangSisa)
             const grandTotal = total.reduce((currentTotal, item) => item + currentTotal)
             this.grandTotal =  grandTotal
         },
@@ -511,8 +550,11 @@
         setDisableButtonPreview: function(){
             this.isButtonPreviewDisable = true
         },
-        customItemName ({ id, tanggal, totalJumlah}) {
+        customItemNameBarangJadi ({ id, tanggal, totalJumlah}) {
             return `${id} — [${tanggal}, ${totalJumlah}]`
+        },
+        customItemName ({ id, tanggal, jumlah}) {
+            return `${id} — [${tanggal}, ${jumlah}]`
         },
         getTotalItem: function(){
             if(this.data.item != null){
@@ -531,6 +573,11 @@
             let namaClient = this.dataClients.find((item) => item.kode == kode).nama
             console.log(namaClient)
             return namaClient
+        },
+        setEmptyItemBarang:function(){
+            this.data.itemBarangJadi = []
+            this.data.itemBarangReturn = []
+            this.data.itemBarangSisa = []
         }
      }
 })
