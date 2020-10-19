@@ -6,3 +6,15 @@
     color: var(--color-primary);
     cursor: pointer;
 }
+
+@media print {
+    .topbar,.side-menu, .page-title-box,.footer {
+        display: none
+    }
+    #invoices {
+        position: absolute;
+        left: 0;
+        right:0;
+        top: 0;
+      }
+}

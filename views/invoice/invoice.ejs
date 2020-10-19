@@ -39,7 +39,7 @@
                             <th>No</th>                  
                             <th>Nama Penerima</th>
                             <th>Grand Total (Rp)</th>
-                            <th>Action</th>
+                            <!-- <th>Action</th> -->
                         </tr>
                         </thead>
 
@@ -50,9 +50,9 @@
                             <td class="clicked"><a @click="detil(dataResponse.id)">{{dataResponse.id}}</a></td>
                             <td>{{dataResponse.namaClient}}</td>
                             <td>{{convertToRupiah(dataResponse.grandTotal)}}</td>
-                            <td> <button type="button" class="btn btn-light waves-effect"><i class="icon-printer"></i></button>
+                            <!-- <td> <button type="button" class="btn btn-light waves-effect"><i class="icon-printer"></i></button>
                                 <button type="button" class="btn btn-light waves-effect"><i class="icon-delete"></i></button>
-                            </td>
+                            </td> -->
                         </tr>
                         </tbody>
                     </table>
