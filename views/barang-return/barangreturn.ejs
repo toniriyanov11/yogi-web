@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" id="app">
     <div class="page-title-box">
         <div class="row align-items-center">
             <div class="col-sm-6">
@@ -29,24 +29,18 @@
                         <tr>
                             <th>Tanggal</th>
                             <th>No</th>                  
-                            <th>Nama Item</th>
                             <th>Banyak</th>
+                            <th>Harga</th>
                         </tr>
                         </thead>
 
 
                         <tbody>
-                        <tr> 
-                            <td>19/03/2020</td>
-                            <td><a onclick="detil('in-2020020001')" style="color:#2980b9">re-2020020001</a></td>
-                            <td>kaos</td>
-                            <td>50</td>
-                        </tr>
-                        <tr> 
-                            <td>20/03/2020</td>
-                            <td><a onclick="detil('in-2020020001')" style="color:#2980b9">re-2020020002</a></td>
-                            <td>sweater</td>
-                            <td>30</td>
+                        <tr v-for="dataResponse in dataResponses" :key="dataResponse.id"> 
+                            <td>{{dataResponse.tanggal}}</td>
+                            <td><a style="color:#2980b9">{{dataResponse.id}}</a></td>
+                            <td>{{dataResponse.jumlah}}</td>
+                            <td>{{convertToRupiah(dataResponse.harga)}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -59,8 +53,40 @@
 </div>
 
 <script>
-   
-</script>
+    const apiUrl = '<%= process.env.URL %>'
+     var app = new Vue({
+      el: '#app',
+      data: {
+          dataResponses : {}
+      },
+      async created() {
+        await this.getData()
+      },
+      methods:{
+         getData: async function() {
+             try{
+                 const res = await axios.post(apiUrl+'barangreturn')
+                 this.dataResponses = res.data
+                 console.log(this.dataResponses)
+             }catch(err){
+                 alert("Get data"+' '+err)
+             }
+         },
+         convertToRupiah: function (val) {
+             var txtNumber = parseFloat(val)
+             var txtString = txtNumber.toString()
+             var sisa = txtString.length % 3
+             var rupiah = txtString.substr(0, sisa)
+             var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+             if (ribuan) {
+                 var separator = sisa ? ',' : ''
+                 rupiah += separator + ribuan.join(',')
+             }
+             return rupiah
+         },
+      }
+ })    
+ </script>
 
 
 <style>

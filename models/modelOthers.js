@@ -52,7 +52,7 @@ router.getAddingPrices= function(data) {
 router.getBarangReturnAll= function(data) {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`
-        SELECT i.tanggal, br.id, br.id_detil_invoice as idDetilInvoice, br.jumlah, br.harga ,br.ket from barang_return as br
+        SELECT i.tanggal, br.id, br.id_detil_invoice as idDetilInvoice, br.jumlah, br.harga , (br.jumlah * br.harga) as totalHarga, br.ket from barang_return as br
         INNER JOIN detil_invoice as di
         INNER JOIN invoice as i
         ON br.id_detil_invoice = di.id AND i.id = di.id_invoice`,(err,results) => {
@@ -68,7 +68,7 @@ router.getBarangReturnAll= function(data) {
 router.getBarangSisaAll= function(data) {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`
-        SELECT i.tanggal, bs.id, bs.id_detil_invoice as idDetilInvoice, bs.jumlah, bs.harga ,bs.ket from barang_sisa as bs
+        SELECT i.tanggal, bs.id, bs.id_detil_invoice as idDetilInvoice, bs.jumlah, bs.harga,  (bs.jumlah * bs.harga) as totalHarga ,bs.ket from barang_sisa as bs
         INNER JOIN detil_invoice as di
         INNER JOIN invoice as i
         ON bs.id_detil_invoice = di.id AND i.id = di.id_invoice`,(err,results) => {
