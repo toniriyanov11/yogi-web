@@ -319,11 +319,52 @@ async function updateMasterJenisBahan(data) {
     }
 }
 
-//function
+//function insert jenis bahan
 async function proccessInsertMasterJenisBahan(data){
     try{
         if (data.nama != "" ) {         
             const rows = await modelMaster.insertMasterJenisBahan(data)
+            if (rows.affectedRows >= 1) {
+            return util.responseSuccess(rows)
+            } else {
+            return util.responseFailedPost()
+            }
+        } else {
+            return util.responseErrorNullParam()
+        }
+    } catch(err){
+        return util.responseErrorQuery()
+    }
+}
+
+
+//master varian bahan
+async function insertMasterVarianBahan(data) {
+    try {
+        return proccessInsertMasterVarianBahan(data)             
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+async function updateMasterVarianBahan(data) {
+    try {
+        const rows = await modelMaster.updateMasterVarianBahan(data)
+        if (rows.affectedRows >= 1) {
+            return util.responseSuccessUpdate()
+        } else {
+           return util.responseFailedUpdate()
+        }               
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+//function insert varian bahan
+async function proccessInsertMasterVarianBahan(data){
+    try{
+        if (data.nama != "" ) {         
+            const rows = await modelMaster.insertMasterVarianBahan(data)
             if (rows.affectedRows >= 1) {
             return util.responseSuccess(rows)
             } else {
@@ -357,5 +398,7 @@ module.exports ={
     insertMasterWarna,
     updateMasterWarna,
     insertMasterJenisBahan,
-    updateMasterJenisBahan
+    updateMasterJenisBahan,
+    insertMasterVarianBahan,
+    updateMasterVarianBahan
 } 
