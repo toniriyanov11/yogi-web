@@ -257,6 +257,47 @@ async function getStuffStock() {
     }
 }
 
+//master warna
+async function insertMasterWarna(data) {
+    try {
+        return proccessInsertMasterWarna(data)             
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+async function updateMasterWarna(data) {
+    try {
+        const rows = await modelMaster.updateMasterWarna(data)
+        if (rows.affectedRows >= 1) {
+            return util.responseSuccessUpdate()
+        } else {
+           return util.responseFailedUpdate()
+        }               
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+//function
+async function proccessInsertMasterWarna(data){
+    try{
+        if (data.nama != "" ) {         
+            const rows = await modelMaster.insertMasterWarna(data)
+            if (rows.affectedRows >= 1) {
+            return util.responseSuccess(rows)
+            } else {
+            return util.responseFailedPost()
+            }
+        } else {
+            return util.responseErrorNullParam()
+        }
+    } catch(err){
+        return util.responseErrorQuery()
+    }
+}
+
+
 
 module.exports ={
     getClient,
@@ -272,5 +313,7 @@ module.exports ={
     getStuffColor,
     getCuttingType,
     getSubCuttingType,
-    getStuffStock
+    getStuffStock,
+    insertMasterWarna,
+    updateMasterWarna
 } 

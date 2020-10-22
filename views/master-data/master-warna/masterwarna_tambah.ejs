@@ -1,0 +1,130 @@
+<div class="container-fluid"  id="app">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-arrow-down"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <h4 class="mt-0 mb-4 header-title">Input Master Warna</h4>
+                    
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Nama Warna</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" v-model="data.nama"  id="example-text-input">
+                        </div>
+                    </div>
+                   
+                    <div class="form-group text-right">
+                        <div class="col-sm-7">
+                            <button :disabled="isButtonDisable" @click="checkValidation()" class="btn btn-primary waves-effect waves-light">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <!-- END ROW -->
+
+</div>
+
+<script>
+    const apiUrl = '<%=process.env.URL%>'
+    var app = new Vue({
+     el: '#app',
+     components: {
+            vuejsDatepicker
+    },
+     data: {
+         data:{
+            nama:'',
+            tglSekarang:moment().format('YYYY-MM-DD'),
+            userAkun:''
+         },
+         isButtonDisable:false
+     },
+     async created(){
+     },
+     watch: {
+     },
+     methods:{
+        actTambah: async function() {
+            try{
+                this.setDisableButton()
+                var data = this.data
+                let res = await axios.post(apiUrl+'master/masterwarna/tambah', { data:data })
+                if (res.data.success){
+                    this.setEnableButton()
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href =apiUrl + 'master/masterwarna'; }, 1000);
+                }
+            }catch(err){
+                alert("Add data"+' '+err)
+                this.setEnableButton()
+            }
+        },
+        checkValidation: async function(){
+            var validate = false
+            if(this.data.nama == ''){
+                validate = false
+            } else {
+                validate = true
+            }
+
+            if(validate){
+                this.alertAdd()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        convertDataTanggal: function(val){
+            var convert = moment(val).format("YYYY-MM-DD")
+            this.data.tanggal = convert
+        },
+        alertAdd:  function (data) {
+             swal({
+                title: "Anda yakin ingin menambah data?",
+                text: "Pastikan data yang anda masukkan benar",
+                icon: "warning",
+                buttons: ["batal", "tambah"],
+                dangerMode: false,
+                })
+                .then((willAdd) => {
+                if (willAdd) {
+                     this.actTambah(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        },
+        setEnableButton: function(){
+            this.isButtonDisable = false
+        },
+        setDisableButton: function(){
+            this.isButtonDisable = true
+        }
+     }
+     })
+ </script>

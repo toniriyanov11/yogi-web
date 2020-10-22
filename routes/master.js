@@ -224,4 +224,49 @@ router.get('/stuff-stock',async function(req, res, next) {
      }
 })
 
+// master warna 
+router.get('/masterwarna',async function(req, res, next) {
+   res.render('index', { title: 'Master Warna', page:'master-data/master-warna/masterwarna.ejs'});
+})
+
+router.get('/masterwarna/edit', function(req, res, next) {
+   res.render('index', { title: 'Edit Master Warna', page:'master-data/master-warna/masterwarna_edit.ejs'});
+});
+
+
+router.post('/masterwarna/edit', async function(req, res, next) {
+   try {
+      var data = req.body.data
+      let dataResponse = await controllerMaster.updateMasterWarna(data)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch (err) {
+      res.status(500).json(err);
+   }
+ });
+
+
+router.get('/masterwarna/tambah', function(req, res, next) {
+   res.render('index', { title: 'Tambah Master Warna', page:'master-data/master-warna/masterwarna_tambah.ejs'});
+});
+
+router.post('/masterwarna/tambah', async function(req, res, next) {
+   try{
+      var data = req.body.data
+      let dataResponse = await controllerMaster.insertMasterWarna(data)
+      console.log(dataResponse)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   }catch(err){
+     console.log(err)
+      res.status(500).json(err);
+   }
+ });
+
 module.exports = router;

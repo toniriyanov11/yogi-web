@@ -25,7 +25,7 @@ var inventoriRouter = require('./routes/inventori');
 var app = express();
 var corsOptions = {
   origin:"*",
-  methods: 'POST'
+  methods: '*'
 }
 
 // view engine setup
