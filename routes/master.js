@@ -229,11 +229,6 @@ router.get('/masterwarna',async function(req, res, next) {
    res.render('index', { title: 'Master Warna', page:'master-data/master-warna/masterwarna.ejs'});
 })
 
-router.get('/masterwarna/edit', function(req, res, next) {
-   res.render('index', { title: 'Edit Master Warna', page:'master-data/master-warna/masterwarna_edit.ejs'});
-});
-
-
 router.post('/masterwarna/edit', async function(req, res, next) {
    try {
       var data = req.body.data
@@ -257,6 +252,48 @@ router.post('/masterwarna/tambah', async function(req, res, next) {
    try{
       var data = req.body.data
       let dataResponse = await controllerMaster.insertMasterWarna(data)
+      console.log(dataResponse)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   }catch(err){
+     console.log(err)
+      res.status(500).json(err);
+   }
+ });
+
+
+ // master jenis bahan 
+router.get('/masterjenisbahan',async function(req, res, next) {
+   res.render('index', { title: 'Master Jenis Bahan', page:'master-data/master-jenisbahan/masterjenisbahan.ejs'});
+})
+
+
+router.post('/masterjenisbahan/edit', async function(req, res, next) {
+   try {
+      var data = req.body.data
+      let dataResponse = await controllerMaster.updateMasterJenisBahan(data)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch (err) {
+      res.status(500).json(err);
+   }
+ });
+
+
+router.get('/masterjenisbahan/tambah', function(req, res, next) {
+   res.render('index', { title: 'Tambah Jenis Bahan', page:'master-data/master-jenisbahan/masterJenisBahan_tambah.ejs'});
+});
+
+router.post('/masterjenisbahan/tambah', async function(req, res, next) {
+   try{
+      var data = req.body.data
+      let dataResponse = await controllerMaster.insertMasterJenisBahan(data)
       console.log(dataResponse)
       if (dataResponse.success) {
          res.status(200).json(dataResponse);

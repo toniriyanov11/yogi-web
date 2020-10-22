@@ -219,5 +219,32 @@ router.updateMasterWarna = function(data) {
     })
 }
 
+//master jenis bahan
+router.insertMasterJenisBahan = function(data) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`INSERT INTO ms_jenis_bahan (nama, user_rekam, tgl_rekam) value (?,?,?)`,[data.nama, data.userAkun, data.tglSekarang],(err,results) => {
+            if (err) {
+                console.log(err)
+                return reject(err)
+            }else{
+                return resolve(results)
+            }
+        })
+    })
+}
+
+router.updateMasterJenisBahan= function(data) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`UPDATE ms_jenis_bahan SET nama = ? where kode = ?`,[data.nama ,data.kode],(err,results) => {
+            if (err) {
+                console.log(err)
+                return reject(err)
+            }else{
+                return resolve(results)
+            }
+        })
+    })
+}
+
 
 module.exports = router

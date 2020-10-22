@@ -279,11 +279,51 @@ async function updateMasterWarna(data) {
     }
 }
 
-//function
+//function insert warna
 async function proccessInsertMasterWarna(data){
     try{
         if (data.nama != "" ) {         
             const rows = await modelMaster.insertMasterWarna(data)
+            if (rows.affectedRows >= 1) {
+            return util.responseSuccess(rows)
+            } else {
+            return util.responseFailedPost()
+            }
+        } else {
+            return util.responseErrorNullParam()
+        }
+    } catch(err){
+        return util.responseErrorQuery()
+    }
+}
+
+//master jenis bahan
+async function insertMasterJenisBahan(data) {
+    try {
+        return proccessInsertMasterJenisBahan(data)             
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+async function updateMasterJenisBahan(data) {
+    try {
+        const rows = await modelMaster.updateMasterJenisBahan(data)
+        if (rows.affectedRows >= 1) {
+            return util.responseSuccessUpdate()
+        } else {
+           return util.responseFailedUpdate()
+        }               
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+//function
+async function proccessInsertMasterJenisBahan(data){
+    try{
+        if (data.nama != "" ) {         
+            const rows = await modelMaster.insertMasterJenisBahan(data)
             if (rows.affectedRows >= 1) {
             return util.responseSuccess(rows)
             } else {
@@ -315,5 +355,7 @@ module.exports ={
     getSubCuttingType,
     getStuffStock,
     insertMasterWarna,
-    updateMasterWarna
+    updateMasterWarna,
+    insertMasterJenisBahan,
+    updateMasterJenisBahan
 } 
