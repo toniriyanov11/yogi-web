@@ -22,6 +22,7 @@ var supplierRouter = require('./routes/supplier');
 var masterRouter = require('./routes/master');
 var inventoriRouter = require('./routes/inventori');
 var setupRouter = require('./routes/setup');
+var listhutangRouter = require('./routes/listhutang');
 
 var app = express();
 var corsOptions = {
@@ -55,6 +56,7 @@ app.use('/supplier',cors(corsOptions), supplierRouter);
 app.use('/master',cors(corsOptions), masterRouter);
 app.use('/inventori',cors(corsOptions), inventoriRouter);
 app.use('/setup',cors(corsOptions), setupRouter);
+app.use('/listhutang',cors(corsOptions), listhutangRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
