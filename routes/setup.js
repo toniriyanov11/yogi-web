@@ -12,7 +12,7 @@ router.get('/setupharga',async function(req, res, next) {
 })
 
 
-router.post('/mastervarianbahan/edit', async function(req, res, next) {
+router.post('/setupharga/edit', async function(req, res, next) {
    try {
       var data = req.body.data
       let dataResponse = await controllerMaster.updateMasterVarianBahan(data)
@@ -24,27 +24,29 @@ router.post('/mastervarianbahan/edit', async function(req, res, next) {
    } catch (err) {
       res.status(500).json(err);
    }
- });
-
-
-router.get('/mastervarianbahan/tambah', function(req, res, next) {
-   res.render('index', { title: 'Tambah Varian Bahan', page:'master-data/master-varianbahan/mastervarianBahan_tambah.ejs'});
 });
 
-router.post('/mastervarianbahan/tambah', async function(req, res, next) {
-   try{
+
+ // setup harga 
+ router.get('/setuphargabarangreturn',async function(req, res, next) {
+   res.render('index', { title: 'Setup Harga Barang Return', page:'setup-data/setuphargabarangreturn.ejs'});
+})
+
+
+router.post('/setuphargabarangreturn/edit', async function(req, res, next) {
+   try {
       var data = req.body.data
-      let dataResponse = await controllerMaster.insertMasterVarianBahan(data)
-      console.log(dataResponse)
+      let dataResponse = await controllerMaster.updateMasterVarianBahan(data)
       if (dataResponse.success) {
          res.status(200).json(dataResponse);
       } else {
          res.status(400).json();
       }
-   }catch(err){
-     console.log(err)
+   } catch (err) {
       res.status(500).json(err);
    }
- });
+});
+
+
 
 module.exports = router;

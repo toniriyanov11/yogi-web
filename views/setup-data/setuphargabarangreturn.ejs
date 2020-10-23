@@ -1,0 +1,207 @@
+<div class="container-fluid" id="app">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-folder"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-heading p-4">
+                    <div class="mini-stat-icon float-right">
+                        <i class="mdi mdi-reload bg-info  text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-16">Harga Barang Return</h5>
+                    </div>
+                    <h3 class="mt-4">Rp.15.000</h3>
+                    <p class="text-muted tex mt-2 mb-0"> Diubah Tanggal<span class="float-right">25/10/2020</span></p>
+                    <button type="button"  @click="edit('dataResponse')" class="btn  w-100 btn-secondary waves-effect waves-light mt-4"  @click="tambah()"><i class="mdi mdi-playlist-edit align-middle mr-2"></i>Edit</button>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <!-- END ROW -->
+
+     <!--  Modal content for the above example -->
+     <div v-if="modalEdit">
+        <div class="modals  show">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Edit Harga Barang Return</h5>
+                        <button @click="closeModalEdit" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="panel panel-default">
+                                    <div>
+                                        <div class="form-group row">
+                                            <label for="example-text-input" class="col-sm-2 col-form-label">Masukkan Harga Terbaru (Rp)</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control" type="text" v-model="editedItem.harga"  id="example-text-input">
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="form-group text-right">
+                                            <div class="col-sm-7">
+                                                <button :disabled="isButtonDisable" @click="checkValidation()" class="btn btn-primary waves-effect waves-light">
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                        <!-- end row -->
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <div @click="closeModalEdit" class="modals-backdrop"></div>
+    </div>
+    <!-- /.modal -->
+
+</div>
+
+<script>
+    const apiUrl = '<%= process.env.URL %>'
+    var app = new Vue({
+     el: '#app',
+     data: {
+        dataResponses : {},
+        editedItem: {},
+        modalEdit: false,
+        isButtonDisable:false
+     },
+     created() {
+        this.getData()
+     },
+     methods:{
+        edit: function(data){
+            this.modalEdit = true
+            this.editedItem = Object.assign({},data)
+        },
+        tambah: function(){
+            location.href = "/master/masterjenisbahan/tambah"
+        },
+        getData: async function() {
+            try{
+                const res = await axios.get(apiUrl+'master/stuff-type')
+                this.dataResponses = res.data
+                console.log(this.dataResponses)
+            }catch(err){
+                alert("Get data"+' '+err)
+            }
+        },
+        actEdit: async function() {
+            try{
+                var data = this.editedItem
+                const res = await axios.post(apiUrl+'master/masterjenisbahan/edit', { data:data })
+                if (res.data.success){
+                    this.alertSuccess(res.data.msg)
+                    this.closeModalEdit()
+                    setTimeout(function(){ window.location.href = apiUrl+'master/masterjenisbahan'; }, 1000);
+                }
+            }catch(err){
+                alert("Edit data"+' '+err)
+                this.closeModalEdit()
+            }
+        },
+        checkValidation: async function(){
+            var validate = false
+            if(this.editedItem.harga == ''){
+                validate = false
+            } else {
+                validate = true
+            }
+
+            if(validate){
+                this.alertEdit()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        convertToRupiah: function (val) {
+            var txtNumber = parseFloat(val)
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            return rupiah
+        },
+        alertEdit:  function (data) {
+             swal({
+                title: "Anda yakin ingin merubah data?",
+                text: "Pastikan data yang anda ubah benar",
+                icon: "warning",
+                buttons: ["batal", "ubah"],
+                dangerMode: false,
+                })
+                .then((willEdit) => {
+                if (willEdit) {
+                     this.actEdit(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        },
+        closeModalEdit(){
+            this.modalEdit = false
+            this.editedItem = Object.assign({},{})
+        }
+     }
+     })
+ </script>
+
+<style>
+    .modals{
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1050;
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        outline: 0;
+        opacity: 100;
+    }
+        
+    .modals-backdrop{
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1040;
+        width: 100vw;
+        height: 100vh;
+        background-color: #000;
+        opacity: .5;
+    }
+     </style>
+    
