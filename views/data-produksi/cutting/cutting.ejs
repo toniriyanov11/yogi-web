@@ -17,14 +17,40 @@
 
     <!-- Start row-->
     <div class="row">
-        <div class="col-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-heading p-4">
+                    <div class="mini-stat-icon float-right">
+                        <i class="mdi mdi-note-text bg-primary  text-white"></i>
+                    </div>
+                    <div>
+                        <p class="font-16">Stok Bahan Kaos</p>
+                    </div>
+                    <h5 class="mt-4">{{stockKaos}} Kg</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-heading p-4">
+                    <div class="mini-stat-icon float-right">
+                        <i class="mdi mdi-note-text bg-success  text-white"></i>
+                    </div>
+                    <div>
+                        <p class="font-16">Stok Bahan Sweater</p>
+                    </div>
+                    <h5 class="mt-4">{{stockSweater}} Kg</h5>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-4">
             <div class="card m-b-30">
                 <div class="card-body">
                     <h3 class="mb-4 header-title">Stok Bahan</h4>
                         <div v-for="dataStuffStock in dataStuffStocks" :key="dataStuffStock.id" class="mb-2">{{dataStuffStock.nama}} : {{dataStuffStock.stock}} Kg</div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>        
     <!-- end row -->
 
@@ -108,10 +134,14 @@
       data: {
           dataResponses : {},
           dataStuffStocks:{},
+          stockKaos:'',
+          stockSweater:''
       },
       async created() {
         await this.getData()
         await this.getStuffStock()
+        this.stockKaos = this.dataStuffStocks[0].stock
+        this.stockSweater= this.dataStuffStocks[1].stock
       },
       methods:{
          edit: function(id){
