@@ -21,6 +21,7 @@ var clientRouter = require('./routes/client');
 var supplierRouter = require('./routes/supplier');
 var masterRouter = require('./routes/master');
 var inventoriRouter = require('./routes/inventori');
+var setupRouter = require('./routes/setup');
 
 var app = express();
 var corsOptions = {
@@ -53,6 +54,7 @@ app.use('/client',cors(corsOptions), clientRouter);
 app.use('/supplier',cors(corsOptions), supplierRouter);
 app.use('/master',cors(corsOptions), masterRouter);
 app.use('/inventori',cors(corsOptions), inventoriRouter);
+app.use('/setup',cors(corsOptions), setupRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
