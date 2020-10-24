@@ -93,10 +93,44 @@ async function getBarangSisaAll() {
     }
 }
 
+//setup- harga barang return
+async function getHargaBarangReturn() {
+    try {
+        const rows = await modelOthers.getHargaBarangReturn()
+        console.log(rows)
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function updateHargaBarangReturn(data) {
+    try {
+        const rows = await modelOthers.updateHargaBarangReturn(data)
+        if (rows.affectedRows >= 1) {
+            return util.responseSuccessUpdate()
+        } else {
+           return util.responseFailedUpdate()
+        }               
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
 module.exports = {
     getMaterials,
     getInventorys,
     getAddingPrices,
     getBarangReturnAll,
-    getBarangSisaAll
+    getBarangSisaAll,
+    getHargaBarangReturn,
+    updateHargaBarangReturn
 }

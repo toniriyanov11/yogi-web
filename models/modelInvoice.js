@@ -94,7 +94,7 @@ router.insertInvoice = function(data) {
                                 if(data.itemBarangJadi[index].jmlMasukBarangReturn != 0){
                                     database.getConnection().query(`
                                     INSERT INTO barang_return (id_detil_invoice,jumlah,harga,id)
-                                    select max(id),?,f_gen_id("BR") from detil_invoice`,[ data.itemBarangJadi[index].jmlMasukBarangReturn, data.itemBarangJadi[index].harga],(err,results) => {
+                                    select max(id),?,?,f_gen_id("BR")from detil_invoice`,[ data.itemBarangJadi[index].jmlMasukBarangReturn, data.itemBarangJadi[index].hargaPokok],(err,results) => {
                                         if (err) {
                                             console.log(err)
                                             database.getConnection().query(`ROLLBACK;`)
@@ -106,7 +106,7 @@ router.insertInvoice = function(data) {
                                 if(data.itemBarangJadi[index].jmlMasukBarangSisa != 0){
                                     database.getConnection().query(`
                                     INSERT INTO barang_sisa(id_detil_invoice,jumlah,harga,id)
-                                    select max(id),?,?,f_gen_id("BS") from detil_invoice`,[ data.itemBarangJadi[index].jmlMasukBarangSisa, data.itemBarangJadi[index].harga],(err,results) => {
+                                    select max(id),?,?,f_gen_id("BS") from detil_invoice`,[ data.itemBarangJadi[index].jmlMasukBarangSisa, data.itemBarangJadi[index].hargaPokok],(err,results) => {
                                         if (err) {
                                             console.log(err)
                                             database.getConnection().query(`ROLLBACK;`)

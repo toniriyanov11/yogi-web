@@ -26,8 +26,8 @@
                     <div>
                         <h5 class="font-16">Harga Barang Return</h5>
                     </div>
-                    <h3 class="mt-4">Rp.15.000</h3>
-                    <p class="text-muted tex mt-2 mb-0"> Diubah Tanggal<span class="float-right">25/10/2020</span></p>
+                    <h3 class="mt-4">Rp.{{convertToRupiah(dataResponses.harga)}}</h3>
+                    <p class="text-muted tex mt-2 mb-0"> Diubah Tanggal<span class="float-right">{{dataResponses.tgl_rekam}}</span></p>
                     <button type="button"  @click="edit('dataResponse')" class="btn  w-100 btn-secondary waves-effect waves-light mt-4"  @click="tambah()"><i class="mdi mdi-playlist-edit align-middle mr-2"></i>Edit</button>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                                         <div class="form-group row">
                                             <label for="example-text-input" class="col-sm-2 col-form-label">Masukkan Harga Terbaru (Rp)</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control" type="text" v-model="editedItem.harga"  id="example-text-input">
+                                                <input class="form-control" type="text" v-model="hargaBaru"  id="example-text-input">
                                             </div>
                                         </div>
                                        
@@ -86,9 +86,25 @@
      el: '#app',
      data: {
         dataResponses : {},
-        editedItem: {},
+        dataSend:{
+            editedItem: {},
+            tglSekarang:moment().format('YYYY-MM-DD'),
+            userAkun:''
+        },
+        hargaBaru:'',
         modalEdit: false,
-        isButtonDisable:false
+        isButtonDisable:false,
+     },
+     watch: {
+        hargaBaru : function (val){
+            console.log('harga baru')
+            if (this.hargaBaru != ""){
+                this.hargaBaru  = this.convertFloatToRupiah(val.toString())
+                this.dataSend.editedItem.harga = this.convertRupiahToFloat(this.hargaBaru)
+            }else{
+                this.dataSend.editedItem.harga = ""
+            }
+        }
      },
      created() {
         this.getData()
@@ -96,28 +112,27 @@
      methods:{
         edit: function(data){
             this.modalEdit = true
-            this.editedItem = Object.assign({},data)
+            this.dataSend.editedItem = Object.assign({},data)
         },
         tambah: function(){
             location.href = "/master/masterjenisbahan/tambah"
         },
         getData: async function() {
             try{
-                const res = await axios.get(apiUrl+'master/stuff-type')
-                this.dataResponses = res.data
-                console.log(this.dataResponses)
+                const res = await axios.post(apiUrl+'setup/hargabarangreturn')
+                this.dataResponses = res.data[0]
             }catch(err){
                 alert("Get data"+' '+err)
             }
         },
         actEdit: async function() {
             try{
-                var data = this.editedItem
-                const res = await axios.post(apiUrl+'master/masterjenisbahan/edit', { data:data })
+                var data = this.dataSend
+                const res = await axios.post(apiUrl+'setup/hargabarangreturn/edit', { data:data })
                 if (res.data.success){
                     this.alertSuccess(res.data.msg)
                     this.closeModalEdit()
-                    setTimeout(function(){ window.location.href = apiUrl+'master/masterjenisbahan'; }, 1000);
+                    setTimeout(function(){ window.location.href = apiUrl+'setup/hargabarangreturn'; }, 1000);
                 }
             }catch(err){
                 alert("Edit data"+' '+err)
@@ -126,7 +141,7 @@
         },
         checkValidation: async function(){
             var validate = false
-            if(this.editedItem.harga == ''){
+            if(this.dataSend.editedItem.harga == ''){
                 validate = false
             } else {
                 validate = true
@@ -149,6 +164,22 @@
                 rupiah += separator + ribuan.join(',')
             }
             return rupiah
+        },
+        convertFloatToRupiah: function(val) {
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            return rupiah
+        },
+        convertRupiahToFloat: function(val){
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            return txtNumber
         },
         alertEdit:  function (data) {
              swal({
@@ -173,7 +204,7 @@
         },
         closeModalEdit(){
             this.modalEdit = false
-            this.editedItem = Object.assign({},{})
+            this.dataSend.editedItem = Object.assign({},{})
         }
      }
      })

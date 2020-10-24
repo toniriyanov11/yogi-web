@@ -80,4 +80,30 @@ router.getBarangSisaAll= function(data) {
         })
     })
 }
+
+//setup-harga barang return
+router.getHargaBarangReturn= function(data) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`
+        SELECT * from st_harga_barang_return`,(err,results) => {
+            if (err) {
+                console.log(err)
+                return reject(err)
+            } 
+            return resolve(results)
+        })
+    })
+}
+
+router.updateHargaBarangReturn = function(data) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`UPDATE st_harga_barang_Return SET harga = ? ,tgl_rekam = ? `,[data.editedItem.harga, data.tglSekarang],(err,results) => {
+            if (err) {
+                return reject(err)
+            }else{
+                return resolve(results)
+            }
+        })
+    })
+}
 module.exports = router

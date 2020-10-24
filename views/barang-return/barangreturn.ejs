@@ -31,6 +31,7 @@
                             <th>No</th>                  
                             <th>Banyak</th>
                             <th>Harga</th>
+                            <th>Harga Total</th>
                         </tr>
                         </thead>
 
@@ -41,6 +42,7 @@
                             <td><a style="color:#2980b9">{{dataResponse.id}}</a></td>
                             <td>{{dataResponse.jumlah}}</td>
                             <td>{{convertToRupiah(dataResponse.harga)}}</td>
+                            <td>{{convertToRupiah(dataResponse.totalHarga)}}</td>
                         </tr>
                         </tbody>
                     </table>
