@@ -285,7 +285,7 @@ router.deleteJahit = function(id) {
 //Barang Jadi
 router.getBarangJadiAll = function() {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`SELECT z.id, z.idItem, z.tanggal, z.harga_barang as hargaBarang, z.nama, z.ket
+        database.getConnection().query(`SELECT z.id, z.idItem, z.tanggal, z.harga_barang as hargaBarang,  z.harga_pokok as hargaPokok, z.nama, z.ket
         , j.nama as namaItem, j.upah, sum(y.jumlahItemSablon) as jumlahItemSablon, sum(y.jumlahItemCutting) as jumlahItemCutting,
         (sum(y.totalBiayaItemCuttingPerPcs) / count(y.totalBiayaItemCuttingPerPcs) + j.upah) as totalBiayaItemCuttingPerPcs,(sum(y.totalBiayaItemSablonPerPcs) / count(y.totalBiayaItemSablonPerPcs) + y.upah) as totalBiayaItemSablonPerPcs,
         (select nominal from penambahan_biaya where kode = 1 and id_barang_jadi = z.id) as tieDye,
@@ -294,7 +294,7 @@ router.getBarangJadiAll = function() {
         (select nominal from penambahan_biaya where kode = 4 and id_barang_jadi = z.id) as label,
         (select nominal from penambahan_biaya where kode = 5 and id_barang_jadi = z.id) as handTag,
         (select nominal from penambahan_biaya where kode = 6 and id_barang_jadi = z.id) as dllAksesoris
-        FROM (SELECT bj.id, bj.tanggal, bj.harga_barang, bj.nama,  bj.ket,
+        FROM (SELECT bj.id, bj.tanggal, bj.harga_barang, bj.harga_pokok, bj.nama,  bj.ket,
                 dbj.id_item as idItem
                 FROM barang_jadi as bj 
                 INNER JOIN detil_barang_jadi as dbj 

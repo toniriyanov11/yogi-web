@@ -94,6 +94,7 @@
              try{
                  const res = await axios.post(apiUrl+'dataproduksi/barangjadi')
                  this.dataResponses = res.data
+                 console.log(this.dataResponses)
              }catch(err){
                  alert("Get data"+' '+err)
              }

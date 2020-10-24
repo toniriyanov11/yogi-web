@@ -331,6 +331,7 @@ async function convertObjectStructureBarangJadi(dataResponse,dateFormat){
                         upah : value[i].upah,
                         ket : value[i].ket,
                         hargaBarang: value[i].hargaBarang,
+                        hargaPokok: value[i].hargaPokok,
                         detil : [],
                         tambahanBiayaProduksi: [],
                         tambahanBiayaAksesoris: [],
