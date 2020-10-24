@@ -468,6 +468,7 @@ async function convertObjectStructureInvoice(dataResponse,dateFormat){
                     data[i].detil[j].idItem = data[i].detil[j].idItemBarangJadi
                     data[i].detil[j].banyakItem = data[i].detil[j].jumlahItemBarangJadi - data[i].detil[j].jumlahItemMasukBarangReturn - data[i].detil[j].jumlahItemMasukBarangSisa 
                     data[i].detil[j].hargaItem =  data[i].detil[j].hargaItemBarangJadi
+                    data[i].detil[j].hargaPokokItem =  data[i].detil[j].hargaPokokItemBarangJadi
                     data[i].detil[j].totalItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)
                     
                 } else if(data[i].detil[j].idItemBarangReturn != null){
@@ -491,6 +492,7 @@ async function convertObjectStructureInvoice(dataResponse,dateFormat){
                 delete data[i].detil[j].jumlahItemBarangJadi
                 delete data[i].detil[j].jumlahItemBarangReturn
                 delete data[i].detil[j].jumlahItemBarangSisa
+                delete data[i].detil[j].hargaPokokItemBarangJadi
                 delete data[i].detil[j].hargaItemBarangJadi
                 delete data[i].detil[j].hargaItemBarangReturn
                 delete data[i].detil[j].hargaItemBarangSisa
@@ -502,6 +504,115 @@ async function convertObjectStructureInvoice(dataResponse,dateFormat){
         }
 
 
+      return data
+    }catch(err){
+      return err
+    }
+}
+
+async function convertObjectStructureLabaRugi(dataResponse,dateFormat){
+    try{
+        var data = await this.convertDate(dataResponse, dateFormat)
+        const value = data
+
+        var dataDetail = _.cloneDeep(value);
+        dataDetail.forEach(function(v){ delete v.tanggal, delete v.upah, delete v.nama, delete v.ket });
+        
+       
+        var data = []
+        //filter id
+        var tampung = ''
+        for(i=0; i < value.length; i++){
+                if(value[i].id === tampung){
+                    tampung  = value[i].id
+                }else{
+                    tampung  = value[i].id
+                    data.push({
+                        id : value[i].id,
+                        tanggal : value[i].tanggal,
+                        kodeClient : value[i].kodeClient,
+                        namaClient : value[i].namaClient,
+                        grandTotal: value[i].grandTotal,
+                        grandTotalPokok: 0,
+                        ket : value[i].ket,
+                        selisihHarga: 0,
+                        detil : []
+                    })
+                }
+        }
+        
+        // filter item by id
+        var tampungId = ''
+        for(i=0; i < data.length; i++){
+            tampungId = data[i].id
+            for(j=0; j < dataDetail.length; j++){
+                if(dataDetail[j].id === tampungId){
+                    data[i].detil.push(dataDetail[j])
+                }else{
+                    tampungId = data[i].id
+                }
+          
+            }
+        }
+
+         //restructure detil item property
+         for(i=0; i < data.length; i++){
+            for(j=0; j < data[i].detil.length; j++){
+                if(data[i].detil[j].idItemBarangJadi != null) {
+                    data[i].detil[j].idItem = data[i].detil[j].idItemBarangJadi
+                    data[i].detil[j].banyakItem = data[i].detil[j].jumlahItemBarangJadi - data[i].detil[j].jumlahItemMasukBarangReturn - data[i].detil[j].jumlahItemMasukBarangSisa 
+                    data[i].detil[j].hargaItem =  data[i].detil[j].hargaItemBarangJadi
+                    data[i].detil[j].totalItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)
+                    data[i].detil[j].hargaPokokItem =  data[i].detil[j].hargaPokokItemBarangJadi
+                    data[i].detil[j].totalHargaPokokItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaPokokItem)
+                    data[i].detil[j].selisihHarga = (parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)) - (parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaPokokItem))
+                    
+                } else if(data[i].detil[j].idItemBarangReturn != null){
+                    data[i].detil[j].idItem = data[i].detil[j].idItemBarangReturn
+                    data[i].detil[j].banyakItem = data[i].detil[j].jumlahItemBarangReturn
+                    data[i].detil[j].hargaItem =  data[i].detil[j].hargaItemBarangReturn
+                    data[i].detil[j].totalItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)
+                    data[i].detil[j].hargaPokokItem =  data[i].detil[j].hargaPokokItemBarangReturn
+                    data[i].detil[j].totalHargaPokokItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaPokokItem)
+                    data[i].detil[j].selisihHarga = (parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)) - (parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaPokokItem))
+
+                } else if(data[i].detil[j].idItemBarangSisa != null){
+                    data[i].detil[j].idItem = data[i].detil[j].idItemBarangSisa
+                    data[i].detil[j].banyakItem = data[i].detil[j].jumlahItemBarangSisa 
+                    data[i].detil[j].hargaItem =  data[i].detil[j].hargaItemBarangSisa
+                    data[i].detil[j].hargaPokokItem =  data[i].detil[j].hargaPokokItemBarangSisa
+                    data[i].detil[j].totalHargaPokokItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaPokokItem)
+                    data[i].detil[j].totalItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)
+                    data[i].detil[j].selisihHarga = 0
+                }
+
+                delete data[i].detil[j].id
+                delete data[i].detil[j].idItemBarangJadi
+                delete data[i].detil[j].idItemBarangReturn
+                delete data[i].detil[j].idItemBarangSisa
+                delete data[i].detil[j].jumlahItemBarangJadi
+                delete data[i].detil[j].jumlahItemBarangReturn
+                delete data[i].detil[j].jumlahItemBarangSisa
+                delete data[i].detil[j].hargaItemBarangJadi
+                delete data[i].detil[j].hargaPokokItemBarangJadi
+                delete data[i].detil[j].hargaPokokItemBarangReturn
+                delete data[i].detil[j].hargaPokokItemBarangSisa
+                delete data[i].detil[j].hargaItemBarangReturn
+                delete data[i].detil[j].hargaItemBarangSisa
+                delete data[i].detil[j].grandTotal
+                delete data[i].detil[j].kodeClient
+                delete data[i].detil[j].namaClient
+
+            }
+        }
+
+     //set selisihhargatotal
+     data.forEach((item)=>{
+        item.detil.forEach((itemDetail)=>{
+            item.selisihHarga += parseInt(itemDetail.selisihHarga)
+            item.grandTotalPokok += parseInt(itemDetail.totalHargaPokokItem) 
+        })
+     })
       return data
     }catch(err){
       return err
@@ -616,6 +727,7 @@ module.exports = {
     manipulateDataInvoice,
     convertObjectStructureJahit,
     convertObjectStructureBarangJadi,
-    convertObjectStructureInvoice
+    convertObjectStructureInvoice,
+    convertObjectStructureLabaRugi
 
 }

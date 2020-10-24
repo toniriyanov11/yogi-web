@@ -125,6 +125,43 @@ async function updateHargaBarangReturn(data) {
     }
 }
 
+//laba rugi
+async function getLabaRugi() {
+    try {
+        const rows = await modelOthers.getLabaRugi()
+        console.log(rows)
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function getLabaRugiByIdInvoice(id) {
+    try {
+        const rows = await modelOthers.getLabaRugiByIdInvoice(id)
+        console.log(rows)
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
 module.exports = {
     getMaterials,
     getInventorys,
@@ -132,5 +169,7 @@ module.exports = {
     getBarangReturnAll,
     getBarangSisaAll,
     getHargaBarangReturn,
-    updateHargaBarangReturn
+    updateHargaBarangReturn,
+    getLabaRugi,
+    getLabaRugiByIdInvoice
 }

@@ -29,20 +29,6 @@
                                 </h3>
                             </div>
                             <hr>
-                            <div class="row">
-                                <div class="col-6">
-                                    <address>
-                                        <strong>Penerima : </strong><br>
-                                        <h5>{{dataResponses.namaClient}}</h5>
-                                    </address>
-                                </div>
-                                <div class="col-6 text-right">
-                                    <address>
-                                        <strong>Tanggal:</strong><br>
-                                        <h6>{{dataResponses.tanggal}}</h6><br><br>
-                                    </address>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -51,7 +37,7 @@
                             <div class="panel panel-default">
                                 <div class="p-2">
                                     <h3 class="panel-title font-20"><strong>
-                                        Ringkasan pesanan</strong></h3>
+                                        Detail Laba Rugi Invoice</strong></h3>
                                 </div>
                                 <div class="">
                                     <div class="table-responsive">
@@ -60,9 +46,10 @@
                                             <tr>
                                                 <td><strong>Barang</strong></td>
                                                 <td class="text-center"><strong>Banyak</strong>
-                                                <td class="text-center"><strong>Harga</strong></td>
-                                                </td>
-                                                <td class="text-right"><strong>Total</strong></td>
+                                                <td class="text-center"><strong>Harga Barang</strong></td>
+                                                <td class="text-center"><strong>Harga Pokok</strong></td>
+                                                <td class="text-right"><strong>Total Harga Barang</strong></td>
+                                                <td class="text-right"><strong>Total Harga Pokok</strong></td>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -70,24 +57,30 @@
                                                 <td>{{item.idItem}}</td>
                                                 <td class="text-center">{{item.banyakItem}}</td>
                                                 <td class="text-center">{{convertToRupiah(item.hargaItem)}}</td>
+                                                <td class="text-center">{{convertToRupiah(item.hargaPokokItem)}}</td>
                                                 <td class="text-right">{{convertToRupiah(item.totalItem)}}</td>
+                                                <td class="text-right">{{convertToRupiah(item.totalHargaPokokItem)}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="no-line"></td>
                                                 <td class="no-line"></td>
+                                                <td class="no-line"></td>
                                                 <td class="no-line text-center">
                                                     <strong>Grand Total</strong></td>
-                                                <td class="no-line text-right"><h4 class="m-0">{{convertToRupiah(dataResponses.grandTotal)}}</h4></td>
+                                                <td class="no-line text-right"><h6 class="m-0">{{convertToRupiah(dataResponses.grandTotal)}}</h6></td>
+                                                <td class="no-line text-right"><h6 class="m-0">{{convertToRupiah(dataResponses.grandTotalPokok)}}</h6></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="no-line"></td>
+                                                <td class="no-line"></td>
+                                                <td class="no-line"></td>
+                                                <td class="no-line text-center">
+                                                    <strong>Selisih Harga</strong></td>
+                                                <td class="no-line"></td>
+                                                <td class="no-line text-right"><h4 class="m-0">{{convertToRupiah(dataResponses.selisihHarga)}}</h4></td>
                                             </tr>
                                             </tbody>
                                         </table>
-                                    </div>
-
-                                    <div class="d-print-none mo-mt-2">
-                                        <div class="float-right">
-                                            <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light"><i class="fa fa-print"></i></a>
-                                            <!-- <a href="#" class="btn btn-primary waves-effect waves-light" data-toggle="modal" data-target=".bs-example-modal-center">Bayar</a> -->
-                                        </div>
                                     </div>
                             </div>
 
@@ -117,7 +110,7 @@
      methods : {
         getData: async function(id) {
             try{
-                const res = await axios.post(apiUrl+'invoice/detil/'+id)
+                const res = await axios.post(apiUrl+'labarugi/detil/'+id)
                 this.dataResponses = res.data[0]
                 console.log(this.dataResponses)
             }catch(err){

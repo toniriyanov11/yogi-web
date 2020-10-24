@@ -106,4 +106,67 @@ router.updateHargaBarangReturn = function(data) {
         })
     })
 }
+
+router.getLabaRugi = function() {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`SELECT i.id, i.tanggal, i.kode_client as kodeClient, c.nama as namaClient, i.ket, i.grand_total as grandTotal,
+        di.id_item_barang_jadi as idItemBarangJadi,
+        di.id_item_barang_return as idItemBarangReturn,
+        di.id_item_barang_sisa as idItemBarangSisa,
+        di.jml_barang_sisa as jumlahItemMasukBarangSisa,
+        di.jml_barang_return as jumlahItemMasukBarangReturn,
+       (select harga_barang from barang_jadi where id = di.id_item_barang_jadi) as hargaItemBarangJadi,
+       (select harga_pokok from barang_jadi where id = di.id_item_barang_jadi) as hargaPokokItemBarangJadi,
+       (select jumlah from barang_jadi where id = di.id_item_barang_jadi) as jumlahItemBarangJadi,
+       (select harga from barang_return where id = di.id_item_barang_return) as hargaItemBarangReturn,
+       (select harga from st_harga_barang_return) as hargaPokokItemBarangReturn,
+       (select jumlah from barang_return where id = di.id_item_barang_return) as jumlahItemBarangReturn,
+       (select harga from barang_sisa where id = di.id_item_barang_sisa) as hargaItemBarangSisa,
+       (select harga from barang_sisa where id = di.id_item_barang_sisa) as hargaPokokItemBarangSisa,
+       (select jumlah from barang_sisa where id = di.id_item_barang_sisa) as jumlahItemBarangSisa
+        FROM invoice as i 
+        INNER JOIN detil_invoice as di 
+        INNER JOIN client as c 
+        ON i.id = di.id_invoice AND i.kode_client = c.kode  AND i.status_aktif = 'Y'`,(err,results) => {
+            if (err) {
+                console.log(err)
+                return reject(err)
+            } 
+
+            return resolve(results)  
+        })
+    })
+}
+
+router.getLabaRugiByIdInvoice = function(id) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`SELECT i.id, i.tanggal, i.kode_client as kodeClient, c.nama as namaClient, i.ket, i.grand_total as grandTotal,
+        di.id_item_barang_jadi as idItemBarangJadi,
+        di.id_item_barang_return as idItemBarangReturn,
+        di.id_item_barang_sisa as idItemBarangSisa,
+        di.jml_barang_sisa as jumlahItemMasukBarangSisa,
+        di.jml_barang_return as jumlahItemMasukBarangReturn,
+       (select harga_barang from barang_jadi where id = di.id_item_barang_jadi) as hargaItemBarangJadi,
+       (select harga_pokok from barang_jadi where id = di.id_item_barang_jadi) as hargaPokokItemBarangJadi,
+       (select jumlah from barang_jadi where id = di.id_item_barang_jadi) as jumlahItemBarangJadi,
+       (select harga from barang_return where id = di.id_item_barang_return) as hargaItemBarangReturn,
+       (select harga from st_harga_barang_return) as hargaPokokItemBarangReturn,
+       (select jumlah from barang_return where id = di.id_item_barang_return) as jumlahItemBarangReturn,
+       (select harga from barang_sisa where id = di.id_item_barang_sisa) as hargaItemBarangSisa,
+       (select harga from barang_sisa where id = di.id_item_barang_sisa) as hargaPokokItemBarangSisa,
+       (select jumlah from barang_sisa where id = di.id_item_barang_sisa) as jumlahItemBarangSisa
+        FROM invoice as i 
+        INNER JOIN detil_invoice as di 
+        INNER JOIN client as c 
+        ON i.id = di.id_invoice AND i.kode_client = c.kode  AND i.status_aktif = 'Y' AND i.id = ?`,[id],(err,results) => {
+            if (err) {
+                console.log(err)
+                return reject(err)
+            } 
+
+            return resolve(results)  
+        })
+    })
+}
+
 module.exports = router

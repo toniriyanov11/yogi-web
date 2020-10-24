@@ -16,6 +16,22 @@
     <!-- end page-title -->
 
     <!-- START ROW -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card">
+            <div class="card-heading p-4">
+                <div class="mini-stat-icon float-right">
+                    <i class="mdi mdi-calculator bg-secondary  text-white"></i>
+                </div>
+                <div>
+                    <p class="font-16">Total Laba</p>
+                </div>
+                <h5 class="mt-4">Rp.{{convertToRupiah(totalLaba)}}</h5>
+            </div>
+        </div>
+    </div>
+    <!-- END ROW -->
+
+    <!-- START ROW -->
     <div class="row">
         <div class="col-12">
             <div class="card m-b-30">
@@ -34,10 +50,10 @@
 
 
                         <tbody>
-                        <tr> 
-                            <td>19/03/2020</td>
-                            <td><a onclick="detil('in-2020020001')" style="color:#2980b9">in-2020020001</a></td>
-                            <td>Rp.3,000,000</td>
+                        <tr v-for="dataResponse in dataResponses" :key="dataResponse"> 
+                            <td>{{dataResponse.tanggal}}</td>
+                            <td class="clicked"><a @click="detil(dataResponse.id)">{{dataResponse.id}}</a></td>
+                            <td>Rp.{{convertToRupiah(dataResponse.selisihHarga)}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -49,18 +65,61 @@
 
 </div>
 
+
 <script>
-    function tambah(){
-        location.href = "/invoice/buat";
-    }
-
-    function detil(id){
-        if(id=="in-2020020001"){
-            location.href = "invoice/detil/"+id+"?id=in-2020020001&tgl=19/03/2020&nama=Yogi&jml=150&total=6,000,000&sub=3D-2020020001"
-        }
-    }
-</script>
-
+    const apiUrl = '<%= process.env.URL %>'
+     var app = new Vue({
+      el: '#app',
+      data: {
+          dataResponses : {},
+          totalLaba: 0,
+      },
+      async created() {
+        await this.getData()
+        await this.countTotalLaba()
+      },
+      methods:{
+        detil: function(id){
+             location.href = "/labarugi/detil/"+id
+         },
+         getData: async function() {
+             try{
+                 const res = await axios.post(apiUrl+'labarugi')
+                 this.dataResponses = res.data
+                 console.log(this.dataResponses)
+             }catch(err){
+                 alert("Get data"+' '+err)
+             }
+         },
+         convertToRupiah: function (val) {
+             var txtNumber = parseFloat(val)
+             var txtString = txtNumber.toString()
+             var sisa = txtString.length % 3
+             var rupiah = txtString.substr(0, sisa)
+             var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+             if (ribuan) {
+                 var separator = sisa ? ',' : ''
+                 rupiah += separator + ribuan.join(',')
+             }
+             return rupiah
+         },
+         countTotalLaba: async function(){
+            let totalLaba = 0
+            this.dataResponses.forEach((item)=>{
+                totalLaba += item.selisihHarga
+            })
+            this.totalLaba = totalLaba
+         },
+         alertSuccess: function (message){
+             swal({
+                 title:"",
+                 text:message, 
+                 icon:"success",
+                 buttons:false});
+         }
+      }
+ })    
+ </script>
 
 <style>
     body { background-color: #fafafa; }
