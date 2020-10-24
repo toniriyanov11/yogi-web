@@ -118,6 +118,11 @@
             }
         },
         convertToRupiah: function (val) {
+            let minus = false
+            if (val < 0) {
+                minus = true
+                val = Math.abs(val)
+            }
             var txtNumber = parseFloat(val)
             var txtString = txtNumber.toString()
             var sisa = txtString.length % 3
@@ -127,7 +132,12 @@
                 var separator = sisa ? ',' : ''
                 rupiah += separator + ribuan.join(',')
             }
-            return rupiah
+            if(minus ==  true){
+                return '- ' + rupiah
+            }else{
+                return rupiah
+            }
+          
         }
      }
 })

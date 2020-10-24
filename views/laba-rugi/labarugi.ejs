@@ -53,7 +53,8 @@
                         <tr v-for="dataResponse in dataResponses" :key="dataResponse"> 
                             <td>{{dataResponse.tanggal}}</td>
                             <td class="clicked"><a @click="detil(dataResponse.id)">{{dataResponse.id}}</a></td>
-                            <td>Rp.{{convertToRupiah(dataResponse.selisihHarga)}}</td>
+                            <td v-if="dataResponse.selisihHarga >= 0" class="text-success">Rp.{{convertToRupiah(dataResponse.selisihHarga)}}</td>
+                            <td v-else class="text-danger">Rp.{{convertToRupiah(dataResponse.selisihHarga)}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -92,17 +93,26 @@
              }
          },
          convertToRupiah: function (val) {
-             var txtNumber = parseFloat(val)
-             var txtString = txtNumber.toString()
-             var sisa = txtString.length % 3
-             var rupiah = txtString.substr(0, sisa)
-             var ribuan = txtString.substr(sisa).match(/\d{3}/g)
-             if (ribuan) {
-                 var separator = sisa ? ',' : ''
-                 rupiah += separator + ribuan.join(',')
-             }
-             return rupiah
-         },
+            let minus = false
+            if (val < 0) {
+                minus = true
+                val = Math.abs(val)
+            }
+            var txtNumber = parseFloat(val)
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            if(minus ==  true){
+                return '- ' + rupiah
+            }else{
+                return rupiah
+            }
+        },
          countTotalLaba: async function(){
             let totalLaba = 0
             this.dataResponses.forEach((item)=>{

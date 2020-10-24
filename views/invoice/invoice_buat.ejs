@@ -232,7 +232,7 @@
                                                     <td class="text-right"><strong>Total</strong></td>
                                                 </tr>
                                                 </thead>
-                                                <tbody>
+                                                <tbody v-if="data.jenisItem == typeItemBarangJadi">
                                                 <tr v-for="item in data.itemBarangJadi">
                                                     <td>{{item.id}}</td>
                                                     <td class="text-center">{{item.totalJumlahSisa}}</td>
@@ -247,6 +247,36 @@
                                                     <td class="no-line text-right"><h4 class="m-0">{{convertFloatToRupiah(data.grandTotal.toString())}}</h4></td>
                                                 </tr>
                                                 </tbody>
+                                                <tbody v-else-if ="data.jenisItem == typeItemBarangReturn">
+                                                    <tr v-for="item in data.itemBarangReturn">
+                                                        <td>{{item.id}}</td>
+                                                        <td class="text-center">{{item.jumlah}}</td>
+                                                        <td class="text-center">{{convertFloatToRupiah(item.harga)}}</td>
+                                                        <td class="text-right">{{convertFloatToRupiah(item.totalHarga.toString())}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="no-line"></td>
+                                                        <td class="no-line"></td>
+                                                        <td class="no-line text-center">
+                                                            <strong>Grand Total</strong></td>
+                                                        <td class="no-line text-right"><h4 class="m-0">{{convertFloatToRupiah(data.grandTotal.toString())}}</h4></td>
+                                                    </tr>
+                                                    </tbody>
+                                                    <tbody  v-else-if ="data.jenisItem == typeItemBarangSisa">
+                                                        <tr v-for="item in data.itemBarangSisa">
+                                                            <td>{{item.id}}</td>
+                                                            <td class="text-center">{{item.jumlah}}</td>
+                                                            <td class="text-center">{{convertFloatToRupiah(item.harga)}}</td>
+                                                            <td class="text-right">{{convertFloatToRupiah(item.totalHarga.toString())}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="no-line"></td>
+                                                            <td class="no-line"></td>
+                                                            <td class="no-line text-center">
+                                                                <strong>Grand Total</strong></td>
+                                                            <td class="no-line text-right"><h4 class="m-0">{{convertFloatToRupiah(data.grandTotal.toString())}}</h4></td>
+                                                        </tr>
+                                                    </tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -294,6 +324,7 @@
          options: [],
          grandTotal: '',
          dataClients:{},
+         dataHargaBarangReturn:{},
          typeItemBarangJadi:'1',
          typeItemBarangReturn:'2',
          typeItemBarangSisa:'3',
@@ -308,6 +339,7 @@
         await this.getDataItemBarangReturn()
         await this.getDataItemBarangSisa()
         await this.getMasterClient()
+        await this.getDataHargaBarangReturn()
      },
      watch: {
         'sortedItem.jmlMasukBarangReturn':async function(val){
@@ -332,6 +364,7 @@
             await this.getDataItemBarangJadi() 
         },
         'data.itemBarangReturn' : async function (val){
+            console.log(val)
           if(val.length == 0){
               this.grandTotal = ""
           }else{
@@ -347,11 +380,18 @@
           }
             await this.getDataItemBarangSisa() 
         },
+        'data.kodeClient' : async function (val){
+            if (this.grandTotal != ""){
+                    this.setEnableButtonPreview()
+            }
+        },
         grandTotal : function (val){
             if (this.grandTotal != ""){
                 this.grandTotal  = this.convertFloatToRupiah(val.toString())
                 this.data.grandTotal = this.convertRupiahToFloat(this.grandTotal)
-                this.setEnableButtonPreview()
+                if (this.data.kodeClient != ""){
+                    this.setEnableButtonPreview()
+                }
             }else{
                 this.data.grandTotal = ""
                 this.setDisableButtonPreview()
@@ -420,6 +460,14 @@
                 return false 
             }
         },
+        getDataHargaBarangReturn: async function() {
+            try{
+                const res = await axios.post(apiUrl+'setup/hargabarangreturn')
+                this.dataHargaBarangReturn = res.data[0]
+            }catch(err){
+                alert("Get data"+' '+err)
+            }
+        },
         sortItemBarangJadi: async function(data) {
             this.sortedItem = Object.assign({}, data) 
             const indexChoosedItem = this.data.itemBarangJadi.indexOf(data)
@@ -455,7 +503,7 @@
             if (jenisItem == this.typeItemBarangJadi ){
                 total = this.data.itemBarangJadi.map((item) => ( parseInt(item.hargaBarang) * (parseInt(item.totalJumlahSisa)) ))
             }else if (jenisItem == this.typeItemBarangReturn ){
-                total = this.data.itemBarangReturn.map((item) => ( parseInt(item.harga) * (parseInt(item.jumlah)) ))
+                total = this.data.itemBarangReturn.map((item) => ( parseInt(this.dataHargaBarangReturn.harga) * (parseInt(item.jumlah)) ))
             }else if (jenisItem == this.typeItemBarangSisa ){
                 total = this.data.itemBarangSisa.map((item) => ( parseInt(item.harga) * (parseInt(item.jumlah)) ))
             }
