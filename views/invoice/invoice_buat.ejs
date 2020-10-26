@@ -100,11 +100,11 @@
                     <div  v-if="data.itemBarangSisa.length != 0 " v-for="itemBarangSisa in data.itemBarangSisa" class="form-group row" style="margin:0">
                         <label for="example-text-input" class="col-sm-2 col-form-label"></label>
                         <div class="col-sm-3" >
-                            <div  class="alert alert-primary alert-dismissible fade show" role="alert" >
+                            <div @click="sortItemBarangSisa(itemBarangSisa)" class="alert alert-primary alert-dismissible fade show" role="alert" >
                                 <b>{{itemBarangSisa.id}}</b> 
                                 <div>tanggal : {{itemBarangSisa.tanggal}}</div>  
                                 <div>jumlah: {{itemBarangSisa.jumlah}} </div>
-                                <div>total harga: {{convertFloatToRupiah(itemBarangSisa.harga.toString())}}</div>
+                                <div>total harga: {{convertFloatToRupiah(itemBarangSisa.totalHargaBarang.toString())}}</div>
                             </div>
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Konfrimasi Data</h5>
-                        {{sortedItem.id}}
+                        {{sortedItemBarangJadi.id}}
                         <button @click="closeModalBarangJadi" type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -153,25 +153,25 @@
                         <div class="form-group row">
                             <label for="example-text-input" class="col-sm-2">banyak</label>
                             <div class="col-sm-2">
-                                {{sortedItem.totalJumlah}}
+                                {{sortedItemBarangJadi.totalJumlah}}
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="example-text-input" class="col-sm-2">sisa</label>
                             <div class="col-sm-2">
-                                {{sortedItem.totalJumlahSisa}}
+                                {{sortedItemBarangJadi.totalJumlahSisa}}
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang return</label>
                             <div class="col-sm-8">
-                                <input v-model="sortedItem.jmlMasukBarangReturn" class="form-control" type="number" value="" id="example-search-input">
+                                <input v-model="sortedItemBarangJadi.jmlMasukBarangReturn" class="form-control" type="number" value="" id="example-search-input">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="example-search-input" class="col-sm-2 col-form-label">Masukkan ke barang sisa </label>
                             <div class="col-sm-8">
-                                <input  v-model="sortedItem.jmlMasukBarangSisa" class="form-control" type="number" value="" id="example-search-input">
+                                <input  v-model="sortedItemBarangJadi.jmlMasukBarangSisa" class="form-control" type="number" value="" id="example-search-input">
                             </div>
                         </div>
                         <div class="row">
@@ -184,6 +184,44 @@
             </div><!-- /.modal-dialog -->
         </div>
         <div @click="closeModalBarangJadi" class="modals-backdrop"></div>
+    </div>
+    <!-- /.modal -->
+
+    <!--  Modal content for the above example -->
+    <div v-if="modalBarangSisa">
+        <div class="modals  show">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title mt-0" id="myLargeModalLabel"></h5>Konfrimasi Data</h5>
+                        {{sortedItemBarangSisa.id}}
+                        <button @click="closeModalBarangSisa" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label for="example-text-input" class="col-sm-2">Harga</label>
+                            <div class="col-sm-2">
+                                {{convertFloatToRupiah(sortedItemBarangSisa.hargaBarang)}}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="example-search-input" class="col-sm-2 col-form-label">Harga Baru</label>
+                            <div class="col-sm-8">
+                                <input v-model="sortedItemBarangSisa.hargaBarang" class="form-control" type="harga" value="" id="example-search-input">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col py-3 text-center">
+                            <button @click="saveDataSortItemBarangSisa" type="button" class="btn btn-primary waves-effect waves-light">Simpan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <div @click="closeModalBarangSisa" class="modals-backdrop"></div>
     </div>
     <!-- /.modal -->
 
@@ -266,8 +304,8 @@
                                                         <tr v-for="item in data.itemBarangSisa">
                                                             <td>{{item.id}}</td>
                                                             <td class="text-center">{{item.jumlah}}</td>
-                                                            <td class="text-center">{{convertFloatToRupiah(item.harga)}}</td>
-                                                            <td class="text-right">{{convertFloatToRupiah(item.totalHarga.toString())}}</td>
+                                                            <td class="text-center">{{convertFloatToRupiah(item.hargaBarang)}}</td>
+                                                            <td class="text-right">{{convertFloatToRupiah(item.totalHargaBarang.toString())}}</td>
                                                         </tr>
                                                         <tr>
                                                             <td class="no-line"></td>
@@ -318,8 +356,10 @@
             userAkun:''
          },
          indexChoosedItem:-1,
-         sortedItem: {},
+         sortedItemBarangJadi: {},
+         sortedItemBarangSisa: {},
          modalBarangJadi:false,
+         modalBarangSisa:false,
          modalPreview:false,
          options: [],
          grandTotal: '',
@@ -342,13 +382,16 @@
         await this.getDataHargaBarangReturn()
      },
      watch: {
-        'sortedItem.jmlMasukBarangReturn':async function(val){
+        'sortedItemBarangJadi.jmlMasukBarangReturn':async function(val){
             this.checkTotalBalance('barang return')
          },
-        'sortedItem.jmlMasukBarangSisa':async function(val){
+        'sortedItemBarangJadi.jmlMasukBarangSisa':async function(val){
             this.checkTotalBalance('barang sisa')
          },
-        'sortedItem.totalJumlahSisa' : function(val){
+        'sortedItemBarangJadi.totalJumlahSisa' : function(val){
+            this.setItemTotalHargaBarang()
+         },
+        'sortedItemBarangSisa.hargaBarang' : function(val){
             this.setItemTotalHargaBarang()
          },
         'data.jenisItem' : async function(val){
@@ -469,32 +512,39 @@
             }
         },
         sortItemBarangJadi: async function(data) {
-            this.sortedItem = Object.assign({}, data) 
+            this.sortedItemBarangJadi = Object.assign({}, data) 
             const indexChoosedItem = this.data.itemBarangJadi.indexOf(data)
             this.indexChoosedItem = indexChoosedItem 
             this.modalBarangJadi = true
         },
+        sortItemBarangSisa: async function(data) {
+            console.log('sorted')
+            this.sortedItemBarangSisa = Object.assign({}, data) 
+            const indexChoosedItem = this.data.itemBarangSisa.indexOf(data)
+            this.indexChoosedItem = indexChoosedItem 
+            this.modalBarangSisa = true
+        },
         checkTotalBalance: async function (item){
-            const jmlMasukBarangSisaInt = this.sortedItem.jmlMasukBarangSisa != ""? parseInt(this.sortedItem.jmlMasukBarangSisa) : 0
-            const jmlMasukBarangReturnInt = this.sortedItem.jmlMasukBarangReturn != ""? parseInt(this.sortedItem.jmlMasukBarangReturn) : 0
-            const jmlBarangInt = parseInt(this.sortedItem.totalJumlah)
+            const jmlMasukBarangSisaInt = this.sortedItemBarangJadi.jmlMasukBarangSisa != ""? parseInt(this.sortedItemBarangJadi.jmlMasukBarangSisa) : 0
+            const jmlMasukBarangReturnInt = this.sortedItemBarangJadi.jmlMasukBarangReturn != ""? parseInt(this.sortedItemBarangJadi.jmlMasukBarangReturn) : 0
+            const jmlBarangInt = parseInt(this.sortedItemBarangJadi.totalJumlah)
             var data = {jmlBarangInt,jmlMasukBarangReturnInt,jmlMasukBarangSisaInt}
             await this.updateItemTotalJumlahSisa(data)
             if (item == "barang return") {
                 if ( jmlMasukBarangReturnInt > jmlBarangInt || jmlMasukBarangReturnInt > (jmlBarangInt - jmlMasukBarangSisaInt) ){
                     alert('melebihi jumlah barang')
-                    this.sortedItem.jmlMasukBarangReturn = 0
+                    this.sortedItemBarangJadi.jmlMasukBarangReturn = 0
                 } 
             } else if (item == "barang sisa") {
                 if ( jmlMasukBarangSisaInt > jmlBarangInt || jmlMasukBarangSisaInt > (jmlBarangInt - jmlMasukBarangReturnInt) ){
                     alert('melebihi jumlah barang')
-                    this.sortedItem.jmlMasukBarangSisa = 0
+                    this.sortedItemBarangJadi.jmlMasukBarangSisa = 0
                 }
             }
         },
         updateItemTotalJumlahSisa(data){
             var {jmlBarangInt,jmlMasukBarangReturnInt,jmlMasukBarangSisaInt} = data
-            this.sortedItem.totalJumlahSisa = jmlBarangInt - jmlMasukBarangSisaInt - jmlMasukBarangReturnInt
+            this.sortedItemBarangJadi.totalJumlahSisa = jmlBarangInt - jmlMasukBarangSisaInt - jmlMasukBarangReturnInt
         },
         calculateGrandTotal:async function(){
             let total = 0
@@ -505,23 +555,42 @@
             }else if (jenisItem == this.typeItemBarangReturn ){
                 total = this.data.itemBarangReturn.map((item) => ( parseInt(this.dataHargaBarangReturn.harga) * (parseInt(item.jumlah)) ))
             }else if (jenisItem == this.typeItemBarangSisa ){
-                total = this.data.itemBarangSisa.map((item) => ( parseInt(item.harga) * (parseInt(item.jumlah)) ))
+                total = this.data.itemBarangSisa.map((item) => ( parseInt(item.hargaBarang) * (parseInt(item.jumlah)) ))
             }
             console.log(this.data.itemBarangSisa)
+            console.log('item barang sisa', this.data.itemBarangSisa)
+            console.log('item barang jadi', this.data.itemBarangJadi)
             const grandTotal = total.reduce((currentTotal, item) => item + currentTotal)
             this.grandTotal =  grandTotal
         },
         setItemTotalHargaBarang(){
-            this.sortedItem.totalHargaBarang = parseInt(this.sortedItem.hargaBarang) * parseInt(this.sortedItem.totalJumlahSisa)
+            console.log('set total')
+            let jenisItem = this.data.jenisItem
+            if (jenisItem == this.typeItemBarangJadi ){
+                this.sortedItemBarangJadi.totalHargaBarang = parseInt(this.sortedItemBarangJadi.hargaBarang) * parseInt(this.sortedItemBarangJadi.totalJumlahSisa)
+            }else if (jenisItem == this.typeItemBarangSisa ){
+                console.log('sini')
+                this.sortedItemBarangSisa.totalHargaBarang = parseInt(this.sortedItemBarangSisa.hargaBarang) * parseInt(this.sortedItemBarangSisa.jumlah)
+            }
         },
         saveDataSortItemBarangJadi() {
-            this.data.itemBarangJadi[this.indexChoosedItem] = this.sortedItem
+            this.data.itemBarangJadi[this.indexChoosedItem] = this.sortedItemBarangJadi
             this.calculateGrandTotal()
             this.closeModalBarangJadi()
         },
+        saveDataSortItemBarangSisa() {
+            this.data.itemBarangSisa[this.indexChoosedItem] = this.sortedItemBarangSisa
+            this.calculateGrandTotal()
+            this.closeModalBarangSisa()
+        },
         closeModalBarangJadi: async function(){
-            this.sortedItem = {}
+            this.sortedItemBarangJadi = {}
             this.modalBarangJadi = false
+            this.indexChoosedItem = -1
+        },
+        closeModalBarangSisa: async function(){
+            this.sortedItemBarangSisa = {}
+            this.modalBarangSisa = false
             this.indexChoosedItem = -1
         },
         previewInvoice(){

@@ -105,8 +105,8 @@ router.insertInvoice = function(data) {
 
                                 if(data.itemBarangJadi[index].jmlMasukBarangSisa != 0){
                                     database.getConnection().query(`
-                                    INSERT INTO barang_sisa(id_detil_invoice,jumlah,harga,id)
-                                    select max(id),?,?,f_gen_id("BS") from detil_invoice`,[ data.itemBarangJadi[index].jmlMasukBarangSisa, data.itemBarangJadi[index].hargaPokok],(err,results) => {
+                                    INSERT INTO barang_sisa(id_detil_invoice,jumlah,harga,harga_pokok,id)
+                                    select max(id),?,?,?,f_gen_id("BS") from detil_invoice`,[ data.itemBarangJadi[index].jmlMasukBarangSisa, data.itemBarangJadi[index].hargaPokok, data.itemBarangJadi[index].hargaPokok],(err,results) => {
                                         if (err) {
                                             console.log(err)
                                             database.getConnection().query(`ROLLBACK;`)
@@ -130,8 +130,16 @@ router.insertInvoice = function(data) {
                                     database.getConnection().query(`ROLLBACK;`)
                                     return reject(err)
                                 }
-                                database.getConnection().query(`COMMIT`) 
-                                return resolve(results)
+                                database.getConnection().query(`
+                                UPDATE barang_sisa set harga = ? where id = ? `,[data.itemBarangSisa[index].hargaBarang, data.itemBarangSisa[index].id],(err,results) => {
+                                    if (err) {
+                                        console.log(err)
+                                        database.getConnection().query(`ROLLBACK;`)
+                                        return reject(err)
+                                    }
+                                    database.getConnection().query(`COMMIT`) 
+                                    return resolve(results)
+                                })
                             })
                         })
                     }

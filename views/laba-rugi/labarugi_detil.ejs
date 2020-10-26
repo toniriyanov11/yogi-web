@@ -46,36 +46,34 @@
                                             <tr>
                                                 <td><strong>Barang</strong></td>
                                                 <td class="text-center"><strong>Banyak</strong>
-                                                <td class="text-center"><strong>Harga Barang</strong></td>
-                                                <td class="text-center"><strong>Harga Pokok</strong></td>
-                                                <td class="text-right"><strong>Total Harga Barang</strong></td>
+                                                <td class="text-right"><strong>Harga Pokok</strong></td>
                                                 <td class="text-right"><strong>Total Harga Pokok</strong></td>
+                                                <td class="text-right"><strong>Harga Barang</strong></td>
+                                                <td class="text-right"><strong>Total Harga Barang</strong></td>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr v-for="item in dataResponses.detil">
                                                 <td>{{item.idItem}}</td>
                                                 <td class="text-center">{{item.banyakItem}}</td>
-                                                <td class="text-center">{{convertToRupiah(item.hargaItem)}}</td>
-                                                <td class="text-center">{{convertToRupiah(item.hargaPokokItem)}}</td>
-                                                <td class="text-right">{{convertToRupiah(item.totalItem)}}</td>
+                                                <td class="text-right">{{convertToRupiah(item.hargaPokokItem)}}</td>
                                                 <td class="text-right">{{convertToRupiah(item.totalHargaPokokItem)}}</td>
+                                                <td class="text-right">{{convertToRupiah(item.hargaItem)}}</td>
+                                                <td class="text-right">{{convertToRupiah(item.totalItem)}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="no-line"></td>
                                                 <td class="no-line"></td>
-                                                <td class="no-line"></td>
-                                                <td class="no-line text-center">
-                                                    <strong>Grand Total</strong></td>
-                                                <td class="no-line text-right"><h6 class="m-0">{{convertToRupiah(dataResponses.grandTotal)}}</h6></td>
+                                                <td class="no-line"><strong>Grand Total</strong></td>
                                                 <td class="no-line text-right"><h6 class="m-0">{{convertToRupiah(dataResponses.grandTotalPokok)}}</h6></td>
+                                                <td class="no-line"></td>
+                                                <td class="no-line text-right"><h6 class="m-0">{{convertToRupiah(dataResponses.grandTotal)}}</h6></td>
                                             </tr>
                                             <tr>
                                                 <td class="no-line"></td>
                                                 <td class="no-line"></td>
-                                                <td class="no-line"></td>
-                                                <td class="no-line text-center">
-                                                    <strong>Selisih Harga</strong></td>
+                                                <td class="no-line"><strong>Selisih Harga</strong></td>
+                                                <td class="no-line text-center"></td>
                                                 <td class="no-line"></td>
                                                 <td class="no-line text-right"><h4 class="m-0">{{convertToRupiah(dataResponses.selisihHarga)}}</h4></td>
                                             </tr>
@@ -137,7 +135,6 @@
             }else{
                 return rupiah
             }
-          
         }
      }
 })

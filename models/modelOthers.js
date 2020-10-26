@@ -68,7 +68,7 @@ router.getBarangReturnAll= function(data) {
 router.getBarangSisaAll= function(data) {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`
-        SELECT i.tanggal, bs.id, bs.id_detil_invoice as idDetilInvoice, bs.jumlah, bs.harga,  (bs.jumlah * bs.harga) as totalHarga ,bs.ket from barang_sisa as bs
+        SELECT i.tanggal, bs.id, bs.id_detil_invoice as idDetilInvoice, bs.jumlah, bs.harga as hargaBarang, bs.harga_pokok as hargaPokok,  (bs.jumlah * bs.harga) as totalHargaBarang, (bs.jumlah * bs.harga_pokok) as totalHargaBarangPokok ,bs.ket from barang_sisa as bs
         INNER JOIN detil_invoice as di
         INNER JOIN invoice as i
         ON bs.id_detil_invoice = di.id AND i.id = di.id_invoice`,(err,results) => {
@@ -122,7 +122,7 @@ router.getLabaRugi = function() {
        (select harga from barang_return where id = di.id_item_barang_return) as hargaPokokItemBarangReturn,
        (select jumlah from barang_return where id = di.id_item_barang_return) as jumlahItemBarangReturn,
        (select harga from barang_sisa where id = di.id_item_barang_sisa) as hargaItemBarangSisa,
-       (select harga from barang_sisa where id = di.id_item_barang_sisa) as hargaPokokItemBarangSisa,
+       (select harga_pokok from barang_sisa where id = di.id_item_barang_sisa) as hargaPokokItemBarangSisa,
        (select jumlah from barang_sisa where id = di.id_item_barang_sisa) as jumlahItemBarangSisa
         FROM invoice as i 
         INNER JOIN detil_invoice as di 
@@ -153,7 +153,7 @@ router.getLabaRugiByIdInvoice = function(id) {
        (select harga from barang_return where id = di.id_item_barang_return) as hargaPokokItemBarangReturn,
        (select jumlah from barang_return where id = di.id_item_barang_return) as jumlahItemBarangReturn,
        (select harga from barang_sisa where id = di.id_item_barang_sisa) as hargaItemBarangSisa,
-       (select harga from barang_sisa where id = di.id_item_barang_sisa) as hargaPokokItemBarangSisa,
+       (select harga_pokok from barang_sisa where id = di.id_item_barang_sisa) as hargaPokokItemBarangSisa,
        (select jumlah from barang_sisa where id = di.id_item_barang_sisa) as jumlahItemBarangSisa
         FROM invoice as i 
         INNER JOIN detil_invoice as di 

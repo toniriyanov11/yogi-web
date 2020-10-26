@@ -583,7 +583,7 @@ async function convertObjectStructureLabaRugi(dataResponse,dateFormat){
                     data[i].detil[j].hargaPokokItem =  data[i].detil[j].hargaPokokItemBarangSisa
                     data[i].detil[j].totalHargaPokokItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaPokokItem)
                     data[i].detil[j].totalItem = parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)
-                    data[i].detil[j].selisihHarga = 0
+                    data[i].detil[j].selisihHarga =  (parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaItem)) - (parseInt(data[i].detil[j].banyakItem) * parseInt(data[i].detil[j].hargaPokokItem))
                 }
 
                 delete data[i].detil[j].id
