@@ -205,7 +205,9 @@ async function insertBeban(data) {
         var typeIsOthers = '3'
         if (data.jenisBeban == typeIsOthers){
             return typeBebanOthers(data)
-        }            
+        } else{
+            return util.responseErrorQuery()
+        } 
     } catch(err) {
        return util.responseErrorServer(err)
     }
@@ -307,7 +309,9 @@ async function insertPembayaran(data) {
         var typeIsReturnPayment = '4'
         if (data.jenisPembayaran == typeIsReturnPayment){
             return typeReturnPayment(data)
-        }            
+        }  else{
+            return util.responseErrorQuery()
+        }          
     } catch(err) {
        return util.responseErrorServer(err)
     }
@@ -370,6 +374,115 @@ async function typeReturnPayment(data){
 
 
 
+//CSR
+async function getCsrAll() {
+    try {
+        const rows = await modelPengeluaran.getCsrAll()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function getCsrById(id) {
+    try {
+        const rows = await modelPengeluaran.getCsrById(id)
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+async function insertCsr(data) {
+    try {
+        console.log("function type csr 1")
+        console.log(data)
+        var typeIsCsr = '8'
+        if (data.jenisCsr == typeIsCsr){
+            return typeCsr(data)  
+        } else{
+            return util.responseErrorQuery()
+        }       
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+async function updateCsr(data) {
+    try {
+        const rows = await modelPengeluaran.updateCsr(data)
+        if (rows.affectedRows >= 1) {
+            return util.responseSuccessUpdate()
+        } else {
+           return util.responseFailedUpdate()
+        }               
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+
+async function deleteCsr(id) {
+    try {
+        const rows = await modelPengeluaran.deleteCsr(id)
+        if (rows.affectedRows >= 1) {
+            return util.responseSuccessDelete()
+        } else {
+           return util.responseFailedDelete()
+        }
+    } catch(err) {
+       return util.responseErrorServer(err)
+    }
+}
+
+//function
+async function typeCsr(data){
+    console.log("function type csr")
+    try{
+        if (data.tanggal !== "" && 
+            data.jenisCsr !== "" && 
+            data.nama !== "" && 
+            data.jumlah !== "" && 
+            data.statusBayar !== "" &&
+            data.hutang !== "" && 
+            data.total !== "" && 
+            data.ket !== "") {         
+            
+            const rows = await modelPengeluaran.insertCsr(data)
+            if (rows.affectedRows >= 1) {
+            return util.responseSuccess(rows)
+            } else {
+            return util.responseFailedPost()
+            }
+        } else {
+            return util.responseErrorNullParam()
+        }
+    } catch(err){
+        return util.responseErrorQuery()
+    }
+}
+//End of Pembayaran
+
+
+
 module.exports = {
     getPembelianAll,
     getPembelianById,
@@ -385,5 +498,10 @@ module.exports = {
     getPembayaranById,
     insertPembayaran,
     updatePembayaran,
-    deletePembayaran
+    deletePembayaran,
+    getCsrAll,
+    getCsrById,
+    insertCsr,
+    updateCsr,
+    deleteCsr
 }

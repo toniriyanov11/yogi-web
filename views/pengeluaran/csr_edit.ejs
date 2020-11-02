@@ -23,7 +23,7 @@
 
                     <div class="row">
                         <div class="col-sm-6">
-                            <h4 class="mt-0 mb-4 header-title">Edit data beban</h4>
+                            <h4 class="mt-0 mb-4 header-title">Edit data CSR</h4>
                         </div>
                         <div class="col-sm-6">
                             <h4 class="mt-0 mb-4 header-title text-right">{{dataResponses.id}}</h4>
@@ -39,10 +39,10 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-sm-2 col-form-label">Jenis Beban</label>
+                        <label class="col-sm-2 col-form-label">Jenis CSR</label>
                         <div class="col-sm-10">
-                            <select disabled class="form-control" v-model="dataResponses.ketJenisBeban">
-                                <option v-for="dataLoadType in dataLoadTypes" :key="dataLoadType.kode" >{{dataLoadType.nama}}</option>
+                            <select disabled class="form-control" v-model="dataResponses.ketJenisCsr">
+                                <option v-for="dataCsrType in dataCsrTypes" :key="dataCsrType.kode" >{{dataCsrType.nama}}</option>
                             </select>
                         </div>
                     </div>
@@ -119,8 +119,8 @@
          dataResponses:{
          },
          dataPaymentsStatus:{},
-         dataLoadTypes:{},
-         typeOthers: '3',
+         dataCsrTypes:{},
+         typeCsr: '8',
          paymentStatusCredit:'4',
          paymentStatusHalfPaid: '2',
          nominal:0,
@@ -132,7 +132,7 @@
         await this.getData(this.id)
         this.nominal = this.dataResponses.nominal.toString()
         this.hutang = this.dataResponses.hutang.toString()
-        await this.getMasterLoadType()
+        await this.getMasterCsrType()
         await this.getMasterPaymentStatus()
      },
      watch: {
@@ -167,7 +167,7 @@
      methods : {
         getData: async function(id) {
             try{
-                const res = await axios.post(apiUrl+'pengeluaran/beban/edit/'+id)
+                const res = await axios.post(apiUrl+'pengeluaran/csr/edit/'+id)
                 this.dataResponses = res.data[0]
                 console.log(this.dataResponses)
             }catch(err){
@@ -177,10 +177,10 @@
         actEdit: async function() {
             try{
                 var data = this.dataResponses
-                const res = await axios.post(apiUrl+'pengeluaran/beban/edit', { data:data })
+                const res = await axios.post(apiUrl+'pengeluaran/csr/edit', { data:data })
                 if (res.data.success){
                     this.alertSuccess(res.data.msg)
-                    setTimeout(function(){ window.location.href = apiUrl+'pengeluaran/beban/'; }, 1000);
+                    setTimeout(function(){ window.location.href = apiUrl+'pengeluaran/csr/'; }, 1000);
                 }
             }catch(err){
                 alert("Edit data"+' '+err)
@@ -199,18 +199,20 @@
                 alert("Get Payment Status"+' '+err)
             }
         },
-        getMasterLoadType: async function() {
+        getMasterCsrType: async function() {
+            console.log('csr')
             try{
-                const res = await axios.get(apiUrl+'master/load-type')
-                this.dataLoadTypes = res.data
+                const res = await axios.get(apiUrl+'master/csr-type')
+                this.dataCsrTypes = res.data
+                console.log('csr',this.dataCsrTypes)
             }catch(err){
-                alert("Get Load Type"+' '+err)
+                alert("Get CSR Type"+' '+err)
             }
         },
         checkValidation: async function(){
             var validate = false
 
-            if (this.dataResponses.tanggal == "" || this.dataResponses.jenisBeban == "" || 
+            if (this.dataResponses.tanggal == "" || this.dataResponses.jenisCsr == "" || 
              this.dataResponses.nama == "" || this.dataResponses.jumlah == "" || this.dataResponses.statusBayar == "" 
             || this.dataResponses.total == "" || this.dataResponses.ket == "" ) {
                 validate = false

@@ -1,0 +1,303 @@
+<div class="container-fluid"  id="app">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-arrow-up"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30">
+                <div class="card-body">
+
+                    <h4 class="mt-0 mb-4 header-title">Input data CSR</h4>
+                    
+                     
+                    <div class="form-group row">
+                        <label for="example-date-input" class="col-sm-2 col-form-label">Tanggal</label>
+                        <div class="col-sm-10">
+                            <div class="input-group">
+                                <vuejs-datepicker  v-model="data.tanggal" @input="convertDataTanggal" :format="customFormatter"></vuejs-datepicker>
+                            </div><!-- input-group -->
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Jenis CSR</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" v-model="data.jenisCsr">
+                                <option disabled style="color: gainsboro;">pilih csr</option>
+                                <option v-for="dataCsrType in dataCsrTypes" :key="dataCsrType.kode" :value="dataCsrType.kode" >{{dataCsrType.nama}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Nama Item</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="text" v-model="data.nama"  id="example-text-input">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label for="example-search-input" class="col-sm-2 col-form-label">banyak</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="number" v-model="data.jumlah" id="example-search-input">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label">Status Bayar</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" v-model="data.statusBayar">
+                                    <option disabled style="color: gainsboro" >pilih status</option>
+                                    <option  v-for="dataPaymentStatus in dataPaymentsStatus" :key="dataPaymentStatus.kode" :value="dataPaymentStatus.kode">{{dataPaymentStatus.nama}}</option>
+                                </select>
+                            </div>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Total Nominal (Rp)</label>
+                        <div class="col-md-5">
+                            <input class="form-control" type="text" v-model="total">
+                        </div>
+                    </div>
+                    <div v-if="data.statusBayar == paymentStatusHalfPaid" class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas (Rp)</label>
+                        <div class="col-md-5">
+                            <input class="form-control" type="text" v-model="lunas">
+                        </div>
+                    </div>
+                    <div v-if="data.statusBayar == paymentStatusHalfPaid" class="form-group row">
+                        <label for="example-number-input" class="col-sm-2 col-form-label">Nominal hutang (Rp)</label>
+                        <div class="col-md-5">
+                            <input disabled class="form-control" type="text" v-model="hutang" >
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <label for="example-text-input" class="col-sm-2 col-form-label">Keterangan</label>
+                        <div  class="col-sm-10">
+                            <textarea required class="form-control" v-model="data.ket" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group text-right">
+                        <div>
+                            <button :disabled="isButtonDisable" @click="checkValidation()" class="btn btn-primary waves-effect waves-light">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <!-- END ROW -->
+
+</div>
+
+
+<script>
+    const apiUrl = '<%=process.env.URL%>'
+    var app = new Vue({
+     el: '#app',
+     components: {
+            vuejsDatepicker
+    },
+     data: {
+         data:{
+            tanggal:'',
+            jenisCsr:'',
+            nama:'',
+            jumlah:'',
+            statusBayar:'',
+            total:'',
+            lunas:0,
+            hutang:0,
+            ket:'-',
+            tglSekarang:moment().format('YYYY-MM-DD'),
+            userAkun:''
+         },
+         total:'',
+         lunas:'',
+         hutang:'',
+         dataCsrTypes:'',
+         dataPaymentsStatus:'',
+         typeCsr: '8',
+         paymentStatusCredit: '4',
+         paymentStatusHalfPaid: '2',
+         isButtonDisable: false
+     },
+     async created(){
+        await this.getMasterCsrType()
+        await this.getMasterPaymentStatus()
+     },
+     watch: {
+        total : function (val) {
+            if(this.total != ""){
+                this.total  = this.convertFloatToRupiah(val).toString()
+                this.data.total = this.convertRupiahToFloat(this.total)
+                if(this.lunas != ''){
+                    var calculate = this.convertRupiahToFloat(this.total) - this.convertRupiahToFloat(this.lunas) 
+                    this.data.hutang = calculate
+                    this.hutang = calculate
+                }
+            }else{
+                this.handleEmptyTotal()
+            }
+        },
+        lunas : function (val) {
+            if(this.lunas != ""){
+                this.lunas  = this.convertFloatToRupiah(val).toString()
+                this.data.lunas = this.convertRupiahToFloat(this.lunas)
+                if(this.total != ''){
+                    var calculate = this.convertRupiahToFloat(this.total) - this.convertRupiahToFloat(this.lunas) 
+                    this.data.hutang = calculate
+                    this.hutang = calculate
+                }
+            }else {
+                this.handleEmptyLunas()
+            }
+        },
+        hutang : function (val){
+            //convert to rupiah
+        }
+     },
+     methods:{
+        actTambah: async function() {
+            try{
+                this.setDisableButton()
+                var data = this.data
+                let res = await axios.post(apiUrl+'pengeluaran/csr/tambah', { data:data })
+                if (res.data.success){
+                    this.setEnableButton()
+                    this.alertSuccess(res.data.msg)
+                    setTimeout(function(){ window.location.href = '/pengeluaran/csr/'; }, 1000);
+                }
+            }catch(err){
+                alert("Add data"+' '+err)
+                this.setEnableButton()
+            }
+        },
+        customFormatter(date) {
+            return moment(date).format("DD/MM/YYYY");
+        },
+        getMasterPaymentStatus: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/payment-status')
+                for(let i=0 ; i < res.data.length; i++ ){
+                    if (res.data[i].kode == this.paymentStatusCredit){
+                         res.data.splice(i,1)
+                    }
+                }
+                this.dataPaymentsStatus = res.data
+            }catch(err){
+                alert("Get Payment Status"+' '+err)
+            }
+        },
+        getMasterCsrType: async function() {
+            try{
+                const res = await axios.get(apiUrl + 'master/csr-type')
+                this.dataCsrTypes = res.data
+                console.log(this.dataCsrTypes)
+            }catch(err){
+                alert("Get CSR Type"+' '+err)
+            }
+        },
+        checkValidation: async function(){
+            var validate = false
+
+            if (this.data.tanggal == "" || this.data.jenisCsr == "" || 
+             this.data.nama == "" || this.data.jumlah == "" || this.data.statusBayar == "" 
+            || this.data.total == "" || this.data.ket == "" ) {
+                validate = false
+            } else if (this.data.statusBayar == this.paymentStatusHalfPaid){
+                validate = this.checkValidationHalfPaid()
+            }else {
+                validate = true
+            }
+
+            if(validate){
+                console.log(this.data)
+                this.alertAdd()
+            }else{
+                alert("Harap isi semua field")
+            }
+        },
+        checkValidationHalfPaid(){
+            if (this.data.hutang === 0 || this.data.lunas === 0 ) {
+                return false
+            } else {
+                return true
+            }
+        },
+        convertFloatToRupiah: function(val) {
+
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            return rupiah
+        },
+        convertRupiahToFloat: function(val){
+            var txtNumber = parseFloat(val.replace(/,/g, ''))
+            return txtNumber
+        },
+        convertDataTanggal: function(val){
+            var convert = moment(val).format("YYYY-MM-DD")
+            this.data.tanggal = convert
+        },
+        alertAdd:  function (data) {
+             swal({
+                title: "Anda yakin ingin menambah data?",
+                text: "Pastikan data yang anda masukkan benar",
+                icon: "warning",
+                buttons: ["batal", "tambah"],
+                dangerMode: false,
+                })
+                .then((willAdd) => {
+                if (willAdd) {
+                     this.actTambah(data)
+                }
+            });
+        },
+        alertSuccess: function (message){
+            swal({
+                title:"",
+                text:message, 
+                icon:"success",
+                buttons:false});
+        },
+        setEnableButton: function(){
+            this.isButtonDisable = false
+        },
+        setDisableButton: function(){
+            this.isButtonDisable = true
+        },
+        handleEmptyTotal: function(){
+            this.data.total = ""
+            this.hutang = ""
+            this.lunas = ""
+        },
+        handleEmptyLunas: function(){
+            this.hutang = ""
+            this.lunas =""
+            this.data.hutang = 0
+            this.data.lunas = 0
+        }
+     }
+     })
+ </script>

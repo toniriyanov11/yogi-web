@@ -130,6 +130,24 @@ async function getLoadType() {
     }
 }
 
+async function getCsrType() {
+    try {
+        const rows = await modelMaster.getCsrType()
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
 async function getPaymentType() {
     try {
         const rows = await modelMaster.getPaymentType()
@@ -388,6 +406,7 @@ module.exports ={
     getBuyingType,
     getMasterMaterial,
     getLoadType,
+    getCsrType,
     getPaymentType,
     getStuffType,
     getStuffVariant,

@@ -276,4 +276,81 @@ router.deletePembayaran = function(id) {
 //End of Pembayaran
 
 
+//CSR
+router.getCsrAll = function() {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`SELECT id, tanggal, jumlah, nominal, nama, ket,
+        kode_sub_jenis as kodeJenisCSR, kode_status_bayar as kodeStatusBayar,
+         (select nama from ms_sub_jenis_pengeluaran where kode = pengeluaran.kode_sub_jenis) ketJenisCSR,
+         (select nama from ms_status_bayar where kode = pengeluaran.kode_status_bayar) ketStatusBayar 
+         FROM pengeluaran WHERE status_aktif = 'Y' AND kode_jenis = 4`,(err,results) => {
+            if (err) {
+                return reject(err)
+            } 
+
+            return resolve(results)  
+        })
+    })
+}
+
+router.getCsrById = function(id) {
+    console.log('id'+id)
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`SELECT id, tanggal, jumlah, nominal, nama, ket,
+        kode_sub_jenis as kodeJenisCsr, kode_status_bayar as kodeStatusBayar,
+         (select nama from ms_sub_jenis_pengeluaran where kode = pengeluaran.kode_sub_jenis) ketJenisCsr,
+         (select nama from ms_status_bayar where kode = pengeluaran.kode_status_bayar) ketStatusBayar,
+         CASE kode_status_bayar WHEN '2' THEN (select nominal from hutang where id_pengeluaran = pengeluaran.id) 
+        WHEN '3' THEN (select nominal from hutang where id_pengeluaran = pengeluaran.id) 
+        ELSE ''
+        END AS hutang 
+        FROM pengeluaran WHERE status_aktif = 'Y' AND kode_jenis = 4 AND id = ?`,[id],(err,results) => {
+            if (err) {
+                return reject(err)
+            } 
+            return resolve(results)
+        })
+    })
+}
+
+router.insertCsr= function(data) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`CALL P_CSR (?,?,?,?,?,?,?,?)`,[data.tanggal,data.nama,data.jumlah,data.total,data.statusBayar,data.ket,data.hutang,data.tglSekarang],(err,results) => {
+            if (err) {
+                database.getConnection().query(`ROLLBACK;`)
+                return reject(err)
+            }else{
+                database.getConnection().query(`COMMIT;`)
+                return resolve(results)
+            }
+        })
+    })
+}
+
+router.updateCsr= function(data) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`UPDATE pengeluaran SET tanggal = ?, nama = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.ket,data.id],(err,results) => {
+            if (err) {
+                return reject(err)
+            }else{
+                return resolve(results)
+            }
+        })
+    })
+}
+
+router.deleteCsr = function(id) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`UPDATE pengeluaran SET status_aktif = 'T' WHERE pengeluaran.id = ?`,[id],(err,results) => {
+            if (err) {
+                return reject(err)
+            }else{
+                return resolve(results) 
+            } 
+        })
+    })
+}
+//End of CSR
+
+
 module.exports = router

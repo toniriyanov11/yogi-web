@@ -117,6 +117,21 @@ router.get('/load-type',async function(req, res, next) {
      }
 })
 
+router.get('/csr-type',async function(req, res, next) {
+   try{    
+       let dataResponse = await controllerMaster.getCsrType()
+       var data =""
+       if (dataResponse.success) {
+          data = await util.convertRecordDate(dataResponse,'DD/MM/YYYY')
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+     }catch(err){
+       res.status(500).json(err);
+     }
+})
+
 
 router.get('/payment-type',async function(req, res, next) {
    try{    

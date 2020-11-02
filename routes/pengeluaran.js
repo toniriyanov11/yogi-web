@@ -371,4 +371,125 @@ router.post('/pembayaran/hapus/:id', async function(req, res, next) {
    }
  });
 //End of Pembayaran
+
+
+/* csr */
+router.get('/csr', function(req, res, next) {
+   res.render('index', { title: 'Pengeluaran - csr', page:'pengeluaran/csr.ejs'});
+ });
+ 
+ router.post('/csr',async function(req, res, next) {
+   try{
+      let dataResponse = await controllerPengeluaran.getCsrAll()
+      console.log(dataResponse)
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+    }catch(err){
+      res.status(500).json(err);
+    }
+   })
+ 
+ 
+ router.get('/csr/detil/:id', function(req, res, next) {
+   var id = req.params.id;
+   res.render('index', { title: 'Detail csr', page:'pengeluaran/csr_detil.ejs', data:JSON.stringify(id)});
+ });
+ 
+ 
+ router.post('/csr/detil/:id',async function(req, res, next) {
+   try{
+      var id = req.params.id;
+      let dataResponse = await controllerPengeluaran.getCsrById(id)
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+  }catch(err){
+    console.log(err)
+       res.status(500).json(err);
+  }
+ });
+ 
+ 
+ router.get('/csr/edit/:id', async function(req, res, next) {
+   var id = req.params.id;
+   res.render('index', { title: 'Edit csr', page:'pengeluaran/csr_edit.ejs', data:JSON.stringify(id)});
+ });
+ 
+ router.post('/csr/edit/:id', async function(req, res, next) {
+   try{
+      var id = req.params.id;
+      let dataResponse = await controllerPengeluaran.getCsrById(id)   
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertDate(dataResponse,'YYYY-MM-DD')
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+   } catch(err){
+      res.status(500).json(err);
+   }
+ });
+ 
+ router.post('/csr/edit', async function(req, res, next) {
+   try {
+      var data = req.body.data
+      let dataResponse = await controllerPengeluaran.updateCsr(data)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch (err) {
+      res.status(500).json(err);
+   }
+ });
+ 
+ 
+ router.get('/csr/tambah', function(req, res, next) {
+     res.render('index', { title: 'Tambah csr', page:'pengeluaran/csr_tambah.ejs'});
+ });
+ 
+ router.post('/csr/tambah', async function(req, res, next) {
+   try{
+      var data = req.body.data
+      let dataResponse = await controllerPengeluaran.insertCsr(data)
+      console.log(dataResponse)
+      if (dataResponse.success) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   }catch(err){
+     console.log(err)
+      res.status(500).json(err);
+   }
+ });
+ 
+ router.post('/csr/hapus/:id', async function(req, res, next) {
+   try{
+      var id = req.params.id
+      let dataResponse = await controllerPengeluaran.deleteCsr(id)
+      console.log(dataResponse)
+      if (dataResponse.success ) {
+         res.status(200).json(dataResponse);
+      } else {
+         res.status(400).json();
+      }
+   } catch(err){
+      res.status(500).json(err);
+   }
+ });
+ 
+ 
+ /* End of csr */
 module.exports = router;
