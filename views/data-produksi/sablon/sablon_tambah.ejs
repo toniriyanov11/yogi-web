@@ -140,11 +140,9 @@
                 this.upah  = this.convertFloatToRupiah(val).toString() 
                 this.data.upah = this.convertRupiahToFloat(this.upah)
                 if(this.data.jumlah != ""){
-                    var calculate = this.convertRupiahToFloat(this.upah) * this.convertRupiahToFloat(this.data.jumlah) 
-                    this.totalUpah = calculate
+                    this.calculateTotalUpah()
 
-                    var calculateThingPrice = this.convertRupiahToFloat(this.upah) + this.convertRupiahToFloat(this.totalHarga) 
-                    this.hargaBarang = calculateThingPrice
+                    this.calculateHargaBarang()
                 }
             }else{
                 this.data.upah = ""
@@ -157,8 +155,7 @@
                 this.totalHarga  = this.convertFloatToRupiah(val).toString() 
                 this.data.totalHarga = this.convertRupiahToFloat(this.totalHarga)
                 if(this.data.upah != ""){
-                    var calculateThingPrice = this.convertRupiahToFloat(this.upah) + this.convertRupiahToFloat(this.totalHarga) 
-                    this.hargaBarang = calculateThingPrice
+                    this.calculateHargaBarang()
                 }
             }else{
                 this.data.totalHarga = ""
@@ -168,8 +165,7 @@
         'data.jumlah' : function (val) {
             if (this.data.jumlah != ""){
                 if(this.upah != ""){
-                    var calculate = this.convertRupiahToFloat(this.upah) * this.convertRupiahToFloat(this.data.jumlah) 
-                    this.totalUpah = calculate
+                    this.calculateTotalUpah()
                 }
             }else{
                 this.totalUpah = ""
@@ -303,6 +299,14 @@
                 this.totalHarga =  Math.ceil(totalHarga  / item.length).toString()
                 this.data.jumlah =  (totalJumlah).toString()
             }
+        },
+        calculateTotalUpah(){
+            var calculate = this.convertRupiahToFloat(this.upah) * this.convertRupiahToFloat(this.data.jumlah) 
+            this.totalUpah = Math.round(calculate)
+        },
+        calculateHargaBarang(){
+            var calculate = this.convertRupiahToFloat(this.upah) + this.convertRupiahToFloat(this.totalHarga) 
+            this.hargaBarang = Math.round(calculate)
         }
      }
 })
