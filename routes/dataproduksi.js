@@ -22,7 +22,8 @@ router.post('/cutting',async function(req, res, next) {
      let dataResponse = await controllerDataProduksi.getCuttingAll()
      var data =""
      if (dataResponse.success) {
-        data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+        console.log('data response cutting ',dataResponse)
+        data = await util.convertObjectStructureCutting(dataResponse,'DD/MM/YYYY')
         res.status(200).json(data);
      } else {
         res.status(400).json(data);
@@ -43,7 +44,7 @@ router.post('/cutting/detil/:id',async function(req, res, next) {
       let dataResponse = await controllerDataProduksi.getCuttingById(id)
       var data =""
       if (dataResponse.success) {
-         data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+         data = await util.convertObjectStructureCutting(dataResponse,'DD/MM/YYYY')
          res.status(200).json(data);
       } else {
          res.status(400).json(data);

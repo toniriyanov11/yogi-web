@@ -240,8 +240,7 @@
             if(this.berat != "") {
                 this.data.berat = this.berat
                 if(this.jumlah != ""){
-                    var calculate = this.berat / this.jumlah
-                    this.hasilPerPcs = calculate.toFixed(2)
+                    this.calculateHasilPerPcs()
                 }
             }else{
                 this.data.berat = ""
@@ -253,13 +252,11 @@
                 this.data.jumlah = this.jumlah
 
                 if(this.berat != ""){
-                    var calculate = this.berat / this.jumlah
-                    this.hasilPerPcs = calculate.toFixed(2)
+                    this.calculateHasilPerPcs()
                 }
 
                 if(this.totalBiayaPerPcs != ''){
-                    var calculate = this.convertRupiahToFloat(this.totalBiayaPerPcs) * this.convertRupiahToFloat(this.jumlah) 
-                    this.totalBiaya = calculate
+                     this.calculateTotalBiaya()
                 }
 
             }else{
@@ -272,8 +269,7 @@
             if(this.hasilPerPcs != "") {
                 this.data.hasilPerPcs = this.hasilPerPcs
                 if(this.hargaPerKg != ''){
-                    var calculate = this.convertRupiahToFloat(this.hargaPerKg) * this.convertRupiahToFloat(this.hasilPerPcs) 
-                    this.totalHargaBahan = calculate
+                    this.calculateTotalHargaBahan()
                 }
             }else{
                 this.totalHargaBahan = ''
@@ -284,8 +280,7 @@
                 this.upah  = this.convertFloatToRupiah(val).toString() 
                 this.data.upah = this.convertRupiahToFloat(this.upah)
                 if(this.totalHargaBahan != ''){
-                    var calculate = this.convertRupiahToFloat(this.totalHargaBahan) + this.convertRupiahToFloat(this.upah) 
-                    this.totalBiayaPerPcs = calculate
+                    this.calculateTotalBiayaPerPcs()
                 }
             }else{
                 this.data.upah = ""
@@ -297,8 +292,7 @@
                 this.hargaPerKg  = this.convertFloatToRupiah(val).toString()
                 this.data.hargaPerKg = this.convertRupiahToFloat(this.hargaPerKg)
                 if(this.hasilPerPcs != ''){
-                    var calculate = this.convertRupiahToFloat(this.hargaPerKg) * this.convertRupiahToFloat(this.hasilPerPcs) 
-                    this.totalHargaBahan = calculate
+                    this.calculateTotalHargaBahan()
                 }
             }else{
                 this.data.hargaPerKg = ""
@@ -310,8 +304,7 @@
                 this.totalHargaBahan  = this.convertFloatToRupiah(val.toString()).toString()
                 this.data.totalHargaBahan = this.convertRupiahToFloat(this.totalHargaBahan)
                 if(this.upah != ''){
-                    var calculate = this.convertRupiahToFloat(this.totalHargaBahan) + this.convertRupiahToFloat(this.upah) 
-                    this.totalBiayaPerPcs = calculate
+                    this.calculateTotalBiayaPerPcs()
                 }
             }else{
                 this.totalBiayaPerPcs = ""
@@ -322,8 +315,7 @@
                 this.totalBiayaPerPcs  = this.convertFloatToRupiah(val.toString()).toString()
                 this.data.totalBiayaPerPcs = this.convertRupiahToFloat(this.totalBiayaPerPcs)
                 if(this.jumlah != ''){
-                    var calculate = this.convertRupiahToFloat(this.totalBiayaPerPcs) * this.convertRupiahToFloat(this.jumlah) 
-                    this.totalBiaya = calculate
+                    this.calculateTotalBiaya()
                 }
             }else{
                 this.totalBiaya = ""
@@ -513,7 +505,22 @@
                 alert("Stock Bahan"+" "+nama+" "+"Tidak Mencukupi")
                 this.berat = ""
             }
-
+        },
+        calculateHasilPerPcs(){
+            var calculate = this.berat / this.jumlah
+            this.hasilPerPcs = calculate.toFixed(2)
+        },
+        calculateTotalBiaya(){
+            var calculate = this.convertRupiahToFloat(this.totalBiayaPerPcs) * this.convertRupiahToFloat(this.jumlah) 
+            this.totalBiaya =  Math.round(calculate)
+        },
+        calculateTotalBiayaPerPcs(){
+            var calculate = this.convertRupiahToFloat(this.totalHargaBahan) + this.convertRupiahToFloat(this.upah) 
+            this.totalBiayaPerPcs =  Math.round(calculate)
+        },
+        calculateTotalHargaBahan(){
+            var calculate = this.convertRupiahToFloat(this.hargaPerKg) * this.convertRupiahToFloat(this.hasilPerPcs) 
+            this.totalHargaBahan = Math.round(calculate)
         }
      }
 })

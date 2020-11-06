@@ -187,6 +187,21 @@ async function convertObjectStructure(dataResponse,dateFormat){
     }
 }
 
+async function convertObjectStructureCutting(dataResponse,dateFormat){
+    try{
+        var data = await this.convertDate(dataResponse, dateFormat)
+        data.forEach((item)=>{
+            item.hasilPerPcs = (item.hasilPerPcs).toFixed(2)
+            item.totalHargaBahan = Math.round(item.totalHargaBahan)
+            item.totalBiayaPerPcs = Math.round(item.totalBiayaPerPcs)
+        })
+
+      return data
+    }catch(err){
+      return err
+    }
+}
+
 async function convertObjectStructureJahit(dataResponse,dateFormat){
     try{
         var data = await this.convertDate(dataResponse, dateFormat)
@@ -725,6 +740,7 @@ module.exports = {
     convertObjectStructure,
     manipulateData,
     manipulateDataInvoice,
+    convertObjectStructureCutting,
     convertObjectStructureJahit,
     convertObjectStructureBarangJadi,
     convertObjectStructureInvoice,
