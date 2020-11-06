@@ -79,7 +79,7 @@ router.updateCutting = function(data) {
 
 router.deleteCutting = function(id) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`UPDATE cutting SET status_aktif = 'T' WHERE pengeluaran.id = ?`,[id],(err,results) => {
+        database.getConnection().query(`UPDATE cutting SET status_aktif = 'T' WHERE id = ?`,[id],(err,results) => {
             if (err) {
                 return reject(err)
             }else{
