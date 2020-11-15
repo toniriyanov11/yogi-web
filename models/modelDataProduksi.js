@@ -197,7 +197,7 @@ router.getJahitAll = function() {
                 FROM sablon as s 
                 INNER JOIN detil_sablon as ds 
                 INNER JOIN cutting as c
-                ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif = 'Y' GROUP BY ds.id_sablon
+                ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif != 'T' GROUP BY ds.id_sablon
               ) as s on s.id in (x.idItemSablon)
                `,(err,results) => {
             if (err) {
@@ -231,7 +231,7 @@ router.getJahitById = function(id) {
                 FROM sablon as s 
                 INNER JOIN detil_sablon as ds 
                 INNER JOIN cutting as c
-                ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif = 'Y' GROUP BY ds.id_sablon
+                ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif != 'T' GROUP BY ds.id_sablon
               ) as s on s.id in (x.idItemSablon) WHERE x.id = ?`,[id],(err,results) => {
             if (err) {
                 return reject(err)
@@ -310,7 +310,7 @@ router.getBarangJadiAll = function() {
                         dj.id_item_sablon as idItemSablon
                         FROM jahit as j 
                         INNER JOIN detil_jahit as dj 
-                        ON j.id = dj.id_jahit  AND j.status_aktif = 'Y' 
+                        ON j.id = dj.id_jahit  AND j.status_aktif != 'T' 
                       ) as x
                       LEFT join cutting as c on c.id in (x.idItemCutting)
                       LEFT join 
@@ -319,7 +319,7 @@ router.getBarangJadiAll = function() {
                         FROM sablon as s 
                         INNER JOIN detil_sablon as ds 
                         INNER JOIN cutting as c
-                        ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif = 'Y' GROUP BY ds.id_sablon
+                        ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif != 'T' GROUP BY ds.id_sablon
                       ) as s on s.id in (x.idItemSablon)) as y on y.id in (z.idItem) group by z.id
                `,(err,results) => {
             if (err) {
@@ -360,7 +360,7 @@ router.getBarangJadiById = function(id) {
                         dj.id_item_sablon as idItemSablon
                         FROM jahit as j 
                         INNER JOIN detil_jahit as dj 
-                        ON j.id = dj.id_jahit  AND j.status_aktif = 'Y' 
+                        ON j.id = dj.id_jahit  AND j.status_aktif != 'T' 
                       ) as x
                       LEFT join cutting as c on c.id in (x.idItemCutting)
                       LEFT join 
@@ -369,7 +369,7 @@ router.getBarangJadiById = function(id) {
                         FROM sablon as s 
                         INNER JOIN detil_sablon as ds 
                         INNER JOIN cutting as c
-                        ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif = 'Y' GROUP BY ds.id_sablon
+                        ON s.id = ds.id_sablon AND ds.id_item = c.id  AND s.status_aktif != 'T' GROUP BY ds.id_sablon
                       ) as s on s.id in (x.idItemSablon)) as y on y.id in (z.idItem) where z.id = ? group by z.id`,[id],(err,results) => {
             if (err) {
                 return reject(err)
@@ -425,10 +425,10 @@ router.deleteBarangJadi = function(id) {
 router.getCountDataProduksi = function() {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`
-        SELECT * FROM ((SELECT (COUNT(ID)) as jumlahCutting FROM cutting WHERE status_aktif = 'Y') as cutting,
-        (SELECT (COUNT(ID)) as jumlahSablon FROM sablon WHERE status_aktif = 'Y') as sablon,
-        (SELECT (COUNT(ID)) as jumlahJahit FROM jahit WHERE status_aktif = 'Y') as jahit,
-        (SELECT (COUNT(ID)) as jumlahBarangJadi FROM barang_jadi WHERE status_aktif = 'Y') as barangJadi)
+        SELECT * FROM ((SELECT (COUNT(ID)) as jumlahCutting FROM cutting WHERE status_aktif != 'T') as cutting,
+        (SELECT (COUNT(ID)) as jumlahSablon FROM sablon WHERE status_aktif != 'T') as sablon,
+        (SELECT (COUNT(ID)) as jumlahJahit FROM jahit WHERE status_aktif != 'T') as jahit,
+        (SELECT (COUNT(ID)) as jumlahBarangJadi FROM barang_jadi WHERE status_aktif != 'T') as barangJadi)
                `,(err,results) => {
             if (err) {
                 console.log(err)

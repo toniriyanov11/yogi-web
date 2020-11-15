@@ -63,7 +63,7 @@ router.post('/cutting/tambah', async function(req, res, next) {
   try{
      var data = req.body.data
      let dataResponse = await controllerDataProduksi.insertCutting(data)
-     console.log(dataResponse)
+     console.log('cutting tambaah -------------',dataResponse)
      if (dataResponse.success) {
         res.status(200).json(dataResponse);
      } else {

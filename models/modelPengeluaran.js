@@ -48,6 +48,7 @@ router.getPembelianById = function(id) {
 }
 
 router.insertPembelianTypeMaterial = function(data) {
+    console.log('pembelian bahan baku----------------------------------------')
     return new Promise((resolve, reject) => {
         database.getConnection().query(`CALL P_PEMBELIAN_BAHAN_BAKU(?,?,?,?,?,?,?,?,?,?)`,[data.jenisBahanBaku,data.tanggal,data.nama,data.jumlah,data.total,data.statusBayar,data.ket,data.supplier,data.hutang,data.tglSekarang],(err,results) => {
             if (err) {
