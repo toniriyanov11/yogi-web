@@ -170,16 +170,17 @@ router.getLabaRugiByIdInvoice = function(id) {
 }
 
 
-router.getDebitKredit = function(id) {
+router.getDebitKredit = function(data) {
+    console.log(data)
     return new Promise((resolve, reject) => {
         database.getConnection().query(`
-        SELECT tgl_rekam as tanggal,id,nominal, 'debit' as keterangan,(select nama from ms_jenis_pengeluaran where kode = kode_jenis) as nama  FROM pengeluaran WHERE kode_status_bayar = 1 and status_aktif != 'T' 
+        select tanggal,id,nominal,nama, keterangan from (SELECT tgl_rekam as tanggal,id,nominal, 'debit' as keterangan,(select nama from ms_jenis_pengeluaran where kode = kode_jenis) as nama  FROM pengeluaran WHERE kode_status_bayar = 1 and status_aktif != 'T' 
         UNION 
         SELECT tgl_rekam as tanggal,id,nominal, 'kredit' as keterangan, (select nama from ms_jenis_pemasukan where kode = kode_jenis) as nama  FROM pemasukan WHERE kode_status_bayar = 1 and status_aktif != 'T'
         UNION
         SELECT (select tgl_rekam from pengeluaran where id = id_pengeluaran and kode_status_bayar = 2 and status_aktif !='T') as tanggal,id_pengeluaran,(select nominal from pengeluaran where id = id_pengeluaran and kode_status_bayar = 2 and status_aktif !='T') - nominal as nominal, 'debit' as keterangan, (select nama from ms_jenis_pengeluaran where kode = (select kode_jenis from pengeluaran where id = id_pengeluaran)) as nama   FROM hutang 
         UNION
-        SELECT (select tgl_rekam from pemasukan where id = id_pemasukan and kode_status_bayar = 2 and status_aktif !='T') as tanggal,id_pemasukan,((select nominal from pemasukan where id = id_pemasukan and kode_status_bayar = 2 and status_aktif !='T') - nominal) as nominal, 'kredit' as keterangan, (select nama from ms_jenis_pemasukan where kode =(select kode_jenis from pemasukan where id = id_pemasukan)) as nama  FROM piutang order by tanggal`,(err,results) => {
+        SELECT (select tgl_rekam from pemasukan where id = id_pemasukan and kode_status_bayar = 2 and status_aktif !='T') as tanggal,id_pemasukan,((select nominal from pemasukan where id = id_pemasukan and kode_status_bayar = 2 and status_aktif !='T') - nominal) as nominal, 'kredit' as keterangan, (select nama from ms_jenis_pemasukan where kode =(select kode_jenis from pemasukan where id = id_pemasukan)) as nama  FROM piutang) as jurnal  where tanggal LIKE '%${data}%' order by tanggal,id`,(err,results) => {
             if (err) {
                 console.log(err)
                 return reject(err)

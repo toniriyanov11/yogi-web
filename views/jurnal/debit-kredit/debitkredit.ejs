@@ -18,7 +18,7 @@
     <!-- START ROW -->
     <div class="row">
         <div class="col-12">
-            <div class="card m-b-30">
+            <div class="card m-b-30" style="min-height: 300px;">
                 <div class="card-body">
 
 
@@ -34,21 +34,22 @@
                             <select v-model="filter" class="form-control form-control-sm pull-right">
                                 <option value="1">harian</option>
                                 <option value="2">bulanan</option>
+                                <option value="3">tahunan</option>
                             </select></div>
                         </div>
-                        <div class="col-sm-3">
-                            <div v-if="filter == dailyFilter" class="input-group">
-                                <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker-autoclose">
-                                <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div>
-                            </div>
-                            <div v-if="filter == monthlyFilter" class="form-group ">
-                                 <input class="form-control" type="month" id="month"/>
-                              
+                        
+                        <div class="col-sm-2">
+                                <div class="input-group">
+                                    <vuejs-datepicker  v-model="tanggalFilter" @input="convertDataTanggal" :minimum-view="minView" :format="customFormatter"></vuejs-datepicker>
+                                </div>
                         </div>
+                        <div >
+                            <button type="button" class="btn btn-success waves-effect waves-light"  @click="search()">Cari</button>
                         </div>
                     </div>
+                    </div>
 
-                    <div class="table-responsive">
+                    <div v-if="dataResponses != 'not found' && Object.keys(dataResponses).length != 0" class="table-responsive">
                         <table class="table mb-0">
                             <thead class="thead-default">
                                 <tr>
@@ -78,6 +79,10 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div v-else-if="dataResponses == 'not found'">
+                        <h6 class="text-center p-5">Data Tidak Ditemukan</h6>
+                    </div>
                   
                 </div>
             </div>
@@ -91,24 +96,60 @@
     const apiUrl = '<%= process.env.URL %>'
     var app = new Vue({
      el: '#app',
+     components: {
+            vuejsDatepicker
+    },
      data: {
          dataResponses : {},
-         filter:0,
+         filter:3,
          dailyFilter:1,
-         weeklyFilter:2,
-         monthlyFilter:3
+         monthlyFilter:2,
+         anualFilter:3,
+         tanggalFilter:'',
+         minView:'year'
      },
-     async created() {
-        await  this.getData()
+     watch:{
+        filter(val){
+            this.tanggalFilter = ''
+            if(val == 2){
+                this.minView = 'month'
+            }else if(val ==3 ){
+                this.minView = "year"
+            }else{
+                this.minView = "date"
+            }
+        }
      },
      methods:{
+        search: async function(filter){
+            await this.checkValidation()
+        },
         getData: async function() {
             try{
-                const res = await axios.post(apiUrl+'jurnal/debit-kredit')
-                this.dataResponses = res.data[0]
+                let filter = this.tanggalFilter
+                const res = await axios.post(apiUrl+'jurnal/debit-kredit',{data:filter})
+                if(Object.keys(res.data).length != 0){
+                    this.dataResponses = res.data[0]
+                }else{
+                    this.dataResponses = 'not found'
+                }
                 console.log(this.dataResponses)
             }catch(err){
                 alert("Get data"+' '+err)
+            }
+        },
+        checkValidation: async function(){
+            var validate = false
+            if (this.tanggalFilter == "" ) {
+                validate = false
+            } else {
+                validate = true
+            }
+
+            if(validate){
+                this.getData()
+            }else{
+                alert("Harap isi tanggal/bulan/tahun")
             }
         },
         convertToRupiah: function (val) {
@@ -131,7 +172,27 @@
             }else{
                 return rupiah
             }
-        }
+        },
+        customFormatter(date) {
+            if(this.filter == this.dailyFilter){
+                return moment(date).format("DD/MM/YYYY");
+            }else if(this.filter == this.monthlyFilter){
+                return moment(date).format("MMMM YYYY");
+            }else{
+                return moment(date).format("YYYY");
+            }
+        },
+        convertDataTanggal: function(val){
+            let convert = null
+            if(this.filter == this.dailyFilter){
+                 convert = moment(val).format("YYYY-MM-DD")
+            }else if(this.filter == this.monthlyFilter){
+                convert = moment(val).format("YYYY-MM")
+            }else{
+                convert =  moment(val).format("YYYY");
+            }
+            this.tanggalFilter   = convert
+        },
      }
      })
  </script>

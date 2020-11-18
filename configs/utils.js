@@ -730,15 +730,11 @@ async function convertObjectStructureDebitKredit(dataResponse,dateFormat){
       
         //set saldo/balance
         let arraySaldo = dataTemp.map(( s => a => {
-            if( dataTemp.indexOf(a) == 0){
-                return s = parseInt(a.nominal)
-            }else{
                 if(a.keterangan=="kredit") {
                     return s += parseInt(a.nominal)
                 }else{
                     return s -= parseInt(a.nominal)
                 }
-            }
         })(0))
       
 
@@ -771,7 +767,7 @@ async function convertObjectStructureDebitKredit(dataResponse,dateFormat){
             data:dataModified,
             totalDebit:totalDebitTemp,
             totalKredit:totalKreditTemp,
-            totalBalance:totalBalanceTemp
+            totalBalance:arrayObjSaldo[arrayObjSaldo.length-1].saldo
         })
 
       return data

@@ -163,9 +163,9 @@ async function getLabaRugiByIdInvoice(id) {
 }
 
 //ljurnal - debit kredit
-async function getDebitKredit() {
+async function getDebitKredit(data) {
     try {
-        const rows = await modelOthers.getDebitKredit()
+        const rows = await modelOthers.getDebitKredit(data)
         if ( rows.length >= 1 ) {
             return util.responseSuccess(rows)
         } else if ( rows.length == 0 ) {

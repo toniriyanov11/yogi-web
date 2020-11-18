@@ -18,8 +18,11 @@ router.get('/debit-kredit', function(req, res, next) {
 router.post('/debit-kredit', async function(req, res, next) {
   try {
       var data = req.body.data
+      console.log(data)
       let dataResponse = await controllerOthers.getDebitKredit(data)
+      console.log(dataResponse)
       data =  await util.convertObjectStructureDebitKredit(dataResponse, 'DD/MM/YYYY')
+      console.log('data',data[0])
       if (dataResponse.success) {
         res.status(200).json(data);
       } else {
