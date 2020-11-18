@@ -723,6 +723,63 @@ async function manipulateDataInvoice(data){
      
 }
 
+async function convertObjectStructureDebitKredit(dataResponse,dateFormat){
+    try{
+        var dataTemp = await this.convertDate(dataResponse, dateFormat)
+        let dataModified = []
+      
+        //set saldo/balance
+        let arraySaldo = dataTemp.map(( s => a => {
+            if( dataTemp.indexOf(a) == 0){
+                return s = parseInt(a.nominal)
+            }else{
+                if(a.keterangan=="kredit") {
+                    return s += parseInt(a.nominal)
+                }else{
+                    return s -= parseInt(a.nominal)
+                }
+            }
+        })(0))
+      
+
+        let arrayObjSaldo = arraySaldo.map((item,index) =>{return {saldo : parseInt(item) } })
+
+
+        dataTemp.forEach((item,index) =>{
+            dataModified.push({
+                tanggal : item.tanggal,
+                id : item.id,
+                nama: item.nama,
+                nominal : item.nominal,
+                keterangan : item.keterangan,
+                saldo : arrayObjSaldo[index].saldo
+            })
+        })
+        
+        let totalBalanceTemp = arraySaldo.reduce((currentTotal, item)=> parseInt(currentTotal) + parseInt(item))
+    
+        let totalDebitTemp = dataTemp.filter((item)=> item.keterangan == 'debit')
+            .reduce((currentTotal,item)=>{
+            return parseInt(item.nominal) + currentTotal
+        },0)
+        let totalKreditTemp = dataTemp.filter((item)=> item.keterangan == 'kredit')
+            .reduce((currentTotal,item)=>{
+        return parseInt(item.nominal) + currentTotal
+        },0)
+        let data = []
+        data.push({
+            data:dataModified,
+            totalDebit:totalDebitTemp,
+            totalKredit:totalKreditTemp,
+            totalBalance:totalBalanceTemp
+        })
+
+      return data
+    }catch(err){
+      return err
+    }
+}
+
 module.exports = {
     responseSuccess,
     responseSuccessUpdate,
@@ -744,6 +801,7 @@ module.exports = {
     convertObjectStructureJahit,
     convertObjectStructureBarangJadi,
     convertObjectStructureInvoice,
-    convertObjectStructureLabaRugi
+    convertObjectStructureLabaRugi,
+    convertObjectStructureDebitKredit
 
 }

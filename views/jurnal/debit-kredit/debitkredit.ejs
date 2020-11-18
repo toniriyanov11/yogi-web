@@ -32,16 +32,16 @@
                         <div class="col-sm-6">
                             <div class="text-right">
                             <select v-model="filter" class="form-control form-control-sm pull-right">
-                                <option>harian</option>
-                                <option>bulanan</option>
+                                <option value="1">harian</option>
+                                <option value="2">bulanan</option>
                             </select></div>
                         </div>
                         <div class="col-sm-3">
-                            <div v-if="filter == 'harian'" class="input-group">
+                            <div v-if="filter == dailyFilter" class="input-group">
                                 <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker-autoclose">
                                 <div class="input-group-append bg-custom b-0"><span class="input-group-text"><i class="mdi mdi-calendar"></i></span></div>
                             </div>
-                            <div v-if="filter =='bulanan'" class="form-group ">
+                            <div v-if="filter == monthlyFilter" class="form-group ">
                                  <input class="form-control" type="month" id="month"/>
                               
                         </div>
@@ -53,33 +53,27 @@
                             <thead class="thead-default">
                                 <tr>
                                     <th>Tgl</th>
-                                    <th>No.</th>
                                     <th>Ket.</th>
-                                    <th>Debit</th>
-                                    <th>Kredit</th>
+                                    <th >Debit</th>
+                                    <th >Kredit</th>
+                                    <th >Balance</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>25/03/2020</td>
-                                    <td>1</td>
-                                    <td>Kas</td>
-                                    <td>100.000</td>
-                                    <td></td>   
-                                </tr>
-                                <tr>
-                                    <td>25/03/2020</td>
-                                    <td>2</td>
-                                    <td>Modal Awal</td>
-                                    <td></td>
-                                    <td>100.000</td>   
+                                <tr v-for="dataResponse in dataResponses.data" :key="dataResponse.id">
+                                    <td>{{dataResponse.tanggal}}</td>
+                                    <td v-if="dataResponse.keterangan == 'kredit'" style="padding-left: 50px;">{{dataResponse.nama}} <span style="font-size: smaller;">{{dataResponse.id}}</span> </td>
+                                    <td v-else>{{dataResponse.nama}} <span style="font-size: smaller;">{{dataResponse.id}}</span> </td>
+                                    <td>{{dataResponse.keterangan == 'debit' ? convertToRupiah(dataResponse.nominal) : '-'}}</td>
+                                    <td>{{dataResponse.keterangan == 'kredit' ? convertToRupiah(dataResponse.nominal) : '-'}}</td>  
+                                    <td>{{convertToRupiah(dataResponse.saldo)}}</td>                              
                                 </tr>
                                 <tr>
                                     <th></th>
                                     <th>Total</th>
-                                    <th></th>
-                                    <th>100.000</th>
-                                    <th>100.000</th>   
+                                    <th>{{convertToRupiah(dataResponses.totalDebit)}}</th>
+                                    <th>{{convertToRupiah(dataResponses.totalKredit)}}</th>   
+                                    <th>{{convertToRupiah(dataResponses.totalBalance)}}</th>    
                                 </tr>
                             </tbody>
                         </table>
@@ -93,12 +87,59 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script> 
 <script>
-var app = new Vue({
+    const apiUrl = '<%= process.env.URL %>'
+    var app = new Vue({
      el: '#app',
      data: {
-         filter:'harian',
+         dataResponses : {},
+         filter:0,
+         dailyFilter:1,
+         weeklyFilter:2,
+         monthlyFilter:3
+     },
+     async created() {
+        await  this.getData()
+     },
+     methods:{
+        getData: async function() {
+            try{
+                const res = await axios.post(apiUrl+'jurnal/debit-kredit')
+                this.dataResponses = res.data[0]
+                console.log(this.dataResponses)
+            }catch(err){
+                alert("Get data"+' '+err)
+            }
+        },
+        convertToRupiah: function (val) {
+            let minus = false
+            if (val < 0) {
+                minus = true
+                val = Math.abs(val)
+            }
+            var txtNumber = parseFloat(val)
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            if(minus ==  true){
+                return '- ' + rupiah
+            }else{
+                return rupiah
+            }
+        }
      }
      })
-</script>
+ </script>
+
+
+<style>
+    body { background-color: #fafafa; }
+    .bootstrap-datetimepicker-widget table td.cw {
+        color: #007bff;
+    }
+</style>
