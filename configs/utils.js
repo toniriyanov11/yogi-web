@@ -814,6 +814,43 @@ async function convertObjectStructureUtangPiutang(dataResponse,dateFormat){
     }
 }
 
+async function convertObjectStructureUtang(dataResponse,dateFormat){
+    try{
+        console.log('masuk sini')
+        var dataTemp = await this.convertDate(dataResponse, dateFormat)
+        let dataModified = []
+
+
+        dataTemp.forEach((item,index) =>{
+            dataModified.push({
+                tanggal : item.tanggal,
+                id : item.id,
+                idPengeluaran :item.id_pengeluaran,
+                nama: item.nama,
+                nominal : item.nominal,
+            })
+        })
+        
+    
+        let totalUtangTemp = dataTemp.reduce((currentTotal,item)=>{
+            return parseInt(item.nominal) + currentTotal
+        },0)
+        let banyakUtangTemp = dataTemp.length
+
+        let data = []
+        data.push({
+            data:dataModified,
+            totalUtang:totalUtangTemp,
+            banyakUtang:banyakUtangTemp
+        })
+        
+        console.log('data',data)
+      return data
+    }catch(err){
+      return err
+    }
+}
+
 module.exports = {
     responseSuccess,
     responseSuccessUpdate,
@@ -837,6 +874,7 @@ module.exports = {
     convertObjectStructureInvoice,
     convertObjectStructureLabaRugi,
     convertObjectStructureDebitKredit,
-    convertObjectStructureUtangPiutang
+    convertObjectStructureUtangPiutang,
+    convertObjectStructureUtang
 
 }

@@ -27,7 +27,7 @@
                     <div>
                         <h6 class="font-16">Jumlah Utang</h6>
                     </div>
-                    <h5 class="mt-4">20</h5>
+                    <h5 class="mt-4">{{dataResponses.banyakUtang}}</h5>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
                     <div>
                         <h6 class="font-16">Total Utang</h6>
                     </div>
-                    <h5 class="mt-4">Rp.20.000.000</h5>
+                    <h5 class="mt-4">Rp{{convertToRupiah(dataResponses.totalUtang)}}</h5>
                 </div>
             </div>
         </div>
@@ -62,17 +62,19 @@
                         <thead>
                         <tr>
                             <th>Tanggal</th>
-                            <th>No</th>                  
-                            <th>Total (Rp)</th>
+                            <th>No</th>         
+                            <th>Nama</th>             
+                            <th>Nominal (Rp)</th>
                         </tr>
                         </thead>
 
 
                         <tbody>
-                        <tr v-for="dataResponse in dataResponses" :key="dataResponse.id"> 
+                        <tr v-for="dataResponse in dataResponses.data" :key="dataResponse.id"> 
                             <td>{{dataResponse.tanggal}}</td>
-                            <td><a style="color:#2980b9">{{dataResponse.id}}</a></td>
-                            <td>{{convertToRupiah(dataResponse.totalHarga)}}</td>
+                            <td>{{dataResponse.id}}</a></td>
+                            <td>{{dataResponse.nama}} <span style="font-size: smaller;">{{dataResponse.idPengeluaran}}</span> </td>
+                            <td>{{convertToRupiah(dataResponse.nominal)}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -93,13 +95,13 @@
           dataResponses : {}
       },
       async created() {
-        // await this.getData()
+        await this.getData()
       },
       methods:{
          getData: async function() {
              try{
-                 const res = await axios.post(apiUrl+'barangsisa')
-                 this.dataResponses = res.data
+                 const res = await axios.post(apiUrl+'listutang')
+                 this.dataResponses = res.data[0]
                  console.log(this.dataResponses)
              }catch(err){
                  alert("Get data"+' '+err)

@@ -8,16 +8,17 @@ const util = require('../configs/utils.js');
 
  // setup harga 
 router.get('/',async function(req, res, next) {
-   res.render('index', { title: 'List Hutang', page:'list-hutang/listhutang.ejs'});
+   res.render('index', { title: 'List Utang', page:'list-utang/listutang.ejs'});
 })
 
 
 router.post('/', async function(req, res, next) {
    try {
       var data = req.body.data
-      let dataResponse = await controllerOthers.updateMasterVarianBahan(data)
+      let dataResponse = await controllerOthers.getUtang(data)
+      data =  await util.convertObjectStructureUtang(dataResponse, 'DD/MM/YYYY')
       if (dataResponse.success) {
-         res.status(200).json(dataResponse);
+         res.status(200).json(data);
       } else {
          res.status(400).json();
       }
@@ -48,25 +49,6 @@ router.post('/setuphargabarangreturn/edit', async function(req, res, next) {
 });
 
 
- // setup harga csr
- router.get('/setupcsr',async function(req, res, next) {
-   res.render('index', { title: 'Setup CSR', page:'setup-data/setupcsr.ejs'});
-})
-
-
-router.post('/setupcsr/edit', async function(req, res, next) {
-   try {
-      var data = req.body.data
-      let dataResponse = await controllerMaster.updateMasterVarianBahan(data)
-      if (dataResponse.success) {
-         res.status(200).json(dataResponse);
-      } else {
-         res.status(400).json();
-      }
-   } catch (err) {
-      res.status(500).json(err);
-   }
-});
 
 
 

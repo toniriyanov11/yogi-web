@@ -206,4 +206,18 @@ router.getUtangPiutang = function(data) {
     })
 }
 
+router.getUtang = function() {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`
+        SELECT id,(select tgl_rekam from pengeluaran where id = id_pengeluaran) as tanggal,(select id from pengeluaran where id = id_pengeluaran)as id_pengeluaran,nominal,(select nama from ms_jenis_pengeluaran where kode = (select kode_jenis from pengeluaran where id = id_pengeluaran)) as nama  from hutang where nominal > 0 and (select status_aktif from pengeluaran where id = id_pengeluaran) != 'T'
+        `,(err,results) => {
+            if (err) {
+                console.log(err)
+                return reject(err)
+            } 
+            return resolve(results)  
+        })
+    })
+}
+
 module.exports = router

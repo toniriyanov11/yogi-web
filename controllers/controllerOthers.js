@@ -198,6 +198,24 @@ async function getUtangPiutang(data) {
     }
 }
 
+//list-utang
+async function getUtang() {
+    try {
+        const rows = await modelOthers.getUtang()
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
 module.exports = {
     getMaterials,
     getInventorys,
@@ -209,5 +227,6 @@ module.exports = {
     getLabaRugi,
     getLabaRugiByIdInvoice,
     getDebitKredit,
-    getUtangPiutang
+    getUtangPiutang,
+    getUtang
 }
