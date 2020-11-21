@@ -190,4 +190,20 @@ router.getDebitKredit = function(data) {
     })
 }
 
+router.getUtangPiutang = function(data) {
+    console.log(data)
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`
+        SELECT tanggal, id, nama, nominal, keterangan from (SELECT (select tgl_rekam from pengeluaran where id = id_pengeluaran) as tanggal,(select id from pengeluaran where id = id_pengeluaran)as id,nominal, 'utang' as keterangan,(select nama from ms_jenis_pengeluaran where kode = (select kode_jenis from pengeluaran where id = id_pengeluaran)) as nama  from hutang where nominal > 0 and (select status_aktif from pengeluaran where id = id_pengeluaran) != 'T'
+        UNION 
+        SELECT (select tgl_rekam from pemasukan where id = id_pemasukan) as tanggal,(select id from pemasukan where id = id_pemasukan)as id,nominal, 'piutang' as keterangan,(select nama from ms_jenis_pemasukan where kode = (select kode_jenis from pemasukan where id = id_pemasukan)) as nama  from piutang where nominal > 0 and (select status_aktif from pemasukan where id = id_pemasukan) != 'T') as jurnal_utang_piutang  where tanggal LIKE '%${data}%' order by tanggal,id`,(err,results) => {
+            if (err) {
+                console.log(err)
+                return reject(err)
+            } 
+            return resolve(results)  
+        })
+    })
+}
+
 module.exports = router

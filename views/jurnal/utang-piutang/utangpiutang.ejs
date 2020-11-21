@@ -1,0 +1,203 @@
+<div class="container-fluid" id="app">
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title"><i class="icon-spread"></i> <%= title %></h4>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-right">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Yogi</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end page-title -->
+
+    <!-- START ROW -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card m-b-30" style="min-height: 300px;">
+                <div class="card-body">
+
+
+                    <div class="row mb-3 ">
+                        <div class="col-sm-6">
+                            <h4 class="mt-0 mb- header-title">Utang - Piutang</h4>
+                        </div>
+                      
+                    </div>
+                    <div class="row mb-2 text-right">
+                        <div class="col-sm-6">
+                            <div class="text-right">
+                            <select v-model="filter" class="form-control form-control-sm pull-right">
+                                <option value="1">harian</option>
+                                <option value="2">bulanan</option>
+                                <option value="3">tahunan</option>
+                            </select></div>
+                        </div>
+                        
+                        <div class="col-sm-2">
+                                <div class="input-group">
+                                    <vuejs-datepicker  v-model="tanggalFilter" @input="convertDataTanggal" :minimum-view="minView" :format="customFormatter"></vuejs-datepicker>
+                                </div>
+                        </div>
+                        <div >
+                            <button type="button" class="btn btn-success waves-effect waves-light"  @click="search()">Cari</button>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div v-if="dataResponses != 'not found' && Object.keys(dataResponses).length != 0" class="table-responsive">
+                        <table class="table mb-0">
+                            <thead class="thead-default">
+                                <tr>
+                                    <th>Tgl</th>
+                                    <th>Ket.</th>
+                                    <th >Utang</th>
+                                    <th >Piutang</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="dataResponse in dataResponses.data" :key="dataResponse.id">
+                                    <td>{{dataResponse.tanggal}}</td>
+                                    <td v-if="dataResponse.keterangan == 'piutang'" style="padding-left: 50px;">{{dataResponse.nama}} <span style="font-size: smaller;">{{dataResponse.id}}</span> </td>
+                                    <td v-else>{{dataResponse.nama}} <span style="font-size: smaller;">{{dataResponse.id}}</span> </td>
+                                    <td>{{dataResponse.keterangan == 'utang' ? convertToRupiah(dataResponse.nominal) : '-'}}</td>
+                                    <td>{{dataResponse.keterangan == 'piutang' ? convertToRupiah(dataResponse.nominal) : '-'}}</td>                               
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th>Total</th>
+                                    <th>{{convertToRupiah(dataResponses.totalUtang)}}</th>
+                                    <th>{{convertToRupiah(dataResponses.totalPiutang)}}</th>     
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div v-else-if="dataResponses == 'not found'">
+                        <h6 class="text-center p-5">Data Tidak Ditemukan</h6>
+                    </div>
+                  
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div>
+    <!-- END ROW -->
+
+</div>
+
+<script>
+    const apiUrl = '<%= process.env.URL %>'
+    var app = new Vue({
+     el: '#app',
+     components: {
+            vuejsDatepicker
+    },
+     data: {
+         dataResponses : {},
+         filter:3,
+         dailyFilter:1,
+         monthlyFilter:2,
+         anualFilter:3,
+         tanggalFilter:'',
+         minView:'year'
+     },
+     watch:{
+        filter(val){
+            this.tanggalFilter = ''
+            if(val == 2){
+                this.minView = 'month'
+            }else if(val ==3 ){
+                this.minView = "year"
+            }else{
+                this.minView = "date"
+            }
+        }
+     },
+     methods:{
+        search: async function(filter){
+            await this.checkValidation()
+        },
+        getData: async function() {
+            try{
+                let filter = this.tanggalFilter
+                const res = await axios.post(apiUrl+'jurnal/utang-piutang',{data:filter})
+                if(Object.keys(res.data).length != 0){
+                    this.dataResponses = res.data[0]
+                }else{
+                    this.dataResponses = 'not found'
+                }
+                console.log(this.dataResponses)
+            }catch(err){
+                alert("Get data"+' '+err)
+            }
+        },
+        checkValidation: async function(){
+            var validate = false
+            if (this.tanggalFilter == "" ) {
+                validate = false
+            } else {
+                validate = true
+            }
+
+            if(validate){
+                this.getData()
+            }else{
+                alert("Harap isi tanggal/bulan/tahun")
+            }
+        },
+        convertToRupiah: function (val) {
+            let minus = false
+            if (val < 0) {
+                minus = true
+                val = Math.abs(val)
+            }
+            var txtNumber = parseFloat(val)
+            var txtString = txtNumber.toString()
+            var sisa = txtString.length % 3
+            var rupiah = txtString.substr(0, sisa)
+            var ribuan = txtString.substr(sisa).match(/\d{3}/g)
+            if (ribuan) {
+                var separator = sisa ? ',' : ''
+                rupiah += separator + ribuan.join(',')
+            }
+            if(minus ==  true){
+                return '- ' + rupiah
+            }else{
+                return rupiah
+            }
+        },
+        customFormatter(date) {
+            if(this.filter == this.dailyFilter){
+                return moment(date).format("DD/MM/YYYY");
+            }else if(this.filter == this.monthlyFilter){
+                return moment(date).format("MMMM YYYY");
+            }else{
+                return moment(date).format("YYYY");
+            }
+        },
+        convertDataTanggal: function(val){
+            let convert = null
+            if(this.filter == this.dailyFilter){
+                 convert = moment(val).format("YYYY-MM-DD")
+            }else if(this.filter == this.monthlyFilter){
+                convert = moment(val).format("YYYY-MM")
+            }else{
+                convert =  moment(val).format("YYYY");
+            }
+            this.tanggalFilter   = convert
+        },
+     }
+     })
+ </script>
+
+
+<style>
+    body { background-color: #fafafa; }
+    .bootstrap-datetimepicker-widget table td.cw {
+        color: #007bff;
+    }
+</style>

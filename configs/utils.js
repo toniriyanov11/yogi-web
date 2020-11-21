@@ -776,6 +776,44 @@ async function convertObjectStructureDebitKredit(dataResponse,dateFormat){
     }
 }
 
+async function convertObjectStructureUtangPiutang(dataResponse,dateFormat){
+    try{
+        var dataTemp = await this.convertDate(dataResponse, dateFormat)
+        let dataModified = []
+
+
+        dataTemp.forEach((item,index) =>{
+            dataModified.push({
+                tanggal : item.tanggal,
+                id : item.id,
+                nama: item.nama,
+                nominal : item.nominal,
+                keterangan : item.keterangan
+            })
+        })
+        
+    
+        let totalUtangTemp = dataTemp.filter((item)=> item.keterangan == 'utang')
+            .reduce((currentTotal,item)=>{
+            return parseInt(item.nominal) + currentTotal
+        },0)
+        let totalPiutangTemp = dataTemp.filter((item)=> item.keterangan == 'piutang')
+            .reduce((currentTotal,item)=>{
+        return parseInt(item.nominal) + currentTotal
+        },0)
+        let data = []
+        data.push({
+            data:dataModified,
+            totalUtang:totalUtangTemp,
+            totalPiutang:totalPiutangTemp
+        })
+
+      return data
+    }catch(err){
+      return err
+    }
+}
+
 module.exports = {
     responseSuccess,
     responseSuccessUpdate,
@@ -798,6 +836,7 @@ module.exports = {
     convertObjectStructureBarangJadi,
     convertObjectStructureInvoice,
     convertObjectStructureLabaRugi,
-    convertObjectStructureDebitKredit
+    convertObjectStructureDebitKredit,
+    convertObjectStructureUtangPiutang
 
 }

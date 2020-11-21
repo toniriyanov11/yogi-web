@@ -162,10 +162,28 @@ async function getLabaRugiByIdInvoice(id) {
     }
 }
 
-//ljurnal - debit kredit
+//jurnal - debit kredit
 async function getDebitKredit(data) {
     try {
         const rows = await modelOthers.getDebitKredit(data)
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
+//jurnal - utang piutang
+async function getUtangPiutang(data) {
+    try {
+        const rows = await modelOthers.getUtangPiutang(data)
         if ( rows.length >= 1 ) {
             return util.responseSuccess(rows)
         } else if ( rows.length == 0 ) {
@@ -190,5 +208,6 @@ module.exports = {
     updateHargaBarangReturn,
     getLabaRugi,
     getLabaRugiByIdInvoice,
-    getDebitKredit
+    getDebitKredit,
+    getUtangPiutang
 }
