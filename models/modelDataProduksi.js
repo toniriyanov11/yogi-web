@@ -243,7 +243,7 @@ router.getJahitById = function(id) {
 
 router.insertJahit = function(data) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`CALL P_JAHIT(?,?,?,?,?,?,?)`,[data.tanggal, data.nama, data.upah, data.ket , data.tglSekarang , data.item, data.jenisItem],(err,results) => {
+        database.getConnection().query(`CALL P_JAHIT(?,?,?,?,?,?,?,?)`,[data.tanggal, data.nama, data.upah, data.ket , data.tglSekarang , data.item, data.jenisItem, data.totalUpah],(err,results) => {
             if (err) {
                 database.getConnection().query(`ROLLBACK;`)
                 console.log(err)
