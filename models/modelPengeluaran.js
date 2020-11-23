@@ -251,6 +251,20 @@ router.insertPembayaranTypeReturnPayment= function(data) {
     })
 }
 
+router.insertPembayaranTypeOthers =  function(data) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`CALL P_PEMBAYARAN_LAINNYA (?,?,?,?,?,?,?,?,?)`,[data.tanggal,data.nama,data.jumlah,data.total,data.statusBayar,data.ket,data.hutang,data.tglSekarang,data.jenisPembayaran],(err,results) => {
+            if (err) {
+                database.getConnection().query(`ROLLBACK;`)
+                return reject(err)
+            }else{
+                database.getConnection().query(`COMMIT;`)
+                return resolve(results)
+            }
+        })
+    })
+}
+
 router.updatePembayaran= function(data) {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`UPDATE pengeluaran SET tanggal = ?, nama = ?, ket = ? WHERE id = ? `,[data.tanggal,data.nama,data.ket,data.id],(err,results) => {

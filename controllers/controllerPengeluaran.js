@@ -307,10 +307,11 @@ async function getPembayaranById(id) {
 async function insertPembayaran(data) {
     try {
         var typeIsReturnPayment = '4'
+        console.log(data.jenisPembayaran)
         if (data.jenisPembayaran == typeIsReturnPayment){
             return typeReturnPayment(data)
         }  else{
-            return util.responseErrorQuery()
+            return typePembayaranOthers(data)
         }          
     } catch(err) {
        return util.responseErrorServer(err)
@@ -370,6 +371,33 @@ async function typeReturnPayment(data){
         return util.responseErrorQuery()
     }
 }
+
+
+async function typePembayaranOthers(data){
+    try{
+        if (data.tanggal !== "" && 
+            data.jenisPembayaran !== "" && 
+            data.nama !== "" && 
+            data.jumlah !== "" && 
+            data.statusBayar !== "" &&
+            data.hutang !== "" && 
+            data.total !== "" && 
+            data.ket !== "") {         
+
+            const rows = await modelPengeluaran.insertPembayaranTypeOthers(data)
+            if (rows.affectedRows >= 1) {
+            return util.responseSuccess(rows)
+            } else {
+            return util.responseFailedPost()
+            }
+        } else {
+            return util.responseErrorNullParam()
+        }
+    } catch(err){
+        console.log(err)
+        return util.responseErrorQuery()
+    }
+}
 //End of Pembayaran
 
 
@@ -413,8 +441,6 @@ async function getCsrById(id) {
 
 async function insertCsr(data) {
     try {
-        console.log("function type csr 1")
-        console.log(data)
         var typeIsCsr = '8'
         if (data.jenisCsr == typeIsCsr){
             return typeCsr(data)  
