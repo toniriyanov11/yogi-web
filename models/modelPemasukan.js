@@ -22,11 +22,10 @@ router.getPemasukanAll = function() {
 router.getPemasukanById = function(id) {
     console.log('id'+id)
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`SELECT id, tanggal, jumlah, nominal, nama, ket,
+        database.getConnection().query(`SELECT id, tanggal, jumlah, nominal, nama, ket, client as kodeClient,
         kode_jenis as kodeJenisPemasukan, kode_status_bayar as kodeStatusBayar, 
         (select nama from ms_jenis_pemasukan where kode = pemasukan.kode_jenis) ketJenisPemasukan, 
-        (select kode_client from pembayaran_invoice where id_pemasukan = pemasukan.id ) kodeClient,
-        (select nama from client where kode = kodeClient) namaClient, 
+        (select nama from client where kode = client) namaClient, 
         (select nama from ms_status_bayar where kode = pemasukan.kode_status_bayar) ketStatusBayar,
         CASE kode_status_bayar WHEN '2' THEN (select nominal from piutang where id_pemasukan = pemasukan.id) 
         WHEN '4' THEN (select nominal from piutang where id_pemasukan = pemasukan.id) 
@@ -60,6 +59,22 @@ router.insertPemasukanTypeInvoicePayment = function(data) {
     console.log(data)
     return new Promise((resolve, reject) => {
         database.getConnection().query(`CALL P_PEMASUKAN_PEMBAYARAN_INVOICE(?,?,?,?,?,?,?,?,?,?)`,[data.jenisPemasukan,data.tanggal,data.nama,data.jumlah,data.total,data.statusBayar,data.ket,data.client,data.piutang,data.tglSekarang],(err,results) => {
+            console.log(err)
+            if (err) {
+                database.getConnection().query(`ROLLBACK;`)
+                return reject(err)
+            } else {
+                database.getConnection().query(`COMMIT;`)
+                return resolve(results)
+            }
+        })
+    })
+}
+
+router.insertPemasukanTypeInvoiceCreated = function(data) {
+    console.log(data)
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(`CALL P_PEMASUKAN_PEMBENTUKAN_INVOICE(?,?,?,?,?,?,?,?,?,?)`,[data.jenisPemasukan,data.tanggal,data.nama,data.jumlah,data.total,data.statusBayar,data.ket,data.client,data.piutang,data.tglSekarang],(err,results) => {
             console.log(err)
             if (err) {
                 database.getConnection().query(`ROLLBACK;`)

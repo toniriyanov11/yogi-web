@@ -143,6 +143,8 @@
          dataInputTypes:'',
          dataPaymentsStatus:'',
          typeInvoicePayment: '1',
+         typeOthers: '2',
+         typeInvoiceCreated: '3',
          paymentStatusDebt: '3',
          paymentStatusHalfPaid: '2',
          isButtonDisable: false
@@ -227,6 +229,11 @@
         getMasterInputType: async function() {
             try{
                 const res = await axios.get(apiUrl + 'master/input-type')
+                for(let i=0 ; i < res.data.length; i++ ){
+                    if (res.data[i].kode == this.typeInvoiceCreated){
+                         res.data.splice(i,1)
+                    }
+                }
                 this.dataInputTypes = res.data
             }catch(err){
                 alert("Get Input Type"+' '+err)

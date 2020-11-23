@@ -70,7 +70,6 @@ router.insertInvoice = function(data) {
                 console.log(err)
                 return reject(err)
             }
-            console.log('nah sini')
                 database.getConnection().query(`INSERT INTO invoice (id,tanggal,kode_client,grand_total,ket,status_aktif,tgl_rekam)
                 VALUES (f_gen_id("I"),?,?,?,?,'Y',?)`,[data.tanggal, data.kodeClient, data.grandTotal, data.ket, data.tglSekarang],(err,results) =>{  
                     if (err) {
@@ -78,9 +77,16 @@ router.insertInvoice = function(data) {
                         database.getConnection().query(`ROLLBACK;`)
                         return reject(err)
                     }})
+
+                    database.getConnection().query(`CALL P_PEMASUKAN_PEMBENTUKAN_INVOICE(?,?,?,?,?,?,?,?,?,?)`,[3,data.tanggal,'pembentukan invoice',1,data.grandTotal,4,'-',data.kodeClient,data.grandTotal,data.tglSekarang],(err,results) => {
+                        console.log(err)
+                        if (err) {
+                            database.getConnection().query(`ROLLBACK;`)
+                            return reject(err)
+                        }
+                    })
+                    
                 
-                
-                    console.log(data)
                     if(data.jenisItem == typeItemBarangJadi){
                         data.itemBarangJadi.forEach((item,index) => { 
                             database.getConnection().query(`
@@ -113,7 +119,16 @@ router.insertInvoice = function(data) {
                                             return reject(err)
                                         }
                                     })
-                                }
+                                }      
+
+                                database.getConnection().query(`
+                                UPDATE barang_jadi set status_aktif  = 'P' where id = ?`,[data.itemBarangJadi[index].id],(err,results) => {
+                                        if (err) {
+                                            console.log(err)
+                                            database.getConnection().query(`ROLLBACK;`)
+                                            return reject(err)
+                                        }
+                                    })
 
                                 database.getConnection().query(`COMMIT`) 
                                 return resolve(results)
