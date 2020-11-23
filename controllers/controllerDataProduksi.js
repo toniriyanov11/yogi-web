@@ -370,9 +370,9 @@ async function deleteBarangJadi(id) {
 //function
 async function proccessInsertBarangJadi(data){
     try{
-        if (data.tanggal != "" || data.nama != "" || data.item != [] 
-        || data.upah != "" || data.totalHarga != "" || data.jumlah != ""
-        || data.ket != ""  || data.totalUpah != "" || data.hargaBarang != "" ) {         
+        if (data.tanggal != "" || data.nama != "" || data.item != null
+        || data.jumlah != ""  || data.ket != ""   || data.hargaPokok != "" 
+        || data.hargaPerPcs != "" || data.GrandTotalBiayaTambahanProduksi != "" ) {         
             const rows = await modelDataProduksi.insertBarangJadi(data)
             if (rows.affectedRows >= 1) {
             return util.responseSuccess(rows)

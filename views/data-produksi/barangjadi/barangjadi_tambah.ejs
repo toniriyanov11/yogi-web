@@ -228,7 +228,8 @@
             ket:'',
             jenisItem:'',
             tglSekarang:moment().format('YYYY-MM-DD'),
-            userAkun:''
+            userAkun:'',
+            grandTotalBiayaTambahanProduksi:''
          },
          tieDye: 0,
          label: 0,
@@ -331,9 +332,11 @@
                 this.totalBiayaTambahanProduksi  = this.convertFloatToRupiah(val.toString())
                 if ( this.data.jumlah != ""){
                     this.hargaPokok = this.convertRupiahToFloat(this.totalBiayaTambahanProduksi)  + this.convertRupiahToFloat(this.hargaSetelahJahit)
+                    this.calculateGrandTotalBiayaTambahanProduksi()
                 }
             }else{
                 this.totalBiayaTambahanProduksi = 0
+                this.data.grandTotalBiayaTambahanProduksi = 0
                 if ( this.data.jumlah != ""){
                   this.hargaPokok  = this.convertRupiahToFloat(this.hargaSetelahJahit)
                 }
@@ -405,6 +408,7 @@
             try{
                 this.setDisableButton()
                 var data = this.data
+                console.log(data)
                 let res = await axios.post(apiUrl+'dataproduksi/barangjadi/tambah', { data:data })
                 if (res.data.success){
                     this.setEnableButton()
@@ -431,7 +435,7 @@
             var validate = false
             if (this.data.tanggal == "" || this.data.nama == "" || this.data.item == null
             || this.data.jumlah == ""  || this.data.ket == ""   || this.data.hargaPokok == "" 
-            || this.data.hargaPerPcs == "" ) {
+            || this.data.hargaPerPcs == "" || this.data.grandTotalBiayaTambahanProduksi == "" ) {
                 validate = false
             } else {
                 validate = true
@@ -514,6 +518,9 @@
         },
         sumTotalBiayaTambahan(){
             this.totalBiayaTambahan = parseInt(this.data.biayaTambahan.tieDye) + parseInt(this.data.biayaTambahan.label) + parseInt(this.data.biayaTambahan.handtag) + parseInt(this.data.biayaTambahan.packing) + parseInt(this.data.biayaTambahan.dllAksesoris) + parseInt(this.data.biayaTambahan.dllProduksi)   
+        },
+        calculateGrandTotalBiayaTambahanProduksi(){
+            this.data.grandTotalBiayaTambahanProduksi =  parseInt(this.convertRupiahToFloat(this.totalBiayaTambahanProduksi)) * parseInt(this.data.jumlah)
         }
      }
 })
