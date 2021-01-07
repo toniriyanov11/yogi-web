@@ -49,6 +49,7 @@
                                     <option disabled style="color: gainsboro" >pilih Nama Client</option>
                                     <option  v-for="dataClient in dataClients" :key="dataClient.kode" :value="dataClient.kode">{{dataClient.nama}}</option>
                                 </select>
+                                <small v-if="data.client != ''" class="form-text text-muted">Total Tagihan : Rp.</small>
                             </div>
                     </div>
                     <div v-if="data.jenisPemasukan != typeInvoicePayment" class="form-group row">
@@ -56,8 +57,8 @@
                         <div class="col-md-5">
                             <input class="form-control" type="text" v-model="data.nama" id="example-text-input">
                         </div>
-                    </div>
-                    <div class="col-sm-7"> <hr></div>
+                    <div class="col-sm-7"> <hr></div>    
+                   </div>
                     <div v-if="data.jenisPemasukan != typeInvoicePayment" class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">banyak</label>
                         <div class="col-md-5">
