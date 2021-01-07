@@ -38,14 +38,14 @@
                             </div><!-- input-group -->
                         </div>
                     </div>
-                    <div class="form-group row">
+                    <!-- <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Jenis CSR</label>
                         <div class="col-sm-10">
                             <select disabled class="form-control" v-model="dataResponses.ketJenisCsr">
                                 <option v-for="dataCsrType in dataCsrTypes" :key="dataCsrType.kode" >{{dataCsrType.nama}}</option>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Nama Item</label>
                         <div class="col-sm-10">
@@ -58,21 +58,14 @@
                             <textarea required class="form-control"  rows="3" v-model="dataResponses.ket"></textarea>
                         </div>
                     </div>
-                    <hr>
-                    <div class="form-group row">
-                        <label for="example-search-input" class="col-sm-2 col-form-label">banyak</label>
-                        <div class="col-sm-10">
-                            <input disabled class="form-control" type="search" v-model="dataResponses.jumlah" id="example-search-input">
-                        </div>
-                    </div>
-                    <div class="form-group row">
+                    <!-- <div class="form-group row">
                         <label class="col-sm-2 col-form-label">Status Bayar</label>
                             <div class="col-sm-10">
                                 <select disabled class="form-control" v-model="dataResponses.kodeStatusBayar">
                                     <option  v-for="dataPaymentStatus in dataPaymentsStatus" :value="dataPaymentStatus.kode" >{{dataPaymentStatus.nama}}</option>
                                 </select>
                             </div>
-                    </div>
+                    </div> -->
                     <hr>
                     <div v-if="dataResponses.kodeStatusBayar == paymentStatusHalfPaid" class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Nominal Lunas</label>
