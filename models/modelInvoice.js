@@ -183,5 +183,19 @@ router.insertInvoice = function(data) {
 //End of Invoice
 
 
+router.getInvoiceAmountByKodeClient = function(kode) {
+    return new Promise((resolve, reject) => {
+        database.getConnection().query(` SELECT i.id, i.tanggal, i.kode_client as kodeClient, c.nama as namaClient, i.ket, i.grand_total as grandTotal
+        FROM invoice as i 
+        INNER JOIN detil_invoice as di 
+        INNER JOIN client as c 
+        ON i.id = di.id_invoice AND i.kode_client = c.kode  AND i.status_aktif = 'Y' AND i.kode_client = ?`,[kode],(err,results) => {
+            if (err) {
+                return reject(err)
+            } 
+            return resolve(results)
+        })
+    })
+}
 
 module.exports = router

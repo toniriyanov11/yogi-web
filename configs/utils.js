@@ -816,7 +816,6 @@ async function convertObjectStructureUtangPiutang(dataResponse,dateFormat){
 
 async function convertObjectStructureUtang(dataResponse,dateFormat){
     try{
-        console.log('masuk sini')
         var dataTemp = await this.convertDate(dataResponse, dateFormat)
         let dataModified = []
 
@@ -844,8 +843,34 @@ async function convertObjectStructureUtang(dataResponse,dateFormat){
             banyakUtang:banyakUtangTemp
         })
         
-        console.log('data',data)
       return data
+    }catch(err){
+      return err
+    }
+}
+
+
+async function convertObjectStructureInvoiceAmount(dataResponse,dateFormat){
+    try{
+        let data = {}
+        if(dataResponse.data){
+            var dataTemp = await this.convertDate(dataResponse, dateFormat)
+        
+            let totalTagihanTemp = dataTemp.reduce((currentTotal,item)=>{
+                return parseInt(item.grandTotal) + currentTotal
+            },0)
+            let banyakInvoiceTemp = dataTemp.length
+
+            data = {
+                kodeClient: dataTemp[0].kodeClient,
+                namaClient: dataTemp[0].namaClient,
+                data: dataTemp,
+                totalTagihan: totalTagihanTemp,
+                banyakInvoice: banyakInvoiceTemp
+            }
+      }
+      return data
+    
     }catch(err){
       return err
     }
@@ -875,6 +900,7 @@ module.exports = {
     convertObjectStructureLabaRugi,
     convertObjectStructureDebitKredit,
     convertObjectStructureUtangPiutang,
-    convertObjectStructureUtang
+    convertObjectStructureUtang,
+    convertObjectStructureInvoiceAmount
 
 }

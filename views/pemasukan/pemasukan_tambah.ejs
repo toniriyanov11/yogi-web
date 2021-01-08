@@ -49,7 +49,8 @@
                                     <option disabled style="color: gainsboro" >pilih Nama Client</option>
                                     <option  v-for="dataClient in dataClients" :key="dataClient.kode" :value="dataClient.kode">{{dataClient.nama}}</option>
                                 </select>
-                                <small v-if="data.client != ''" class="form-text text-muted">Total Tagihan : Rp.</small>
+                                <small @click="showModal" v-if="data.client != '' && dataInvoiceAmount.totalTagihan " class="form-text text-muted">Total Tagihan : <span class="text-success">Rp.{{convertFloatToRupiah(dataInvoiceAmount.totalTagihan.toString())}}</span></small>
+                                <small v-else-if="data.client != '' && !dataInvoiceAmount.totalTagihan " class="form-text text-muted"> <span class="text-danger">Tidak Ada Tagihan</span></small>
                             </div>
                     </div>
                     <div v-if="data.jenisPemasukan != typeInvoicePayment" class="form-group row">
@@ -78,7 +79,7 @@
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Nominal (Rp)</label>
                         <div class="col-md-5">
-                            <input class="form-control" type="text" v-model="total">
+                            <input :disabled="isFormTotalDisable" class="form-control" type="text" v-model="total">
                         </div>
                     </div>
                     <div v-if="data.statusBayar == paymentStatusHalfPaid" class="form-group row">
@@ -113,6 +114,47 @@
     </div>
     <!-- END ROW -->
 
+    <!--  Modal content for the above example -->
+    <div v-if="modal">
+        <div class="modals  show">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title mt-0" id="myLargeModalLabel">Detail Tagihan =
+                        <span class="ml-3 text-italic">{{dataInvoiceAmount.namaClient}} - Rp.{{convertFloatToRupiah(dataInvoiceAmount.totalTagihan.toString())}}</span></h5>
+                        <button @click="closeModal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <div class="table-responsive">
+                                <table class="table mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>No.Invoice</th>
+                                            <th>GrandTotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(dataInvoice,index) in dataInvoiceAmount.data" :key="dataInvoice.id">
+                                            <th scope="row">{{index + 1}}</th>
+                                            <td>{{dataInvoice.id}}</td>
+                                            <td>{{convertFloatToRupiah(dataInvoice.grandTotal)}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <div @click="closeModal" class="modals-backdrop"></div>
+    </div>
+    <!-- /.modal -->
+
 </div>
 
 <script>
@@ -142,13 +184,16 @@
          piutang:'',
          dataClients:'',
          dataInputTypes:'',
+         dataInvoiceAmount:'',
          dataPaymentsStatus:'',
          typeInvoicePayment: '1',
          typeOthers: '2',
          typeInvoiceCreated: '3',
          paymentStatusDebt: '3',
          paymentStatusHalfPaid: '2',
-         isButtonDisable: false
+         isButtonDisable: false,
+         isFormTotalDisable : false,
+         modal: false
      },
      async created(){
         await this.getMasterClient()
@@ -185,6 +230,18 @@
         },
         piutang : function (val){
             //convert to rupiah
+        },
+        'data.client' : async function (val){
+            await this.getInvoiceAmountByKode(val)
+            this.total = ''
+            if(this.dataInvoiceAmount.totalTagihan){
+                this.isFormTotalDisable = false
+            }else{
+                this.isFormTotalDisable = true
+            }
+        },
+        'data.jenisPemasukan': function(){
+            this.isFormTotalDisable = false
         }
      },
      methods:{
@@ -240,6 +297,14 @@
                 alert("Get Input Type"+' '+err)
             }
         },
+        getInvoiceAmountByKode: async function(kodeUser) {
+            try{
+                const res = await axios.get(apiUrl + 'invoice/amount/' + kodeUser)
+                this.dataInvoiceAmount = res.data
+            }catch(err){
+                alert("Get Invoice Amount"+' '+err)
+            }
+        },
         checkValidation: async function(){
             var validate = false
             if(this.data.jenisPemasukan == this.typeInvoicePayment){
@@ -262,7 +327,8 @@
             }
         },
         checkValidationInvoicePayment(){
-            if (this.data.client == 0  ) {
+            if (this.data.client == 0 || this.data.tanggal == "" || this.data.jenisPemasukan == "" 
+            || this.data.total == "" || this.data.ket == "" ) {
                 return false
             } else {
                 return true
@@ -338,7 +404,40 @@
             this.data.nama = "pembayaran invoice"
             this.data.statusBayar = 1
             this.data.jumlah = '1'
+        },
+        showModal: function(){
+            this.modal = true
+        },
+        closeModal: function(){
+            this.modal = false
         }
      }
      })
  </script>
+
+
+<style>
+    .modals{
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1050;
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        outline: 0;
+        opacity: 100;
+    }
+        
+    .modals-backdrop{
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1040;
+        width: 100vw;
+        height: 100vh;
+        background-color: #000;
+        opacity: .5;
+    }
+     </style>

@@ -17,8 +17,6 @@ router.post('/',async function(req, res, next) {
    try{
       let dataResponse = await controllerInvoice.getInvoiceAll()
       var data =""
-      console.log('-------------------------------incovoice------------------------')
-      console.log(dataResponse)
       if (dataResponse.success) {
          data = await util.convertObjectStructureInvoice(dataResponse,'DD/MM/YYYY')
          console.log(data)
@@ -72,6 +70,24 @@ router.post('/',async function(req, res, next) {
       res.status(500).json(err);
    }
  });
+
+
+ router.get('/amount/:kode',async function(req, res, next) {
+   try{
+      var kode = req.params.kode;
+      let dataResponse = await controllerInvoice.getInvoiceAmountByKodeClient(kode)
+      var data =""
+      if (dataResponse.success) {
+         data = await util.convertObjectStructureInvoiceAmount(dataResponse, 'DD/MM/YYYY')
+         console.log(data)
+         res.status(200).json(data);
+      } else {
+         res.status(400).json(data);
+      }
+  }catch(err){
+       res.status(500).json(err);
+  }
+});
 
  //end of Invoice
 

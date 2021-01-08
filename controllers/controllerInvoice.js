@@ -70,12 +70,34 @@ async function proccessInsertInvoice(data){
 }
 
 
+
+async function getInvoiceAmountByKodeClient(kode) {
+    try {
+        const rows = await modelInvoice.getInvoiceAmountByKodeClient(kode)
+
+        if ( rows.length >= 1 ) {
+            return util.responseSuccess(rows)
+        } else if ( rows.length == 0 ) {
+            return util.responseNotFound()
+        } else {
+            return util.responseFailedGet()
+        }
+        
+    } catch(err) {
+        console.log(err)
+        return util.responseErrorServer(err)
+    }
+}
+
 //End of Invoice
+
+
 
 
 
 module.exports = {
     getInvoiceAll,
     getInvoiceById,
-    insertInvoice
+    insertInvoice,
+    getInvoiceAmountByKodeClient
 }
