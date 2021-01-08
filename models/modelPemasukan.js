@@ -6,7 +6,7 @@ var router = express.Router();
 router.getPemasukanAll = function() {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`SELECT id, tanggal, jumlah, nominal, nama,
-        kode_jenis as kodeJenisPemasukan, kode_status_bayar as kodeStatusBayar,
+        kode_jenis as kodeJenisPemasukan, kode_status_bayar as kodeStatusBayar, id_invoice as idInvoice,
          (select nama from ms_jenis_pemasukan where kode = pemasukan.kode_jenis) ketJenisPemasukan,
          (select nama from ms_status_bayar where kode = pemasukan.kode_status_bayar) ketStatusBayar 
          FROM pemasukan WHERE status_aktif = 'Y'`,(err,results) => {
@@ -23,7 +23,7 @@ router.getPemasukanById = function(id) {
     console.log('id'+id)
     return new Promise((resolve, reject) => {
         database.getConnection().query(`SELECT id, tanggal, jumlah, nominal, nama, ket, client as kodeClient,
-        kode_jenis as kodeJenisPemasukan, kode_status_bayar as kodeStatusBayar, 
+        kode_jenis as kodeJenisPemasukan, kode_status_bayar as kodeStatusBayar,  id_invoice as idInvoice,
         (select nama from ms_jenis_pemasukan where kode = pemasukan.kode_jenis) ketJenisPemasukan, 
         (select nama from client where kode = client) namaClient, 
         (select nama from ms_status_bayar where kode = pemasukan.kode_status_bayar) ketStatusBayar,

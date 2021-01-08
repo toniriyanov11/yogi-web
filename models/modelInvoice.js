@@ -185,11 +185,12 @@ router.insertInvoice = function(data) {
 
 router.getInvoiceAmountByKodeClient = function(kode) {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(` SELECT i.id, i.tanggal, i.kode_client as kodeClient, c.nama as namaClient, i.ket, i.grand_total as grandTotal
+        database.getConnection().query(` SELECT i.id, i.tanggal, i.kode_client as kodeClient, c.nama as namaClient, i.ket, pi.nominal as grandTotal
         FROM invoice as i 
-        INNER JOIN detil_invoice as di 
         INNER JOIN client as c 
-        ON i.id = di.id_invoice AND i.kode_client = c.kode  AND i.status_aktif = 'Y' AND i.kode_client = ?`,[kode],(err,results) => {
+        INNER JOIN pemasukan as p
+        INNER JOIN piutang as pi
+        ON i.kode_client = c.kode AND i.id = p.id_invoice AND p.id = pi.id_pemasukan AND i.status_aktif = 'Y' AND i.kode_client = ?`,[kode],(err,results) => {
             if (err) {
                 return reject(err)
             } 
