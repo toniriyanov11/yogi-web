@@ -190,7 +190,7 @@ router.getInvoiceAmountByKodeClient = function(kode) {
         INNER JOIN client as c 
         INNER JOIN pemasukan as p
         INNER JOIN piutang as pi
-        ON i.kode_client = c.kode AND i.id = p.id_invoice AND p.id = pi.id_pemasukan AND i.status_aktif = 'Y' AND i.kode_client = ?`,[kode],(err,results) => {
+        ON i.kode_client = c.kode AND i.id = p.id_invoice AND p.id = pi.id_pemasukan AND i.status_aktif = 'Y' AND  pi.nominal > 0 AND i.kode_client = ?`,[kode],(err,results) => {
             if (err) {
                 return reject(err)
             } 

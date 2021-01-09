@@ -141,7 +141,7 @@
                                         <tr v-for="(dataInvoice,index) in dataInvoiceAmount.data" :key="dataInvoice.id">
                                             <th scope="row">{{index + 1}}</th>
                                             <td>{{dataInvoice.id}}</td>
-                                            <td>{{convertFloatToRupiah(dataInvoice.grandTotal)}}</td>
+                                            <td>{{convertFloatToRupiah(dataInvoice.grandTotal.toString())}}</td>
                                         </tr>
                                     </tbody>
                                 </table>
