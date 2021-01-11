@@ -14,6 +14,24 @@
         <!-- end row -->
     </div>
     <!-- end page-title -->
+
+
+    <!-- Start row-->
+    <div class="row">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-heading p-4">
+                    <div class="mini-stat-icon float-right">
+                        <i class="mdi mdi-chevron-triple-down bg-dark text-white"></i>
+                    </div>
+                    <div>
+                        <p class="font-16">Total Harga Penyusutan</p>
+                    </div>
+                    <h5 class="mt-4">Rp.{{convertToRupiah(dataResponseTotalHargaPenyusutan)}}</h5>
+                </div>
+            </div>
+        </div>
+    </div>        
  
 
     <!-- START ROW -->
@@ -63,7 +81,8 @@
     var app = new Vue({
      el: '#app',
      data: {
-         dataResponses : {}
+         dataResponses : {},
+         dataResponseTotalHargaPenyusutan : ''
      },
      created() {
         this.getData()
@@ -76,8 +95,8 @@
         getData: async function() {
             try{
                 const res = await axios.post(apiUrl+'inventori')
-                this.dataResponses = res.data
-                console.log(this.dataResponses)
+                this.dataResponses = res.data.dataInventory
+                this.dataResponseTotalHargaPenyusutan = res.data.totalHargaPenyusutan
             }catch(err){
                 alert("Get data"+' '+err)
             }

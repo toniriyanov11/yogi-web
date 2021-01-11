@@ -883,11 +883,11 @@ async function convertObjectStructureInventory(dataResponse,dateFormat){
             var dataTemp = await this.convertDate(dataResponse, dateFormat)
             
             dataTemp.forEach((item,index) => {
-                var oneYear = 365
+                let oneYear = 365
                 let hargaAwal = item.hargaAwal
                 let nilaiPenyusutan = item.nilaiPenyusutan
                 let lamaKepemilikan = item.lamaKepemilikan
-                var result =  Math.round(hargaAwal - hargaAwal  * ((nilaiPenyusutan/100) / oneYear) * lamaKepemilikan) 
+                let result =  Math.round(hargaAwal - hargaAwal  * ((nilaiPenyusutan/100) / oneYear) * lamaKepemilikan) 
                 if  (result >= 0 && result <= hargaAwal){
                     item.hargaSaatIni = result
                 } else if (result > hargaAwal) {
@@ -895,11 +895,19 @@ async function convertObjectStructureInventory(dataResponse,dateFormat){
                 } else {
                     item.hargaSaatIni = 0
                 }
+                
+                item.hargaTersusut  = hargaAwal - item.hargaSaatIni 
             })
 
-            console.log(dataTemp)
 
-            data = dataTemp.filter((item) => item.hargaSaatIni > 0)
+            let dataInventoryTemp = dataTemp.filter((item) => item.hargaSaatIni > 0)
+            let listHargaTersusut = dataInventoryTemp.map((item) => {return item.hargaTersusut})
+            let totalHargaPenyusutanTemp = listHargaTersusut.reduce((currentTotal, item)=> parseInt(currentTotal) + parseInt(item))
+
+            data = {
+                dataInventory : dataInventoryTemp,
+                totalHargaPenyusutan : totalHargaPenyusutanTemp.toString()
+            }
       }
       return data
     
