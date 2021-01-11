@@ -172,13 +172,29 @@ router.getSubCuttingType = function() {
     })
 }
 
+//query lama sebelumnya (getStuffStock)
+// SELECT jp.kode,jp.nama,sum(sisa) as stock FROM bahan_baku as bb 
+//         INNER JOIN pengeluaran as p 
+//         INNER JOIN ms_jenis_produk as jp 
+//         ON bb.id_pengeluaran = p.id and bb.kode_jenis = jp.kode and p.status_aktif = 'Y' 
+//         GROUP BY jp.kode
 router.getStuffStock = function() {
     return new Promise((resolve, reject) => {
-        database.getConnection().query(`SELECT jp.kode,jp.nama,sum(sisa) as stock FROM bahan_baku as bb 
+        database.getConnection().query(`
+        
+        select kode, nama, IFNULL((SELECT sum(sisa) as stock 
+		FROM bahan_baku as bb 
         INNER JOIN pengeluaran as p 
         INNER JOIN ms_jenis_produk as jp 
-        ON bb.id_pengeluaran = p.id and bb.kode_jenis = jp.kode and p.status_aktif = 'Y' 
-        GROUP BY jp.kode`,(err,results) => {
+        ON bb.id_pengeluaran = p.id and bb.kode_jenis = jp.kode and jp.kode = 1 and p.status_aktif = 'Y' 
+        GROUP BY jp.kode),0) as stock from ms_jenis_produk where kode = 1
+        UNION
+        select kode, nama, IFNULL((SELECT sum(sisa) as stock 
+		FROM bahan_baku as bb 
+        INNER JOIN pengeluaran as p 
+        INNER JOIN ms_jenis_produk as jp 
+        ON bb.id_pengeluaran = p.id and bb.kode_jenis = jp.kode and jp.kode = 2 and p.status_aktif = 'Y' 
+        GROUP BY jp.kode),0) as stock from ms_jenis_produk where kode = 2`,(err,results) => {
             if (err) {
                 return reject(err)
             } else {
@@ -188,21 +204,6 @@ router.getStuffStock = function() {
     })
 }
 
-router.getStuffStock = function() {
-    return new Promise((resolve, reject) => {
-        database.getConnection().query(`SELECT jp.kode,jp.nama,sum(sisa) as stock FROM bahan_baku as bb 
-        INNER JOIN pengeluaran as p 
-        INNER JOIN ms_jenis_produk as jp 
-        ON bb.id_pengeluaran = p.id and bb.kode_jenis = jp.kode and p.status_aktif = 'Y' 
-        GROUP BY jp.kode`,(err,results) => {
-            if (err) {
-                return reject(err)
-            } else {
-                return resolve(results)
-            }
-        })
-    })
-}
 
 //master warna
 router.insertMasterWarna = function(data) {

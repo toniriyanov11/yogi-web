@@ -15,7 +15,7 @@ router.post('/',async function(req, res, next) {
      console.log(dataResponse)
      var data =""
      if (dataResponse.success) {
-        data = await util.convertDate(dataResponse,'DD/MM/YYYY')
+        data = await util.convertObjectStructureInventory(dataResponse,'DD/MM/YYYY')
         res.status(200).json(data);
      } else {
         res.status(400).json(data);
