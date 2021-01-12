@@ -44,10 +44,13 @@ async function insertPemasukan(data) {
         let typeIsPaymentInvoice = '1'
         let typeIsOthers = '2'
         let typeIsInvoiceCreated = '3'
+        let typeIsInventorySelling = '4'
         if (data.jenisPemasukan == typeIsPaymentInvoice){
             return typeInvoicePayment(data)
         }else if(data.jenisPemasukan == typeIsInvoiceCreated){ 
             return typeInvoiceCreated(data)
+        }else if(data.jenisPemasukan == typeIsInventorySelling){
+            return typeInventorySelling(data)
         }else{
            return typeOther(data)
         }               
@@ -123,6 +126,32 @@ async function typeInvoiceCreated(data){
             data.ket !== "") {         
 
             const rows = await modelPemasukan.insertPemasukanTypeInvoiceCreated(data)
+            if (rows.affectedRows >= 1) {
+            return util.responseSuccess(rows)
+            } else {
+            return util.responseFailedPost()
+            }
+        } else {
+            return util.responseErrorNullParam()
+        }
+    } catch(err){
+        return util.responseErrorQuery()
+    }
+}
+
+async function typeInventorySelling(data){
+    try{
+        if (data.tanggal !== "" && 
+            data.jenisPemasukan !== "" && 
+            data.inventori !== "" && 
+            data.nama !== "" && 
+            data.jumlah !== "" && 
+            data.statusBayar !== "" &&
+            data.piutang !== "" && 
+            data.total !== "" && 
+            data.ket !== "") {         
+
+            const rows = await modelPemasukan.insertPemasukanTypeInventorySelling(data)
             if (rows.affectedRows >= 1) {
             return util.responseSuccess(rows)
             } else {

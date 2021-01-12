@@ -27,7 +27,7 @@ router.getInventorys= function() {
         p.nominal as hargaAwal, i.nilai_penyusutan as nilaiPenyusutan, (select datediff(NOW(),p.tanggal)) as lamaKepemilikan
         FROM inventori as i 
         INNER JOIN pengeluaran as p 
-        ON i.id_pengeluaran = p.id AND p.status_aktif = "Y"`,(err,results) => {
+        ON i.id_pengeluaran = p.id AND i.id_pemasukan is null AND p.status_aktif = "Y"`,(err,results) => {
             if (err) {
                 return reject(err)
             } 

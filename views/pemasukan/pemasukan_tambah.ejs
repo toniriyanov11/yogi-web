@@ -46,27 +46,36 @@
                         <label class="col-sm-2 col-form-label">Pilih Nama Client</label>
                             <div class="col-md-5">
                                 <select class="form-control" v-model="data.client">
-                                    <option disabled style="color: gainsboro" >pilih Nama Client</option>
+                                    <option disabled style="color: gainsboro" >Pilih Nama Client</option>
                                     <option  v-for="dataClient in dataClients" :key="dataClient.kode" :value="dataClient.kode">{{dataClient.nama}}</option>
                                 </select>
                                 <small @click="showModal" v-if="data.client != '' && dataInvoiceAmount.totalTagihan " class="form-text text-muted">Total Tagihan : <span class="text-success">Rp.{{convertFloatToRupiah(dataInvoiceAmount.totalTagihan.toString())}}</span></small>
                                 <small v-else-if="data.client != '' && !dataInvoiceAmount.totalTagihan " class="form-text text-muted"> <span class="text-danger">Tidak Ada Tagihan</span></small>
                             </div>
                     </div>
-                    <div v-if="data.jenisPemasukan != typeInvoicePayment" class="form-group row">
+                    <div v-if="data.jenisPemasukan == typeInventorySelling" class="form-group row">
+                        <label class="col-sm-2 col-form-label">Pilih Inventori</label>
+                            <div class="col-md-5">
+                                <select class="form-control" v-model="data.inventori">
+                                    <option disabled style="color: gainsboro" >Pilih Inventori</option>
+                                    <option  v-for="dataInventory in dataInventorys" :key="dataInventory.id" :value="dataInventory.id">{{dataInventory.id}} - {{dataInventory.nama}} - {{convertFloatToRupiah(dataInventory.hargaAwal)}}</option>
+                                </select>
+                            </div>
+                    </div>
+                    <div v-if="data.jenisPemasukan == typeOthers" class="form-group row">
                         <label for="example-text-input" class="col-sm-2 col-form-label">Nama Item</label>
                         <div class="col-md-5">
                             <input class="form-control" type="text" v-model="data.nama" id="example-text-input">
                         </div>
                     <div class="col-sm-7"> <hr></div>    
                    </div>
-                    <div v-if="data.jenisPemasukan != typeInvoicePayment" class="form-group row">
+                    <div v-if="data.jenisPemasukan == typeOthers" class="form-group row">
                         <label for="example-search-input" class="col-sm-2 col-form-label">banyak</label>
                         <div class="col-md-5">
                             <input class="form-control" type="number" v-model="data.jumlah" id="example-search-input">
                         </div>
                     </div>
-                    <div v-if="data.jenisPemasukan != typeInvoicePayment" class="form-group row">
+                    <div v-if="data.jenisPemasukan == typeOthers" class="form-group row">
                         <label class="col-sm-2 col-form-label">Status Bayar</label>
                             <div class="col-md-5">
                                 <select class="form-control" v-model="data.statusBayar">
@@ -169,6 +178,7 @@
             tanggal:'',
             jenisPemasukan:'',
             client:0,
+            inventori:'',
             nama:'',
             jumlah:'',
             statusBayar:'',
@@ -186,9 +196,11 @@
          dataInputTypes:'',
          dataInvoiceAmount:'',
          dataPaymentsStatus:'',
+         dataInventorys:'',
          typeInvoicePayment: '1',
          typeOthers: '2',
          typeInvoiceCreated: '3',
+         typeInventorySelling: '4',
          paymentStatusDebt: '3',
          paymentStatusHalfPaid: '2',
          isButtonDisable: false,
@@ -199,6 +211,7 @@
         await this.getMasterClient()
         await this.getMasterPaymentStatus()
         await this.getMasterInputType()
+        await this.getInventory()
      },
      watch: {
         total : function (val) {
@@ -263,6 +276,14 @@
         customFormatter(date) {
             return moment(date).format("DD/MM/YYYY");
         },
+        getInventory: async function() {
+            try{
+                const res = await axios.post(apiUrl + 'inventori')
+                this.dataInventorys = res.data.dataInventory
+            }catch(err){
+                alert("Get Inventory"+' '+err)
+            }
+        },
         getMasterClient: async function() {
             try{
                 const res = await axios.get(apiUrl + 'master/client')
@@ -310,6 +331,9 @@
             if(this.data.jenisPemasukan == this.typeInvoicePayment){
                 this.setInvoicePaymentData()
                 validate = this.checkValidationInvoicePayment()
+            }else if (this.data.jenisPemasukan == this.typeInventorySelling){
+                this.setInventorySellingData()
+                validate = this.checkValidationInventorySelling()
             }else if (this.data.tanggal == "" || this.data.jenisPemasukan == "" || 
              this.data.nama == "" || this.data.jumlah == "" || this.data.statusBayar == "" 
             || this.data.total == "" || this.data.ket == "" ) {
@@ -329,6 +353,16 @@
         checkValidationInvoicePayment(){
             if (this.data.client == 0 || this.data.tanggal == "" || this.data.jenisPemasukan == "" 
             || this.data.total == "" || this.data.ket == "" ) {
+                return false
+            } else {
+                return true
+            }
+        },
+        checkValidationInventorySelling(){
+            if (this.data.tanggal == "" || this.data.jenisPemasukan == "" 
+            || this.data.total == "" || this.data.ket == "" || this.data.inventori == "") {
+                console.log('kena disini')
+                console.log(this.data)
                 return false
             } else {
                 return true
@@ -402,6 +436,11 @@
         },
         setInvoicePaymentData: function(){
             this.data.nama = "pembayaran invoice"
+            this.data.statusBayar = 1
+            this.data.jumlah = '1'
+        },
+        setInventorySellingData: function(){
+            this.data.nama = "Penjualan inventori"
             this.data.statusBayar = 1
             this.data.jumlah = '1'
         },
