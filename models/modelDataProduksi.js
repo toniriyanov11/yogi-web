@@ -16,8 +16,8 @@ router.getCuttingAll = function() {
         (select nama from ms_warna_bahan where kode = kodeWarnaBahan) ketWarnaBahan,
         (select nama from ms_tipe_cutting where kode = kodeTipeCutting) ketTipeCutting,
         (select nama from ms_tipe_sub_cutting where kode = kodeTipeSubCutting) ketTipeSubCutting,
-        (berat/jumlah) as hasilPerPcs, (harga_per_kg*(berat/jumlah)) as totalHargaBahan,
-        (harga_per_kg*(berat/jumlah)) + upah as totalBiayaPerPcs, ((harga_per_kg*(berat/jumlah)) + upah) * jumlah as totalBiaya
+        round((berat/jumlah),2) as hasilPerPcs, (harga_per_kg*round((berat/jumlah),2)) as totalHargaBahan,
+        (harga_per_kg*round((berat/jumlah),2)) + upah as totalBiayaPerPcs, ((harga_per_kg* round((berat/jumlah),2)) + upah) * jumlah as totalBiaya
         FROM cutting WHERE status_aktif = 'Y'`,(err,results) => {
             if (err) {
                 return reject(err)
@@ -39,8 +39,8 @@ router.getCuttingById = function(id) {
         (select nama from ms_warna_bahan where kode = kodeWarnaBahan) ketWarnaBahan,
         (select nama from ms_tipe_cutting where kode = kodeTipeCutting) ketTipeCutting,
         (select nama from ms_tipe_sub_cutting where kode = kodeTipeSubCutting) ketTipeSubCutting,
-        (berat/jumlah) as hasilPerPcs, (harga_per_kg*(berat/jumlah)) as totalHargaBahan,
-        (harga_per_kg*(berat/jumlah)) + upah as totalBiayaPerPcs, ((harga_per_kg*(berat/jumlah)) + upah) * jumlah as totalBiaya
+        round((berat/jumlah),2) as hasilPerPcs, (harga_per_kg*round((berat/jumlah),2)) as totalHargaBahan,
+        (harga_per_kg*round((berat/jumlah),2)) + upah as totalBiayaPerPcs, ((harga_per_kg* round((berat/jumlah),2)) + upah) * jumlah as totalBiaya
         FROM cutting WHERE status_aktif = 'Y' AND id = ?`,[id],(err,results) => {
             if (err) {
                 return reject(err)
@@ -97,7 +97,7 @@ router.getSablonAll = function() {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`select x.id, x.tanggal, x.upah, x.nama, x.ket
         , c.nama as namaItem, c.jumlah as jumlahItem, c.upah as upahItem,
-        (c.harga_per_kg*(c.berat/c.jumlah)) + c.upah as totalBiayaItemPerPcs
+        (c.harga_per_kg*round((c.berat/c.jumlah),2)) + c.upah as totalBiayaItemPerPcs
         from (SELECT s.id, s.tanggal, s.upah, s.nama,  s.ket,
                 ds.id_item as idItem
                 FROM sablon as s 
@@ -118,7 +118,7 @@ router.getSablonById = function(id) {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`select x.id, x.idItem, x.tanggal, x.upah, x.nama, x.ket
         , c.nama as namaItem, c.jumlah as jumlahItem, c.upah as upahItem,
-        (c.harga_per_kg*(c.berat/c.jumlah)) + c.upah as totalBiayaItemPerPcs
+        (c.harga_per_kg*round((c.berat/c.jumlah),2)) + c.upah as totalBiayaItemPerPcs
         from (SELECT s.id, s.tanggal, s.upah, s.nama,  s.ket,
                 ds.id_item as idItem
                 FROM sablon as s 
@@ -181,7 +181,7 @@ router.getJahitAll = function() {
     return new Promise((resolve, reject) => {
         database.getConnection().query(`SELECT x.id, x.idItemCutting, x.idItemSablon, x.tanggal, x.upah, x.nama, x.ket
         , c.nama as namaItemCutting, c.jumlah as jumlahItemCutting, c.upah as upahItemCutting,
-        (c.harga_per_kg*(c.berat/c.jumlah)) + c.upah as totalBiayaItemCuttingPerPcs,
+        (c.harga_per_kg*round((c.berat/c.jumlah),2)) + c.upah as totalBiayaItemCuttingPerPcs,
         s.nama as namaItemSablon, s.jumlah as jumlahItemSablon, s.upah as upahItemSablon,  s.totalBiayaItemPerPcs as totalBiayaItemSablonPerPcs
         FROM (SELECT j.id, j.tanggal, j.upah, j.nama,  j.ket,
                 dj.id_item_cutting as idItemCutting,
@@ -193,7 +193,7 @@ router.getJahitAll = function() {
               LEFT join cutting as c on c.id in (x.idItemCutting)
               LEFT join 
               (SELECT s.id, s.tanggal, s.upah, s.nama,  s.ket,
-                ds.id_item as idItem, sum(c.jumlah) as jumlah,  sum((c.harga_per_kg*(c.berat/c.jumlah) + c.upah)) / count(c.id) + s.upah as totalBiayaItemPerPcs
+                ds.id_item as idItem, sum(c.jumlah) as jumlah,  sum((c.harga_per_kg*round((c.berat/c.jumlah),2) + c.upah)) / count(c.id) + s.upah as totalBiayaItemPerPcs
                 FROM sablon as s 
                 INNER JOIN detil_sablon as ds 
                 INNER JOIN cutting as c
@@ -227,7 +227,7 @@ router.getJahitById = function(id) {
               LEFT join cutting as c on c.id in (x.idItemCutting)
               LEFT join 
               (SELECT s.id, s.tanggal, s.upah, s.nama,  s.ket,
-                ds.id_item as idItem, sum(c.jumlah) as jumlah,  sum((c.harga_per_kg*(c.berat/c.jumlah) + c.upah)) / count(c.id) + s.upah   as totalBiayaItemPerPcs
+                ds.id_item as idItem, sum(c.jumlah) as jumlah,  sum((c.harga_per_kg*round((c.berat/c.jumlah),2) + c.upah)) / count(c.id) + s.upah   as totalBiayaItemPerPcs
                 FROM sablon as s 
                 INNER JOIN detil_sablon as ds 
                 INNER JOIN cutting as c
@@ -303,7 +303,7 @@ router.getBarangJadiAll = function() {
               LEFT join jahit as j on j.id in (z.idItem)
               LEFT join (  SELECT x.id, x.idItemCutting, x.idItemSablon, x.tanggal, x.upah, x.nama, x.ket
                 , c.nama as namaItemCutting, c.jumlah as jumlahItemCutting, c.upah as upahItemCutting,
-                (c.harga_per_kg*(c.berat/c.jumlah)) + c.upah as totalBiayaItemCuttingPerPcs,
+                (c.harga_per_kg*round((c.berat/c.jumlah),2)) + c.upah as totalBiayaItemCuttingPerPcs,
                 s.nama as namaItemSablon, s.jumlah as jumlahItemSablon, s.upah as upahItemSablon,  s.totalBiayaItemPerPcs as totalBiayaItemSablonPerPcs
                 FROM (SELECT j.id, j.tanggal, j.upah, j.nama,  j.ket,
                         dj.id_item_cutting as idItemCutting,
@@ -315,7 +315,7 @@ router.getBarangJadiAll = function() {
                       LEFT join cutting as c on c.id in (x.idItemCutting)
                       LEFT join 
                       (SELECT s.id, s.tanggal, s.upah, s.nama,  s.ket,
-                        ds.id_item as idItem, sum(c.jumlah) as jumlah,  sum((c.harga_per_kg*(c.berat/c.jumlah) + c.upah)) / count(c.id) + s.upah as totalBiayaItemPerPcs
+                        ds.id_item as idItem, sum(c.jumlah) as jumlah,  sum((c.harga_per_kg*round((c.berat/c.jumlah),2) + c.upah)) / count(c.id) + s.upah as totalBiayaItemPerPcs
                         FROM sablon as s 
                         INNER JOIN detil_sablon as ds 
                         INNER JOIN cutting as c
@@ -353,7 +353,7 @@ router.getBarangJadiById = function(id) {
               LEFT join jahit as j on j.id in (z.idItem)
               LEFT join (  SELECT x.id, x.idItemCutting, x.idItemSablon, x.tanggal, x.upah, x.nama, x.ket
                 , c.nama as namaItemCutting, c.jumlah as jumlahItemCutting, c.upah as upahItemCutting,
-                (c.harga_per_kg*(c.berat/c.jumlah)) + c.upah as totalBiayaItemCuttingPerPcs,
+                (c.harga_per_kg*round((c.berat/c.jumlah),2)) + c.upah as totalBiayaItemCuttingPerPcs,
                 s.nama as namaItemSablon, s.jumlah as jumlahItemSablon, s.upah as upahItemSablon,  s.totalBiayaItemPerPcs as totalBiayaItemSablonPerPcs
                 FROM (SELECT j.id, j.tanggal, j.upah, j.nama,  j.ket,
                         dj.id_item_cutting as idItemCutting,
@@ -365,7 +365,7 @@ router.getBarangJadiById = function(id) {
                       LEFT join cutting as c on c.id in (x.idItemCutting)
                       LEFT join 
                       (SELECT s.id, s.tanggal, s.upah, s.nama,  s.ket,
-                        ds.id_item as idItem, sum(c.jumlah) as jumlah,  sum((c.harga_per_kg*(c.berat/c.jumlah) + c.upah)) / count(c.id) + s.upah as totalBiayaItemPerPcs
+                        ds.id_item as idItem, sum(c.jumlah) as jumlah,  sum((c.harga_per_kg*round((c.berat/c.jumlah),2) + c.upah)) / count(c.id) + s.upah as totalBiayaItemPerPcs
                         FROM sablon as s 
                         INNER JOIN detil_sablon as ds 
                         INNER JOIN cutting as c
