@@ -169,7 +169,6 @@ router.getLabaRugiByIdInvoice = function(id) {
     })
 }
 
-
 router.getDebitKredit = function(data) {
     console.log(data)
     return new Promise((resolve, reject) => {

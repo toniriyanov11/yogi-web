@@ -916,6 +916,46 @@ async function convertObjectStructureInventory(dataResponse,dateFormat){
     }
 }
 
+async function convertObjectStructureInventoryAll(dataResponse,dateFormat){
+    try{
+        let data = {}
+        if(dataResponse.data){
+            var dataTemp = await this.convertDate(dataResponse, dateFormat)
+            
+            dataTemp.forEach((item,index) => {
+                let oneYear = 365
+                let hargaAwal = item.hargaAwal
+                let nilaiPenyusutan = item.nilaiPenyusutan
+                let lamaKepemilikan = item.lamaKepemilikan
+                let result =  Math.round(hargaAwal - hargaAwal  * ((nilaiPenyusutan/100) / oneYear) * lamaKepemilikan) 
+                if  (result >= 0 && result <= hargaAwal){
+                    item.hargaSaatIni = result
+                } else if (result > hargaAwal) {
+                    item.hargaSaatIni = hargaAwal
+                } else {
+                    item.hargaSaatIni = 0
+                }
+                
+                item.hargaTersusut  = hargaAwal - item.hargaSaatIni 
+            })
+
+
+            let dataInventoryTemp = dataTemp
+            let listHargaTersusut = dataInventoryTemp.map((item) => {return item.hargaTersusut})
+            let totalHargaPenyusutanTemp = listHargaTersusut.reduce((currentTotal, item)=> parseInt(currentTotal) + parseInt(item))
+
+            data = {
+                dataInventory : dataInventoryTemp,
+                totalHargaPenyusutan : totalHargaPenyusutanTemp.toString()
+            }
+      }
+      return data
+    
+    }catch(err){
+      return err
+    }
+}
+
 module.exports = {
     responseSuccess,
     responseSuccessUpdate,
@@ -942,6 +982,7 @@ module.exports = {
     convertObjectStructureUtangPiutang,
     convertObjectStructureUtang,
     convertObjectStructureInvoiceAmount,
-    convertObjectStructureInventory
+    convertObjectStructureInventory,
+    convertObjectStructureInventoryAll
 
 }

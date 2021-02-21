@@ -27,4 +27,23 @@ router.post('/',async function(req, res, next) {
   })
 
 
+  router.post('/all',async function(req, res, next) {
+    try{
+      console.log('panggil ini')
+       let dataResponse = await controllerOthers.getInventorys()
+       var data =""
+       if (dataResponse.success) {
+          data = await util.convertObjectStructureInventoryAll(dataResponse,'DD/MM/YYYY')
+          console.log(data)
+          res.status(200).json(data);
+       } else {
+          res.status(400).json(data);
+       }
+     }catch(err){
+       console.log(err)
+       res.status(500).json(err);
+     }
+    })
+
+
 module.exports = router;

@@ -58,7 +58,7 @@
                             <div class="col-md-5">
                                 <select class="form-control" v-model="data.inventori">
                                     <option disabled style="color: gainsboro" >Pilih Inventori</option>
-                                    <option  v-for="dataInventory in dataInventorys" :key="dataInventory.id" :value="dataInventory.id">{{dataInventory.id}} - {{dataInventory.nama}} - {{convertFloatToRupiah(dataInventory.hargaAwal)}}</option>
+                                    <option  v-for="dataInventoryAll in dataInventorysAll" :key="dataInventoryAll.id" :value="dataInventoryAll.id">{{dataInventoryAll.id}} - {{dataInventoryAll.nama}} - {{convertFloatToRupiah(dataInventoryAll.hargaAwal)}}</option>
                                 </select>
                             </div>
                     </div>
@@ -196,7 +196,7 @@
          dataInputTypes:'',
          dataInvoiceAmount:'',
          dataPaymentsStatus:'',
-         dataInventorys:'',
+         dataInventorysAll:'',
          typeInvoicePayment: '1',
          typeOthers: '2',
          typeInvoiceCreated: '3',
@@ -211,7 +211,7 @@
         await this.getMasterClient()
         await this.getMasterPaymentStatus()
         await this.getMasterInputType()
-        await this.getInventory()
+        await this.getInventoryAll()
      },
      watch: {
         total : function (val) {
@@ -276,12 +276,12 @@
         customFormatter(date) {
             return moment(date).format("DD/MM/YYYY");
         },
-        getInventory: async function() {
+        getInventoryAll: async function() {
             try{
-                const res = await axios.post(apiUrl + 'inventori')
-                this.dataInventorys = res.data.dataInventory
+                const res = await axios.post(apiUrl + 'inventori/all')
+                this.dataInventorysAll = res.data.dataInventory
             }catch(err){
-                alert("Get Inventory"+' '+err)
+                alert("Get Inventory All"+' '+err)
             }
         },
         getMasterClient: async function() {
