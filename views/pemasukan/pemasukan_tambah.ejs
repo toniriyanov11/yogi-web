@@ -60,6 +60,7 @@
                                     <option disabled style="color: gainsboro" >Pilih Inventori</option>
                                     <option  v-for="dataInventoryAll in dataInventorysAll" :key="dataInventoryAll.id" :value="dataInventoryAll.id">{{dataInventoryAll.id}} - {{dataInventoryAll.nama}} - {{convertFloatToRupiah(dataInventoryAll.hargaAwal)}}</option>
                                 </select>
+                                <small v-if="data.inventori != ''" class="form-text text-muted">Nilai Saat Ini : <span class="text-success">Rp.{{convertFloatToRupiah(findSelectedInvoiceRecentPrice(data.inventori).toString())}}</span></small>
                             </div>
                     </div>
                     <div v-if="data.jenisPemasukan == typeOthers" class="form-group row">
@@ -326,6 +327,12 @@
                 alert("Get Invoice Amount"+' '+err)
             }
         },
+        findSelectedInvoiceRecentPrice: function(id){
+            console.log(id)
+            let recentPrice = this.dataInventorysAll.find((item)=> item.id == id).hargaSaatIni
+            console.log(recentPrice)
+            return recentPrice
+        },
         checkValidation: async function(){
             var validate = false
             if(this.data.jenisPemasukan == this.typeInvoicePayment){
@@ -374,9 +381,6 @@
             } else {
                 return true
             }
-        },
-        checkDebitBalance(val){
-            
         },
         convertFloatToRupiah: function(val) {
 
