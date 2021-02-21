@@ -89,7 +89,7 @@
                     <div class="form-group row">
                         <label for="example-number-input" class="col-sm-2 col-form-label">Total Nominal (Rp)</label>
                         <div class="col-md-5">
-                            <input :disabled="isFormTotalDisable" @change="checkDebitBalance(total)" class="form-control" type="text" v-model="total">
+                            <input :disabled="isFormTotalDisable" @change="checkBalance(total)" class="form-control" type="text" v-model="total">
                         </div>
                     </div>
                     <div v-if="data.statusBayar == paymentStatusHalfPaid" class="form-group row">
@@ -219,7 +219,6 @@
             if(this.total != "") {
                 this.total  = this.convertFloatToRupiah(val).toString()
                 this.data.total = this.convertRupiahToFloat(this.total)
-                console.log(this.data.total)
                 if(this.lunas != ''){
                     var calculate = this.convertRupiahToFloat(this.total) - this.convertRupiahToFloat(this.lunas) 
                     this.data.piutang = calculate
@@ -332,6 +331,16 @@
             let recentPrice = this.dataInventorysAll.find((item)=> item.id == id).hargaSaatIni
             console.log(recentPrice)
             return recentPrice
+        },
+        checkBalance: function(total){
+            if(this.data.jenisPemasukan == this.typeInvoicePayment){
+                let totalFloat = this.convertRupiahToFloat(total)
+                let totalTagihan = this.dataInvoiceAmount.totalTagihan
+                if(parseInt(totalFloat) > parseInt(totalTagihan)){
+                    alert("Melebihi Total Tagihan")
+                    this.total = ""
+                }
+            }
         },
         checkValidation: async function(){
             var validate = false
